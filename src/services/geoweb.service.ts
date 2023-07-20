@@ -9,6 +9,17 @@ class GeoWebService {
     const response = await axios.get(url);
     return response.data;
   }
+  async getMatrixForIndicator({
+    guid,
+  }: {
+    guid: string | undefined;
+  }): Promise<Indicator> {
+    const cql_filters_encoded = encodeURIComponent(`guid_indicateur='${guid}'`);
+    const url = `${GEO2FRANCE_BASE_REQUEST}&TYPENAMES=odema:ind_matrice_dev&CQL_FILTER=${cql_filters_encoded}`;
+    console.log(url, 'url');
+    const response = await axios.get(url);
+    return response.data;
+  }
 }
 
 export default new GeoWebService();
