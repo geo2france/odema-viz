@@ -1,11 +1,7 @@
-export interface Indicator {
-  type: string;
-  features: Feature[];
-  totalFeatures: number;
-  numberMatched: number;
-  numberReturned: number;
-  timeStamp: string;
-  crs: string | null;
+import { Geo2FranceGenericResponse } from './geo2france.types';
+
+export interface Indicator extends Geo2FranceGenericResponse {
+  features: Feature;
 }
 
 export interface Feature {

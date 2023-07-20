@@ -1,5 +1,5 @@
 import { createContext, useState, ReactNode } from 'react';
-import { Indicator } from '../models/Indicator';
+import { Indicator } from '../models/indicator.types';
 
 export type IndicatorsContextModel = {
   indicators: Indicator | null;

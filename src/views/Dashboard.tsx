@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import geowebService from '../services/geoweb.service';
 import { IndicatorsContext } from '../context/IndicatorsContext';
 import { useContext, useEffect } from 'react';
-import { Feature } from '../models/Indicator';
+import { Feature } from '../models/indicator.types';
 export default () => {
   const { indicators, fetchIndicators } = useContext<any>(IndicatorsContext);
 
