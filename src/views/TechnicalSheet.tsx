@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Header } from '../components/Header/Header';
 import SelectMultiple from '../components/SelectMultiple/SelectMultiple';
 import geowebService from '../services/geoweb.service';
-import { MatrixFromIndicator } from '../models/matrice.types';
+import { MatrixFeatures, MatrixFromIndicator } from '../models/matrice.types';
 
 export default () => {
   const { guid } = useParams<{ guid: string }>();
@@ -22,12 +22,27 @@ export default () => {
     fetchMatrixIndicator();
   }, []);
 
+  const updateURL = (newValues: string[]) => {
+    const serializedValues = newValues.join(';');
+    const queryParams = new URLSearchParams(window.location.search);
+    queryParams.set('territories', serializedValues);
+    const newURL = `${window.location.pathname}?${queryParams.toString()}`;
+    window.history.pushState({ path: newURL }, '', newURL);
+  };
+
   const groupedTerritories = [
     //We want unique territory value from the API
     ...new Set(
-      matrice?.features.map((feature: any) => feature.properties.nom_territoire)
+      matrice?.features.map(
+        (feature: MatrixFeatures) => feature.properties.nom_territoire
+      )
     ),
   ];
+
+  const handleTerritoriesSelected = (values: string[]) => {
+    setTerritoriesSelected(values);
+    updateURL(values);
+  };
 
   return (
     <>
@@ -37,7 +52,7 @@ export default () => {
           label={'Territoire(s)'}
           values={territoriesSelected}
           options={groupedTerritories}
-          setFunction={setTerritoriesSelected}
+          setFunction={handleTerritoriesSelected}
           inputValue={territoriesInput}
           setInputValue={setInputTerritories}
           placeHolder="Territoire"
