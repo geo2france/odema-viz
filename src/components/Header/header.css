@@ -1,0 +1,9 @@
+.App-header {
+  width: 100%;
+  display: flex;
+}
+
+.indicator-infos {
+  font-size: 2em;
+  margin: auto;
+}
