@@ -12,6 +12,17 @@ export default () => {
   const [territoriesSelected, setTerritoriesSelected] = useState<string[]>([]);
   const [territoriesInput, setInputTerritories] = useState<string>('');
 
+  const getQueryParams = () => {
+    const queryParams = new URLSearchParams(window.location.search);
+    const serializedValues = queryParams.get('territories');
+    if (serializedValues) {
+      const unserializedValues = fetchTerritoriesNameFromMatrix(
+        serializedValues.split(';')
+      );
+      setTerritoriesSelected(unserializedValues);
+    }
+  };
+
   useEffect(() => {
     const fetchMatrixIndicator = async () => {
       const response = await geowebService.getMatrixForIndicator({
@@ -20,15 +31,12 @@ export default () => {
       setMatrice(response);
     };
     fetchMatrixIndicator();
+    getQueryParams();
   }, []);
 
-  const updateURL = (newValues: string[]) => {
-    const serializedValues = newValues.join(';');
-    const queryParams = new URLSearchParams(window.location.search);
-    queryParams.set('territories', serializedValues);
-    const newURL = `${window.location.pathname}?${queryParams.toString()}`;
-    window.history.pushState({ path: newURL }, '', newURL);
-  };
+  useEffect(() => {
+    getQueryParams();
+  }, [matrice]);
 
   const groupedTerritories = [
     //We want unique territory value from the API
@@ -39,9 +47,48 @@ export default () => {
     ),
   ];
 
+  const fetchTerritoriesIdsFromMatrix = (territories: string[]) => {
+    let ids: string[] = [];
+    territories.forEach((territoryName: string) => {
+      const matrixSelected = matrice?.features.find(
+        (feature: MatrixFeatures) =>
+          feature.properties.nom_territoire === territoryName
+      );
+      if (matrixSelected) {
+        ids.push(matrixSelected.properties.id_territoire.toString());
+      }
+    });
+    return ids;
+  };
+
+  const fetchTerritoriesNameFromMatrix = (ids: string[]) => {
+    let territories: string[] = [];
+    ids.forEach((id: string) => {
+      const matrixSelected = matrice?.features.find(
+        (feature: MatrixFeatures) =>
+          feature.properties.id_territoire === id.toString()
+      );
+      if (matrixSelected) {
+        territories.push(matrixSelected.properties.nom_territoire);
+      }
+    });
+    return territories;
+  };
+
+  const updateURL = (newValues: string[]) => {
+    const serializedValues = newValues.join(';');
+    const queryParams = new URLSearchParams(window.location.search);
+    queryParams.set('territories', serializedValues);
+    const newURL = `${window.location.pathname}?${queryParams.toString()}`;
+    window.history.pushState({ path: newURL }, '', newURL);
+  };
+
   const handleTerritoriesSelected = (values: string[]) => {
     setTerritoriesSelected(values);
-    updateURL(values);
+
+    const ids = fetchTerritoriesIdsFromMatrix(values);
+
+    updateURL(ids);
   };
 
   return (
