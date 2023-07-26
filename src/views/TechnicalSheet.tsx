@@ -5,6 +5,7 @@ import SelectMultiple from '../components/SelectMultiple/SelectMultiple';
 import geowebService from '../services/geoweb.service';
 import { MatrixFeatures, MatrixFromIndicator } from '../models/matrice.types';
 import { getCookie, setCookie } from '../helpers/cookie.helper';
+import SelectWithBoxes from '../components/SelectWithBoxes/SelectWithBoxes';
 
 export default () => {
   const { guid } = useParams<{ guid: string }>();
@@ -12,6 +13,8 @@ export default () => {
   const [matrice, setMatrice] = useState<MatrixFromIndicator | null>(null);
   const [territoriesSelected, setTerritoriesSelected] = useState<string[]>([]);
   const [territoriesInput, setInputTerritories] = useState<string>('');
+
+  const [wasteTypesSelected, setSelectedWasteTypes] = useState<string[]>([]);
 
   const getQueryParams = () => {
     const queryParams = new URLSearchParams(window.location.search);
@@ -45,6 +48,19 @@ export default () => {
       matrice?.features.map(
         (feature: MatrixFeatures) => feature.properties.nom_territoire
       )
+    ),
+  ];
+  const wasteTypes: string[] | undefined = [
+    ...new Set(
+      matrice?.features
+        .filter(
+          (feature: MatrixFeatures) =>
+            feature.properties.nom_axe === 'Type de déchets'
+        )
+        .map(
+          (filteredFeature: MatrixFeatures) =>
+            filteredFeature.properties.valeur_axe
+        )
     ),
   ];
 
@@ -100,6 +116,11 @@ export default () => {
     updateURL(ids);
   };
 
+  const handleWasteTypesSelected = (event: any) => {
+    const newValue = event.target.value;
+    setSelectedWasteTypes(newValue);
+  };
+
   return (
     <>
       <Header indicatorName={matrice?.features[0].properties.nom_indicateur} />
@@ -112,6 +133,12 @@ export default () => {
           inputValue={territoriesInput}
           setInputValue={setInputTerritories}
           placeHolder="Territoire"
+        />
+        <SelectWithBoxes
+          label={'Type de déchet'}
+          options={wasteTypes}
+          propValue={wasteTypesSelected}
+          handleValue={handleWasteTypesSelected}
         />
       </div>
     </>
