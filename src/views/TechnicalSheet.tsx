@@ -4,6 +4,7 @@ import { Header } from '../components/Header/Header';
 import SelectMultiple from '../components/SelectMultiple/SelectMultiple';
 import geowebService from '../services/geoweb.service';
 import { MatrixFeatures, MatrixFromIndicator } from '../models/matrice.types';
+import { getCookie, setCookie } from '../helpers/cookie.helper';
 
 export default () => {
   const { guid } = useParams<{ guid: string }>();
@@ -31,11 +32,11 @@ export default () => {
       setMatrice(response);
     };
     fetchMatrixIndicator();
-    getQueryParams();
   }, []);
 
   useEffect(() => {
     getQueryParams();
+    handleGetCookieTerritories();
   }, [matrice]);
 
   const groupedTerritories = [
@@ -83,8 +84,16 @@ export default () => {
     window.history.pushState({ path: newURL }, '', newURL);
   };
 
+  const handleGetCookieTerritories = () => {
+    const territories = getCookie('territories')?.split(',');
+    if (territories) {
+      setTerritoriesSelected(fetchTerritoriesNameFromMatrix(territories));
+    }
+  };
+
   const handleTerritoriesSelected = (values: string[]) => {
     setTerritoriesSelected(values);
+    setCookie('territories', fetchTerritoriesIdsFromMatrix(values));
 
     const ids = fetchTerritoriesIdsFromMatrix(values);
 
