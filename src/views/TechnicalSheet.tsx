@@ -4,7 +4,7 @@ import { Header } from '../components/Header/Header';
 import SelectMultiple from '../components/SelectMultiple/SelectMultiple';
 import geowebService from '../services/geoweb.service';
 import { MatrixFeatures, MatrixFromIndicator } from '../models/matrice.types';
-import Cookies from 'js-cookie';
+import { getCookie, setCookie } from '../helpers/cookie.helper';
 
 export default () => {
   const { guid } = useParams<{ guid: string }>();
@@ -84,12 +84,8 @@ export default () => {
     window.history.pushState({ path: newURL }, '', newURL);
   };
 
-  const writeCookie = (selector: string, value: any) => {
-    Cookies.set(selector, value, { expires: 30 });
-  };
-
   const handleGetCookieTerritories = () => {
-    const territories = Cookies.get('territories')?.split(',');
+    const territories = getCookie('territories')?.split(',');
     if (territories) {
       setTerritoriesSelected(fetchTerritoriesNameFromMatrix(territories));
     }
@@ -97,7 +93,7 @@ export default () => {
 
   const handleTerritoriesSelected = (values: string[]) => {
     setTerritoriesSelected(values);
-    writeCookie('territories', fetchTerritoriesIdsFromMatrix(values));
+    setCookie('territories', fetchTerritoriesIdsFromMatrix(values));
 
     const ids = fetchTerritoriesIdsFromMatrix(values);
 
