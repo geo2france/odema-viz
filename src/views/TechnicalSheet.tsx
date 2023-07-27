@@ -6,6 +6,7 @@ import geowebService from '../services/geoweb.service';
 import { MatrixFeatures, MatrixFromIndicator } from '../models/matrice.types';
 import { getCookie, setCookie } from '../helpers/cookie.helper';
 import { getQueryParamsFromSelector } from '../helpers/urlParams.helper';
+import { formatCorrectCaractersForTracking } from '../helpers/formatters.helper';
 import SelectWithBoxes from '../components/SelectWithBoxes/SelectWithBoxes';
 
 export default () => {
@@ -95,10 +96,10 @@ export default () => {
     return territories;
   };
 
-  const updateURL = (newValues: string[]) => {
+  const updateURL = (selector: string, newValues: string[]) => {
     const serializedValues = newValues.join(';');
     const queryParams = new URLSearchParams(window.location.search);
-    queryParams.set('territories', serializedValues);
+    queryParams.set(selector, serializedValues);
     const newURL = `${window.location.pathname}?${queryParams.toString()}`;
     window.history.pushState({ path: newURL }, '', newURL);
   };
@@ -116,17 +117,16 @@ export default () => {
 
     const ids = fetchTerritoriesIdsFromMatrix(values);
 
-    updateURL(ids);
+    updateURL('territories', ids);
   };
 
   const handleGetCookieWasteTypes = () => {
     //We need to rewrite some specific caracters to handle the array
-    const wasteTypesFromCookie = getCookie('wasteTypes')
-      ?.replace(', ', ';')
-      .split(',')
-      .map((waste: string) => waste.replace(';', ', '));
+    const wasteTypesFromCookie = getCookie('wasteTypes');
     if (wasteTypesFromCookie) {
-      setSelectedWasteTypes(wasteTypesFromCookie);
+      setSelectedWasteTypes(
+        formatCorrectCaractersForTracking(wasteTypesFromCookie)
+      );
     }
   };
   const handleWasteTypesSelected = (event: any) => {
