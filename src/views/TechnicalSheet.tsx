@@ -5,6 +5,7 @@ import SelectMultiple from '../components/SelectMultiple/SelectMultiple';
 import geowebService from '../services/geoweb.service';
 import { MatrixFeatures, MatrixFromIndicator } from '../models/matrice.types';
 import { getCookie, setCookie } from '../helpers/cookie.helper';
+import { getQueryParamsFromSelector } from '../helpers/urlParams.helper';
 import SelectWithBoxes from '../components/SelectWithBoxes/SelectWithBoxes';
 
 export default () => {
@@ -18,17 +19,6 @@ export default () => {
   const [wasteTypesSelectedAll, setWasteTypesSelectedAll] =
     useState<boolean>(false);
 
-  const getQueryParams = () => {
-    const queryParams = new URLSearchParams(window.location.search);
-    const serializedValues = queryParams.get('territories');
-    if (serializedValues) {
-      const unserializedValues = fetchTerritoriesNameFromMatrix(
-        serializedValues.split(';')
-      );
-      setTerritoriesSelected(unserializedValues);
-    }
-  };
-
   useEffect(() => {
     const fetchMatrixIndicator = async () => {
       const response = await geowebService.getMatrixForIndicator({
@@ -40,9 +30,16 @@ export default () => {
   }, []);
 
   useEffect(() => {
-    getQueryParams();
+    //Get URL params and cookie for territories
+    getQueryParamsFromSelector(
+      'territories',
+      setTerritoriesSelected,
+      true,
+      fetchTerritoriesNameFromMatrix
+    );
     handleGetCookieTerritories();
 
+    //Get URL params and cookie for wasteTypes
     handleGetCookieWasteTypes();
   }, [matrice]);
 
