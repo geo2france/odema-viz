@@ -99,7 +99,11 @@ export default () => {
   const updateURL = (selector: string, newValues: string[]) => {
     const serializedValues = newValues.join(';');
     const queryParams = new URLSearchParams(window.location.search);
-    queryParams.set(selector, serializedValues);
+    if (!!newValues.length) {
+      queryParams.set(selector, serializedValues);
+    } else {
+      queryParams.delete(selector);
+    }
     const newURL = `${window.location.pathname}?${queryParams.toString()}`;
     window.history.pushState({ path: newURL }, '', newURL);
   };
@@ -136,10 +140,12 @@ export default () => {
       if (!wasteTypesSelectedAll) {
         setWasteTypesSelectedAll(true);
         setSelectedWasteTypes(wasteTypes);
+        updateURL('wasteTypes', wasteTypes);
         setCookie('wasteTypes', wasteTypes);
       } else {
         setWasteTypesSelectedAll(false);
         setSelectedWasteTypes([]);
+        updateURL('wasteTypes', []);
         setCookie('wasteTypes', []);
       }
     } else {
@@ -151,6 +157,7 @@ export default () => {
         setWasteTypesSelectedAll(false);
       }
       setSelectedWasteTypes(newValue);
+      updateURL('wasteTypes', newValue);
       setCookie('wasteTypes', newValue);
     }
   };
@@ -168,13 +175,17 @@ export default () => {
           setInputValue={setInputTerritories}
           placeHolder="Territoire"
         />
-        <SelectWithBoxes
-          label={'Type de déchet'}
-          options={wasteTypesWithAllOption}
-          propValue={wasteTypesSelected}
-          handleValue={handleWasteTypesSelected}
-          selectedAll={wasteTypesSelectedAll}
-        />
+        {!!wasteTypes.length && (
+          <>
+            <SelectWithBoxes
+              label={'Type de déchet'}
+              options={wasteTypesWithAllOption}
+              propValue={wasteTypesSelected}
+              handleValue={handleWasteTypesSelected}
+              selectedAll={wasteTypesSelectedAll}
+            />
+          </>
+        )}
       </div>
     </>
   );
