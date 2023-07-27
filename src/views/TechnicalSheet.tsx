@@ -42,6 +42,8 @@ export default () => {
   useEffect(() => {
     getQueryParams();
     handleGetCookieTerritories();
+
+    handleGetCookieWasteTypes();
   }, [matrice]);
 
   const groupedTerritories = [
@@ -120,6 +122,16 @@ export default () => {
     updateURL(ids);
   };
 
+  const handleGetCookieWasteTypes = () => {
+    //We need to rewrite some specific caracters to handle the array
+    const wasteTypesFromCookie = getCookie('wasteTypes')
+      ?.replace(', ', ';')
+      .split(',')
+      .map((waste: string) => waste.replace(';', ', '));
+    if (wasteTypesFromCookie) {
+      setSelectedWasteTypes(wasteTypesFromCookie);
+    }
+  };
   const handleWasteTypesSelected = (event: any) => {
     const newValue = event.target.value;
 
@@ -127,9 +139,11 @@ export default () => {
       if (!wasteTypesSelectedAll) {
         setWasteTypesSelectedAll(true);
         setSelectedWasteTypes(wasteTypes);
+        setCookie('wasteTypes', wasteTypes);
       } else {
         setWasteTypesSelectedAll(false);
         setSelectedWasteTypes([]);
+        setCookie('wasteTypes', []);
       }
     } else {
       if (newValue.length === wasteTypes.length) {
@@ -140,6 +154,7 @@ export default () => {
         setWasteTypesSelectedAll(false);
       }
       setSelectedWasteTypes(newValue);
+      setCookie('wasteTypes', newValue);
     }
   };
 
