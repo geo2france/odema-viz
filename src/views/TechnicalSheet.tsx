@@ -15,6 +15,8 @@ export default () => {
   const [territoriesInput, setInputTerritories] = useState<string>('');
 
   const [wasteTypesSelected, setSelectedWasteTypes] = useState<string[]>([]);
+  const [wasteTypesSelectedAll, setWasteTypesSelectedAll] =
+    useState<Boolean>(false);
 
   const getQueryParams = () => {
     const queryParams = new URLSearchParams(window.location.search);
@@ -63,6 +65,8 @@ export default () => {
         )
     ),
   ];
+
+  const wasteTypesWithAllOption = ['Tout', ...wasteTypes];
 
   const fetchTerritoriesIdsFromMatrix = (territories: string[]) => {
     let ids: string[] = [];
@@ -118,7 +122,18 @@ export default () => {
 
   const handleWasteTypesSelected = (event: any) => {
     const newValue = event.target.value;
-    setSelectedWasteTypes(newValue);
+
+    if (newValue.includes('Tout')) {
+      if (!wasteTypesSelectedAll) {
+        setWasteTypesSelectedAll(true);
+        setSelectedWasteTypes(wasteTypes);
+      } else {
+        setWasteTypesSelectedAll(false);
+        setSelectedWasteTypes([]);
+      }
+    } else {
+      setSelectedWasteTypes(newValue);
+    }
   };
 
   return (
@@ -136,7 +151,7 @@ export default () => {
         />
         <SelectWithBoxes
           label={'Type de déchet'}
-          options={wasteTypes}
+          options={wasteTypesWithAllOption}
           propValue={wasteTypesSelected}
           handleValue={handleWasteTypesSelected}
         />
