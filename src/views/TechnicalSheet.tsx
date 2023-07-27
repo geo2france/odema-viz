@@ -16,7 +16,7 @@ export default () => {
 
   const [wasteTypesSelected, setSelectedWasteTypes] = useState<string[]>([]);
   const [wasteTypesSelectedAll, setWasteTypesSelectedAll] =
-    useState<Boolean>(false);
+    useState<boolean>(false);
 
   const getQueryParams = () => {
     const queryParams = new URLSearchParams(window.location.search);
@@ -132,6 +132,13 @@ export default () => {
         setSelectedWasteTypes([]);
       }
     } else {
+      if (newValue.length === wasteTypes.length) {
+        setWasteTypesSelectedAll(true);
+      }
+
+      if (wasteTypesSelectedAll && newValue.length !== wasteTypes.length) {
+        setWasteTypesSelectedAll(false);
+      }
       setSelectedWasteTypes(newValue);
     }
   };
@@ -154,6 +161,7 @@ export default () => {
           options={wasteTypesWithAllOption}
           propValue={wasteTypesSelected}
           handleValue={handleWasteTypesSelected}
+          selectedAll={wasteTypesSelectedAll}
         />
       </div>
     </>
