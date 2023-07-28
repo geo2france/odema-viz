@@ -28,6 +28,12 @@ export default () => {
       setMatrice(response);
     };
     fetchMatrixIndicator();
+
+    return () => {
+      setTerritoriesSelected([]);
+      setSelectedWasteTypes([]);
+      setWasteTypesSelectedAll(false);
+    };
   }, []);
 
   useEffect(() => {
@@ -41,7 +47,12 @@ export default () => {
     handleGetCookieTerritories();
 
     //Get URL params and cookie for wasteTypes
+    getQueryParamsFromSelector('wasteTypes', setSelectedWasteTypes);
     handleGetCookieWasteTypes();
+
+    if (wasteTypes?.length === wasteTypesSelected.length) {
+      setWasteTypesSelectedAll(true);
+    }
   }, [matrice]);
 
   const groupedTerritories = [
