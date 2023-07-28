@@ -5,6 +5,8 @@ import SelectMultiple from '../components/SelectMultiple/SelectMultiple';
 import geowebService from '../services/geoweb.service';
 import { MatrixFeatures, MatrixFromIndicator } from '../models/matrice.types';
 import { getCookie, setCookie } from '../helpers/cookie.helper';
+import { getQueryParamsFromSelector } from '../helpers/urlParams.helper';
+import { formatCorrectCaractersForTracking } from '../helpers/formatters.helper';
 import SelectWithBoxes from '../components/SelectWithBoxes/SelectWithBoxes';
 
 export default () => {
@@ -15,17 +17,8 @@ export default () => {
   const [territoriesInput, setInputTerritories] = useState<string>('');
 
   const [wasteTypesSelected, setSelectedWasteTypes] = useState<string[]>([]);
-
-  const getQueryParams = () => {
-    const queryParams = new URLSearchParams(window.location.search);
-    const serializedValues = queryParams.get('territories');
-    if (serializedValues) {
-      const unserializedValues = fetchTerritoriesNameFromMatrix(
-        serializedValues.split(';')
-      );
-      setTerritoriesSelected(unserializedValues);
-    }
-  };
+  const [wasteTypesSelectedAll, setWasteTypesSelectedAll] =
+    useState<boolean>(false);
 
   useEffect(() => {
     const fetchMatrixIndicator = async () => {
@@ -35,11 +28,31 @@ export default () => {
       setMatrice(response);
     };
     fetchMatrixIndicator();
+
+    return () => {
+      setTerritoriesSelected([]);
+      setSelectedWasteTypes([]);
+      setWasteTypesSelectedAll(false);
+    };
   }, []);
 
   useEffect(() => {
-    getQueryParams();
+    //Get URL params and cookie for territories
+    getQueryParamsFromSelector(
+      'territories',
+      setTerritoriesSelected,
+      true,
+      fetchTerritoriesNameFromMatrix
+    );
     handleGetCookieTerritories();
+
+    //Get URL params and cookie for wasteTypes
+    getQueryParamsFromSelector('wasteTypes', setSelectedWasteTypes);
+    handleGetCookieWasteTypes();
+
+    if (wasteTypes?.length === wasteTypesSelected.length) {
+      setWasteTypesSelectedAll(true);
+    }
   }, [matrice]);
 
   const groupedTerritories = [
@@ -63,6 +76,8 @@ export default () => {
         )
     ),
   ];
+
+  const wasteTypesWithAllOption = ['Tout', ...wasteTypes];
 
   const fetchTerritoriesIdsFromMatrix = (territories: string[]) => {
     let ids: string[] = [];
@@ -92,10 +107,14 @@ export default () => {
     return territories;
   };
 
-  const updateURL = (newValues: string[]) => {
+  const updateURL = (selector: string, newValues: string[]) => {
     const serializedValues = newValues.join(';');
     const queryParams = new URLSearchParams(window.location.search);
-    queryParams.set('territories', serializedValues);
+    if (!!newValues.length) {
+      queryParams.set(selector, serializedValues);
+    } else {
+      queryParams.delete(selector);
+    }
     const newURL = `${window.location.pathname}?${queryParams.toString()}`;
     window.history.pushState({ path: newURL }, '', newURL);
   };
@@ -113,12 +132,45 @@ export default () => {
 
     const ids = fetchTerritoriesIdsFromMatrix(values);
 
-    updateURL(ids);
+    updateURL('territories', ids);
   };
 
+  const handleGetCookieWasteTypes = () => {
+    //We need to rewrite some specific caracters to handle the array
+    const wasteTypesFromCookie = getCookie('wasteTypes');
+    if (wasteTypesFromCookie) {
+      setSelectedWasteTypes(
+        formatCorrectCaractersForTracking(wasteTypesFromCookie)
+      );
+    }
+  };
   const handleWasteTypesSelected = (event: any) => {
     const newValue = event.target.value;
-    setSelectedWasteTypes(newValue);
+
+    if (newValue.includes('Tout')) {
+      if (!wasteTypesSelectedAll) {
+        setWasteTypesSelectedAll(true);
+        setSelectedWasteTypes(wasteTypes);
+        updateURL('wasteTypes', wasteTypes);
+        setCookie('wasteTypes', wasteTypes);
+      } else {
+        setWasteTypesSelectedAll(false);
+        setSelectedWasteTypes([]);
+        updateURL('wasteTypes', []);
+        setCookie('wasteTypes', []);
+      }
+    } else {
+      if (newValue.length === wasteTypes.length) {
+        setWasteTypesSelectedAll(true);
+      }
+
+      if (wasteTypesSelectedAll && newValue.length !== wasteTypes.length) {
+        setWasteTypesSelectedAll(false);
+      }
+      setSelectedWasteTypes(newValue);
+      updateURL('wasteTypes', newValue);
+      setCookie('wasteTypes', newValue);
+    }
   };
 
   return (
@@ -134,12 +186,17 @@ export default () => {
           setInputValue={setInputTerritories}
           placeHolder="Territoire"
         />
-        <SelectWithBoxes
-          label={'Type de déchet'}
-          options={wasteTypes}
-          propValue={wasteTypesSelected}
-          handleValue={handleWasteTypesSelected}
-        />
+        {!!wasteTypes.length && (
+          <>
+            <SelectWithBoxes
+              label={'Type de déchet'}
+              options={wasteTypesWithAllOption}
+              propValue={wasteTypesSelected}
+              handleValue={handleWasteTypesSelected}
+              selectedAll={wasteTypesSelectedAll}
+            />
+          </>
+        )}
       </div>
     </>
   );

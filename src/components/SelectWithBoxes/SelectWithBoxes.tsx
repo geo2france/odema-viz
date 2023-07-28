@@ -22,9 +22,16 @@ type Props = {
   options: string[];
   propValue?: string[];
   handleValue: (value: any) => void;
+  selectedAll?: boolean;
 };
 
-export default ({ label, options, propValue, handleValue }: Props) => {
+export default ({
+  label,
+  options,
+  propValue,
+  handleValue,
+  selectedAll = false,
+}: Props) => {
   return (
     <div>
       <FormControl sx={{ m: 1, width: 300 }}>
@@ -36,13 +43,17 @@ export default ({ label, options, propValue, handleValue }: Props) => {
           value={propValue}
           onChange={(event: any) => handleValue(event)}
           input={<OutlinedInput label="Tag" />}
-          renderValue={(selected) => selected}
+          renderValue={(selected) => selected.join(',')}
           MenuProps={MenuProps}
         >
           {options.map((option, index) => (
             <MenuItem key={index} value={option}>
               <Checkbox
-                checked={!!propValue?.find((value) => value === option)}
+                checked={
+                  option === 'Tout'
+                    ? selectedAll
+                    : !!propValue?.find((value) => value === option)
+                }
               />
               <ListItemText primary={option} />
             </MenuItem>
