@@ -1,10 +1,9 @@
 import Autocomplete from '@mui/material/Autocomplete';
 import TextField from '@mui/material/TextField';
-import { SelectMultipleOption } from '../../models/selectors.types';
 
 type Props = {
   label: string;
-  options: SelectMultipleOption[];
+  options: string[];
   setFunction: (value: any) => void;
   values: string[];
   placeHolder?: string;
