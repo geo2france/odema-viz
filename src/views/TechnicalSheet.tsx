@@ -20,9 +20,8 @@ export default () => {
   const [territoriesSelected, setTerritoriesSelected] = useState<string[]>([]);
   const [territoriesInput, setInputTerritories] = useState<string>('');
 
-  const [wasteTypesSelected, setSelectedWasteTypes] = useState<string[]>([]);
-  const [wasteTypesSelectedAll, setWasteTypesSelectedAll] =
-    useState<boolean>(false);
+  const [axisSelected, setSelectedAxis] = useState<string[]>([]);
+  const [axisSelectedAll, setAxisSelectedAll] = useState<boolean>(false);
 
   const [yearRange, setYearRange] = useState<number[]>([0, 0]);
   const [minMaxYearRange, setMinMaxYearRange] = useState<number[]>([0, 0]);
@@ -38,8 +37,8 @@ export default () => {
 
     return () => {
       setTerritoriesSelected([]);
-      setSelectedWasteTypes([]);
-      setWasteTypesSelectedAll(false);
+      setSelectedAxis([]);
+      setAxisSelectedAll(false);
     };
   }, []);
 
@@ -53,12 +52,12 @@ export default () => {
     );
     handleGetCookieTerritories();
 
-    //Get URL params and cookie for wasteTypes
-    getQueryParamsFromSelector('wasteTypes', setSelectedWasteTypes);
-    handleGetCookieWasteTypes();
+    //Get URL params and cookie for axisTypes
+    getQueryParamsFromSelector('axis', setSelectedAxis);
+    handleGetCookieAxis();
 
-    if (wasteTypes?.length === wasteTypesSelected.length) {
-      setWasteTypesSelectedAll(true);
+    if (axisTypes?.length === axisSelected.length && axisSelected.length > 0) {
+      setAxisSelectedAll(true);
     }
 
     setMinMaxYearRange([initialMinYear, initialMaxYear]);
@@ -76,21 +75,24 @@ export default () => {
       )
     ),
   ];
-  const wasteTypes: string[] | undefined = [
+  const axisTypes: string[] | undefined = [
     ...new Set(
-      matrice?.features
-        .filter(
-          (feature: MatrixFeatures) =>
-            feature.properties?.nom_axe === 'Type de déchets'
-        )
-        .map(
-          (filteredFeature: MatrixFeatures) =>
-            filteredFeature.properties?.valeur_axe
-        )
+      matrice?.features.map(
+        (filteredFeature: MatrixFeatures) =>
+          filteredFeature.properties?.valeur_axe
+      )
     ),
   ];
 
-  const wasteTypesWithAllOption = ['Tout', ...wasteTypes];
+  const axisWithAllOption: string[] = ['Tout', ...axisTypes];
+
+  const analyseAxisLabel: string = [
+    ...new Set(
+      matrice?.features.map(
+        (feature: MatrixFeatures) => feature.properties?.nom_axe
+      )
+    ),
+  ][0];
 
   const groupedYears: number[] = [
     ...new Set(
@@ -159,13 +161,11 @@ export default () => {
     updateURL('territories', ids);
   };
 
-  const handleGetCookieWasteTypes = () => {
+  const handleGetCookieAxis = () => {
     //We need to rewrite some specific caracters to handle the array
-    const wasteTypesFromCookie = getCookie('wasteTypes');
-    if (wasteTypesFromCookie) {
-      setSelectedWasteTypes(
-        formatCorrectCaractersForTracking(wasteTypesFromCookie)
-      );
+    const axisFromCookie = getCookie('axis');
+    if (axisFromCookie) {
+      setSelectedAxis(formatCorrectCaractersForTracking(axisFromCookie));
     }
   };
 
@@ -180,32 +180,32 @@ export default () => {
     }
   };
 
-  const handleWasteTypesSelected = (event: any) => {
+  const handleAxisSelected = (event: any) => {
     const newValue = event.target.value;
 
     if (newValue.includes('Tout')) {
-      if (!wasteTypesSelectedAll) {
-        setWasteTypesSelectedAll(true);
-        setSelectedWasteTypes(wasteTypes);
-        updateURL('wasteTypes', wasteTypes);
-        setCookie('wasteTypes', wasteTypes);
+      if (!axisSelectedAll) {
+        setAxisSelectedAll(true);
+        setSelectedAxis(axisTypes);
+        updateURL('axis', axisTypes);
+        setCookie('axis', axisTypes);
       } else {
-        setWasteTypesSelectedAll(false);
-        setSelectedWasteTypes([]);
-        updateURL('wasteTypes', []);
-        setCookie('wasteTypes', []);
+        setAxisSelectedAll(false);
+        setSelectedAxis([]);
+        updateURL('axis', []);
+        setCookie('axis', []);
       }
     } else {
-      if (newValue.length === wasteTypes.length) {
-        setWasteTypesSelectedAll(true);
+      if (newValue.length === axisTypes.length) {
+        setAxisSelectedAll(true);
       }
 
-      if (wasteTypesSelectedAll && newValue.length !== wasteTypes.length) {
-        setWasteTypesSelectedAll(false);
+      if (axisSelectedAll && newValue.length !== axisTypes.length) {
+        setAxisSelectedAll(false);
       }
-      setSelectedWasteTypes(newValue);
-      updateURL('wasteTypes', newValue);
-      setCookie('wasteTypes', newValue);
+      setSelectedAxis(newValue);
+      updateURL('axis', newValue);
+      setCookie('axis', newValue);
     }
   };
 
@@ -235,14 +235,14 @@ export default () => {
               setInputValue={setInputTerritories}
               placeHolder="Territoire"
             />
-            {!!wasteTypes.length && (
+            {!!axisTypes.length && (
               <>
                 <SelectWithBoxes
-                  label={'Type de déchet'}
-                  options={wasteTypesWithAllOption}
-                  propValue={wasteTypesSelected}
-                  handleValue={handleWasteTypesSelected}
-                  selectedAll={wasteTypesSelectedAll}
+                  label={analyseAxisLabel}
+                  options={axisWithAllOption}
+                  propValue={axisSelected}
+                  handleValue={handleAxisSelected}
+                  selectedAll={axisSelectedAll}
                 />
               </>
             )}
