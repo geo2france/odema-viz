@@ -6,7 +6,7 @@ type Props = {
   value: number[];
   minValue: number;
   maxValue: number;
-  setter: (_event: Event, newValue: number | number[]) => void;
+  setter: (_event: Event, newValue: any) => void;
 };
 
 export default ({ value, minValue, maxValue, setter }: Props) => {

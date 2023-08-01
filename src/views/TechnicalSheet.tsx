@@ -6,7 +6,10 @@ import geowebService from '../services/geoweb.service';
 import { MatrixFeatures, MatrixFromIndicator } from '../models/matrice.types';
 import { getCookie, setCookie } from '../helpers/cookie.helper';
 import { getQueryParamsFromSelector } from '../helpers/urlParams.helper';
-import { formatCorrectCaractersForTracking } from '../helpers/formatters.helper';
+import {
+  formatCorrectCaractersForTracking,
+  parseYearRange,
+} from '../helpers/formatters.helper';
 import SelectWithBoxes from '../components/SelectWithBoxes/SelectWithBoxes';
 import SliderRange from '../components/SliderRange/SliderRange';
 
@@ -60,6 +63,9 @@ export default () => {
 
     setMinMaxYearRange([initialMinYear, initialMaxYear]);
     setYearRange([initialMinYear, initialMaxYear]);
+
+    getQueryParamsFromSelector('yearRange', setYearRange, true, parseYearRange);
+    handleGetCookieYearRange();
   }, [matrice]);
 
   const groupedTerritories = [
@@ -162,6 +168,18 @@ export default () => {
       );
     }
   };
+
+  const handleGetCookieYearRange = () => {
+    const yearRangeCookie = getCookie('yearRange')?.split(',');
+    if (yearRangeCookie) {
+      setYearRange(
+        yearRangeCookie.map((yearAsString: string) =>
+          parseInt(yearAsString, 10)
+        )
+      );
+    }
+  };
+
   const handleWasteTypesSelected = (event: any) => {
     const newValue = event.target.value;
 
@@ -191,8 +209,13 @@ export default () => {
     }
   };
 
-  const handleYearRange = (_event: Event, newValue: number | number[]) => {
+  const handleYearRange = (_event: Event, newValue: number[]) => {
     setYearRange(newValue as number[]);
+    updateURL(
+      'yearRange',
+      newValue.map((value: number) => value.toString())
+    );
+    setCookie('yearRange', newValue);
   };
 
   return (
