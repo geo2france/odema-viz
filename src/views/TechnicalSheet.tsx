@@ -12,6 +12,7 @@ import {
 } from '../helpers/formatters.helper';
 import SelectWithBoxes from '../components/SelectWithBoxes/SelectWithBoxes';
 import SliderRange from '../components/SliderRange/SliderRange';
+import RadioGroupUnit from '../components/RadioGroupUnit/RadioGroupUnit';
 
 export default () => {
   const { guid } = useParams<{ guid: string }>();
@@ -25,6 +26,8 @@ export default () => {
 
   const [yearRange, setYearRange] = useState<number[]>([0, 0]);
   const [minMaxYearRange, setMinMaxYearRange] = useState<number[]>([0, 0]);
+
+  const [unitSelected, setUnitSelected] = useState<string>('');
 
   useEffect(() => {
     const fetchMatrixIndicator = async () => {
@@ -218,6 +221,10 @@ export default () => {
     setCookie('yearRange', newValue);
   };
 
+  const handleUnitRadio = (_event: Event, newValue: string) => {
+    setUnitSelected(newValue);
+  };
+
   return (
     <>
       {matrice && (
@@ -251,6 +258,12 @@ export default () => {
               minValue={minMaxYearRange[0]}
               maxValue={minMaxYearRange[1]}
               setter={handleYearRange}
+            />
+            <RadioGroupUnit
+              label={'Unité'}
+              units={['Tonnes', 'Tonnes/habitant']}
+              selectedValue={unitSelected}
+              setter={handleUnitRadio}
             />
           </div>
         </>
