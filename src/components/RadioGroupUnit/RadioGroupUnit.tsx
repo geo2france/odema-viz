@@ -14,10 +14,10 @@ type Props = {
 export default ({ label, units, selectedValue, setter }: Props) => {
   return (
     <FormControl>
-      <FormLabel id="demo-row-radio-buttons-group-label">{label}</FormLabel>
+      <FormLabel id="radio-buttons-group-label">{label}</FormLabel>
       <RadioGroup
         row
-        aria-labelledby="demo-row-radio-buttons-group-label"
+        aria-labelledby="radio-buttons-group-label"
         name="row-radio-buttons-group"
         value={selectedValue}
         onChange={setter}

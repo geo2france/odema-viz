@@ -68,6 +68,8 @@ export default () => {
 
     getQueryParamsFromSelector('yearRange', setYearRange, true, parseYearRange);
     handleGetCookieYearRange();
+
+    setUnitSelected(pickedUnits ?? 'Unité');
   }, [matrice]);
 
   const groupedTerritories = [
@@ -104,6 +106,19 @@ export default () => {
       )
     ),
   ];
+
+  const pickedUnits = [
+    ...new Set(
+      matrice?.features.map(
+        (feature: MatrixFeatures) =>
+          feature.properties?.unite_libel ?? feature.properties?.unite
+      )
+    ),
+  ][0];
+
+  const units = !!pickedUnits
+    ? [pickedUnits, `${pickedUnits}/habitant`]
+    : ['Unité', 'Unité/habitant'];
 
   const initialMinYear: number = Math.min(...groupedYears);
   const initialMaxYear: number = Math.max(...groupedYears);
@@ -261,7 +276,7 @@ export default () => {
             />
             <RadioGroupUnit
               label={'Unité'}
-              units={['Tonnes', 'Tonnes/habitant']}
+              units={units}
               selectedValue={unitSelected}
               setter={handleUnitRadio}
             />
