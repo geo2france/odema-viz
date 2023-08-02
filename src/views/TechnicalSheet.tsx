@@ -63,13 +63,16 @@ export default () => {
       setAxisSelectedAll(true);
     }
 
+    //Get URL params and cookie for year Range
     setMinMaxYearRange([initialMinYear, initialMaxYear]);
     setYearRange([initialMinYear, initialMaxYear]);
 
     getQueryParamsFromSelector('yearRange', setYearRange, true, parseYearRange);
     handleGetCookieYearRange();
 
+    //Get URL params and cookie for Unit
     setUnitSelected(pickedUnits ?? 'Unité');
+    handleGetCookieUnit();
   }, [matrice]);
 
   const groupedTerritories = [
@@ -198,6 +201,13 @@ export default () => {
     }
   };
 
+  const handleGetCookieUnit = () => {
+    const unitFromCookie = getCookie('unit');
+    if (unitFromCookie) {
+      setUnitSelected(unitFromCookie);
+    }
+  };
+
   const handleAxisSelected = (event: any) => {
     const newValue = event.target.value;
 
@@ -238,6 +248,7 @@ export default () => {
 
   const handleUnitRadio = (_event: Event, newValue: string) => {
     setUnitSelected(newValue);
+    setCookie('unit', newValue);
   };
 
   return (
