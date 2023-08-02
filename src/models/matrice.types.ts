@@ -29,5 +29,6 @@ export interface MatrixFeatureProperties {
   valeur_axe: string;
   valeur: number;
   unite: string;
+  unite_libel?: string | null;
   pop_reference: string | null;
 }

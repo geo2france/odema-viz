@@ -12,6 +12,7 @@ import {
 } from '../helpers/formatters.helper';
 import SelectWithBoxes from '../components/SelectWithBoxes/SelectWithBoxes';
 import SliderRange from '../components/SliderRange/SliderRange';
+import RadioGroupUnit from '../components/RadioGroupUnit/RadioGroupUnit';
 
 export default () => {
   const { guid } = useParams<{ guid: string }>();
@@ -25,6 +26,8 @@ export default () => {
 
   const [yearRange, setYearRange] = useState<number[]>([0, 0]);
   const [minMaxYearRange, setMinMaxYearRange] = useState<number[]>([0, 0]);
+
+  const [unitSelected, setUnitSelected] = useState<string>('');
 
   useEffect(() => {
     const fetchMatrixIndicator = async () => {
@@ -65,6 +68,8 @@ export default () => {
 
     getQueryParamsFromSelector('yearRange', setYearRange, true, parseYearRange);
     handleGetCookieYearRange();
+
+    setUnitSelected(pickedUnits ?? 'Unité');
   }, [matrice]);
 
   const groupedTerritories = [
@@ -101,6 +106,19 @@ export default () => {
       )
     ),
   ];
+
+  const pickedUnits = [
+    ...new Set(
+      matrice?.features.map(
+        (feature: MatrixFeatures) =>
+          feature.properties?.unite_libel ?? feature.properties?.unite
+      )
+    ),
+  ][0];
+
+  const units = !!pickedUnits
+    ? [pickedUnits, `${pickedUnits}/habitant`]
+    : ['Unité', 'Unité/habitant'];
 
   const initialMinYear: number = Math.min(...groupedYears);
   const initialMaxYear: number = Math.max(...groupedYears);
@@ -218,6 +236,10 @@ export default () => {
     setCookie('yearRange', newValue);
   };
 
+  const handleUnitRadio = (_event: Event, newValue: string) => {
+    setUnitSelected(newValue);
+  };
+
   return (
     <>
       {matrice && (
@@ -251,6 +273,12 @@ export default () => {
               minValue={minMaxYearRange[0]}
               maxValue={minMaxYearRange[1]}
               setter={handleYearRange}
+            />
+            <RadioGroupUnit
+              label={'Unité'}
+              units={units}
+              selectedValue={unitSelected}
+              setter={handleUnitRadio}
             />
           </div>
         </>
