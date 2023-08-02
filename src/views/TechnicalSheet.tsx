@@ -57,7 +57,12 @@ export default () => {
 
     //Get URL params and cookie for axisTypes
     getQueryParamsFromSelector('axis', setSelectedAxis);
-    handleGetCookieAxis();
+    handleCookie(
+      'axis',
+      setSelectedAxis,
+      true,
+      formatCorrectCaractersForTracking
+    );
 
     if (axisTypes?.length === axisSelected.length && axisSelected.length > 0) {
       setAxisSelectedAll(true);
@@ -68,11 +73,11 @@ export default () => {
     setYearRange([initialMinYear, initialMaxYear]);
 
     getQueryParamsFromSelector('yearRange', setYearRange, true, parseYearRange);
-    handleGetCookieYearRange();
+    handleCookie('yearRange', setYearRange, true, yearRangeFormatter);
 
     //Get URL params and cookie for Unit
     setUnitSelected(pickedUnits ?? 'Unité');
-    handleGetCookieUnit();
+    handleCookie('unit', setUnitSelected);
   }, [matrice]);
 
   const groupedTerritories = [
@@ -182,30 +187,26 @@ export default () => {
     updateURL('territories', ids);
   };
 
-  const handleGetCookieAxis = () => {
-    //We need to rewrite some specific caracters to handle the array
-    const axisFromCookie = getCookie('axis');
-    if (axisFromCookie) {
-      setSelectedAxis(formatCorrectCaractersForTracking(axisFromCookie));
+  const handleCookie = (
+    selector: string,
+    setter: any,
+    needToBeFormat: boolean = false,
+    formatter: any = () => {}
+  ) => {
+    const cookieValue = getCookie(selector);
+    if (cookieValue) {
+      if (needToBeFormat) {
+        setter(formatter(cookieValue));
+      } else {
+        setter(cookieValue);
+      }
     }
   };
 
-  const handleGetCookieYearRange = () => {
-    const yearRangeCookie = getCookie('yearRange')?.split(',');
-    if (yearRangeCookie) {
-      setYearRange(
-        yearRangeCookie.map((yearAsString: string) =>
-          parseInt(yearAsString, 10)
-        )
-      );
-    }
-  };
-
-  const handleGetCookieUnit = () => {
-    const unitFromCookie = getCookie('unit');
-    if (unitFromCookie) {
-      setUnitSelected(unitFromCookie);
-    }
+  const yearRangeFormatter = (yearRangeCookie: string) => {
+    return yearRangeCookie
+      .split(',')
+      .map((yearAsString: string) => parseInt(yearAsString, 10));
   };
 
   const handleAxisSelected = (event: any) => {
