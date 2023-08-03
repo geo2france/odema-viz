@@ -1,6 +1,6 @@
 export function getQueryParamsFromSelector(
   selector: string,
-  setter: (values: any[]) => any,
+  setter: (values: any) => any,
   needToBeFormat: boolean = false,
   formatter: (values: any) => any = () => {}
 ) {

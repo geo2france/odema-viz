@@ -77,6 +77,13 @@ export default () => {
 
     //Get URL params and cookie for Unit
     setUnitSelected(pickedUnits ?? 'Unité');
+    getQueryParamsFromSelector(
+      'unit',
+      setUnitSelected,
+      true,
+      (value: string[]) => value[0]
+    );
+
     handleCookie('unit', setUnitSelected);
   }, [matrice]);
 
@@ -159,8 +166,10 @@ export default () => {
     return territories;
   };
 
-  const updateURL = (selector: string, newValues: string[]) => {
-    const serializedValues = newValues.join(';');
+  const updateURL = (selector: string, newValues: string | string[]) => {
+    const serializedValues = Array.isArray(newValues)
+      ? newValues.join(';')
+      : newValues;
     const queryParams = new URLSearchParams(window.location.search);
     if (!!newValues.length) {
       queryParams.set(selector, serializedValues);
@@ -250,8 +259,8 @@ export default () => {
   const handleUnitRadio = (_event: Event, newValue: string) => {
     setUnitSelected(newValue);
     setCookie('unit', newValue);
+    updateURL('unit', newValue);
   };
-
   return (
     <>
       {matrice && (
