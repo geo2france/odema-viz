@@ -57,19 +57,34 @@ export default () => {
 
     //Get URL params and cookie for axisTypes
     getQueryParamsFromSelector('axis', setSelectedAxis);
-    handleGetCookieAxis();
+    handleCookie(
+      'axis',
+      setSelectedAxis,
+      true,
+      formatCorrectCaractersForTracking
+    );
 
     if (axisTypes?.length === axisSelected.length && axisSelected.length > 0) {
       setAxisSelectedAll(true);
     }
 
+    //Get URL params and cookie for year Range
     setMinMaxYearRange([initialMinYear, initialMaxYear]);
     setYearRange([initialMinYear, initialMaxYear]);
 
     getQueryParamsFromSelector('yearRange', setYearRange, true, parseYearRange);
-    handleGetCookieYearRange();
+    handleCookie('yearRange', setYearRange, true, yearRangeFormatter);
 
+    //Get URL params and cookie for Unit
     setUnitSelected(pickedUnits ?? 'Unité');
+    getQueryParamsFromSelector(
+      'unit',
+      setUnitSelected,
+      true,
+      (value: string[]) => value[0]
+    );
+
+    handleCookie('unit', setUnitSelected);
   }, [matrice]);
 
   const groupedTerritories = [
@@ -151,8 +166,10 @@ export default () => {
     return territories;
   };
 
-  const updateURL = (selector: string, newValues: string[]) => {
-    const serializedValues = newValues.join(';');
+  const updateURL = (selector: string, newValues: string | string[]) => {
+    const serializedValues = Array.isArray(newValues)
+      ? newValues.join(';')
+      : newValues;
     const queryParams = new URLSearchParams(window.location.search);
     if (!!newValues.length) {
       queryParams.set(selector, serializedValues);
@@ -179,23 +196,26 @@ export default () => {
     updateURL('territories', ids);
   };
 
-  const handleGetCookieAxis = () => {
-    //We need to rewrite some specific caracters to handle the array
-    const axisFromCookie = getCookie('axis');
-    if (axisFromCookie) {
-      setSelectedAxis(formatCorrectCaractersForTracking(axisFromCookie));
+  const handleCookie = (
+    selector: string,
+    setter: any,
+    needToBeFormat: boolean = false,
+    formatter: any = () => {}
+  ) => {
+    const cookieValue = getCookie(selector);
+    if (cookieValue) {
+      if (needToBeFormat) {
+        setter(formatter(cookieValue));
+      } else {
+        setter(cookieValue);
+      }
     }
   };
 
-  const handleGetCookieYearRange = () => {
-    const yearRangeCookie = getCookie('yearRange')?.split(',');
-    if (yearRangeCookie) {
-      setYearRange(
-        yearRangeCookie.map((yearAsString: string) =>
-          parseInt(yearAsString, 10)
-        )
-      );
-    }
+  const yearRangeFormatter = (yearRangeCookie: string) => {
+    return yearRangeCookie
+      .split(',')
+      .map((yearAsString: string) => parseInt(yearAsString, 10));
   };
 
   const handleAxisSelected = (event: any) => {
@@ -238,8 +258,9 @@ export default () => {
 
   const handleUnitRadio = (_event: Event, newValue: string) => {
     setUnitSelected(newValue);
+    setCookie('unit', newValue);
+    updateURL('unit', newValue);
   };
-
   return (
     <>
       {matrice && (
