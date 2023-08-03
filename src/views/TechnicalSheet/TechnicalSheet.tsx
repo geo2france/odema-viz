@@ -58,16 +58,16 @@ export default () => {
       true,
       fetchTerritoriesNameFromMatrix
     );
-    handleGetCookieTerritories();
+    // handleGetCookieTerritories();
 
     //Get URL params and cookie for axisTypes
     getQueryParamsFromSelector('axis', setSelectedAxis);
-    handleCookie(
-      'axis',
-      setSelectedAxis,
-      true,
-      formatCorrectCaractersForTracking
-    );
+    // handleCookie(
+    //   'axis',
+    //   setSelectedAxis,
+    //   true,
+    //   formatCorrectCaractersForTracking
+    // );
 
     if (axisTypes?.length === axisSelected.length && axisSelected.length > 0) {
       setAxisSelectedAll(true);
@@ -78,7 +78,7 @@ export default () => {
     setYearRange([initialMinYear, initialMaxYear]);
 
     getQueryParamsFromSelector('yearRange', setYearRange, true, parseYearRange);
-    handleCookie('yearRange', setYearRange, true, yearRangeFormatter);
+    // handleCookie('yearRange', setYearRange, true, yearRangeFormatter);
 
     //Get URL params and cookie for Unit
     setUnitSelected(pickedUnits ?? 'Unité');
@@ -89,7 +89,7 @@ export default () => {
       (value: string[]) => value[0]
     );
 
-    handleCookie('unit', setUnitSelected);
+    // handleCookie('unit', setUnitSelected);
   }, [matrice]);
 
   const groupedTerritories = [
@@ -194,7 +194,7 @@ export default () => {
 
   const handleTerritoriesSelected = (values: string[]) => {
     setTerritoriesSelected(values);
-    setCookie('territories', fetchTerritoriesIdsFromMatrix(values));
+    // setCookie('territories', fetchTerritoriesIdsFromMatrix(values));
 
     const ids = fetchTerritoriesIdsFromMatrix(values);
 
@@ -231,12 +231,12 @@ export default () => {
         setAxisSelectedAll(true);
         setSelectedAxis(axisTypes);
         updateURL('axis', axisTypes);
-        setCookie('axis', axisTypes);
+        // setCookie('axis', axisTypes);
       } else {
         setAxisSelectedAll(false);
         setSelectedAxis([]);
         updateURL('axis', []);
-        setCookie('axis', []);
+        // setCookie('axis', []);
       }
     } else {
       if (newValue.length === axisTypes.length) {
@@ -248,7 +248,7 @@ export default () => {
       }
       setSelectedAxis(newValue);
       updateURL('axis', newValue);
-      setCookie('axis', newValue);
+      // setCookie('axis', newValue);
     }
   };
 
@@ -258,12 +258,12 @@ export default () => {
       'yearRange',
       newValue.map((value: number) => value.toString())
     );
-    setCookie('yearRange', newValue);
+    // setCookie('yearRange', newValue);
   };
 
   const handleUnitRadio = (_event: Event, newValue: string) => {
     setUnitSelected(newValue);
-    setCookie('unit', newValue);
+    // setCookie('unit', newValue);
     updateURL('unit', newValue);
   };
   return (
