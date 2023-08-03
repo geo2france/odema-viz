@@ -13,7 +13,7 @@ type Props = {
 
 export default ({ label, units, selectedValue, setter }: Props) => {
   return (
-    <FormControl>
+    <FormControl sx={{ margin: '10px 50px' }}>
       <FormLabel id="radio-buttons-group-label">{label}</FormLabel>
       <RadioGroup
         row
