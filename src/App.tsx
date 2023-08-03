@@ -1,7 +1,8 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import TechnicalSheet from './views/TechnicalSheet';
-import DashBoard from './views/Dashboard';
+import TechnicalSheet from './views/TechnicalSheet/TechnicalSheet';
+import DashBoard from './views/DashBoard/Dashboard';
 import { IndicatorsProvider } from './context/IndicatorsContext';
+import './App.css';
 
 function App() {
   return (

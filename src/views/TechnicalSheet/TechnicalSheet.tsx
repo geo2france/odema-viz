@@ -1,18 +1,23 @@
 import { useEffect, useState } from 'react';
 import { useParams } from 'react-router-dom';
-import { Header } from '../components/Header/Header';
-import SelectMultiple from '../components/SelectMultiple/SelectMultiple';
-import geowebService from '../services/geoweb.service';
-import { MatrixFeatures, MatrixFromIndicator } from '../models/matrice.types';
-import { getCookie, setCookie } from '../helpers/cookie.helper';
-import { getQueryParamsFromSelector } from '../helpers/urlParams.helper';
+import { Header } from '../../components/Header/Header';
+import SelectMultiple from '../../components/SelectMultiple/SelectMultiple';
+import geowebService from '../../services/geoweb.service';
+import {
+  MatrixFeatures,
+  MatrixFromIndicator,
+} from '../../models/matrice.types';
+import { getCookie, setCookie } from '../../helpers/cookie.helper';
+import { getQueryParamsFromSelector } from '../../helpers/urlParams.helper';
 import {
   formatCorrectCaractersForTracking,
   parseYearRange,
-} from '../helpers/formatters.helper';
-import SelectWithBoxes from '../components/SelectWithBoxes/SelectWithBoxes';
-import SliderRange from '../components/SliderRange/SliderRange';
-import RadioGroupUnit from '../components/RadioGroupUnit/RadioGroupUnit';
+} from '../../helpers/formatters.helper';
+import SelectWithBoxes from '../../components/SelectWithBoxes/SelectWithBoxes';
+import SliderRange from '../../components/SliderRange/SliderRange';
+import RadioGroupUnit from '../../components/RadioGroupUnit/RadioGroupUnit';
+
+import './TechnicalSheet.css';
 
 export default () => {
   const { guid } = useParams<{ guid: string }>();

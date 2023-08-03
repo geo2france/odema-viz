@@ -11,7 +11,7 @@ type Props = {
 
 export default ({ value, minValue, maxValue, setter }: Props) => {
   return (
-    <Box sx={{ width: 300 }}>
+    <Box sx={{ width: 300, margin: '10px 60px' }}>
       <Typography id="range-slider" gutterBottom>
         Années : {value[0]} - {value[1]}
       </Typography>

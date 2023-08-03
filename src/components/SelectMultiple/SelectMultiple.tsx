@@ -23,13 +23,15 @@ export default function SelectMultiple({
   return (
     <Autocomplete
       multiple
+      limitTags={4}
+      size="small"
       options={options}
       getOptionLabel={(option) => option}
       defaultValue={[options[0], options[1], options[2]]}
       renderInput={(params) => (
         <TextField {...params} label={label} placeholder={placeHolder} />
       )}
-      sx={{ width: '500px' }}
+      sx={{ width: '400px', margin: '10px 30px' }}
       onChange={(_event: any, newValue: any) => setFunction(newValue)}
       value={values}
       inputValue={inputValue}
