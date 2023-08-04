@@ -9,10 +9,7 @@ import {
 } from '../../models/matrice.types';
 import { getCookie, setCookie } from '../../helpers/cookie.helper';
 import { getQueryParamsFromSelector } from '../../helpers/urlParams.helper';
-import {
-  formatCorrectCaractersForTracking,
-  parseYearRange,
-} from '../../helpers/formatters.helper';
+import { parseYearRange } from '../../helpers/formatters.helper';
 import SelectWithBoxes from '../../components/SelectWithBoxes/SelectWithBoxes';
 import SliderRange from '../../components/SliderRange/SliderRange';
 import RadioGroupUnit from '../../components/RadioGroupUnit/RadioGroupUnit';
@@ -58,16 +55,10 @@ export default () => {
       true,
       fetchTerritoriesNameFromMatrix
     );
-    // handleGetCookieTerritories();
+    handleGetCookieTerritories();
 
     //Get URL params and cookie for axisTypes
     getQueryParamsFromSelector('axis', setSelectedAxis);
-    // handleCookie(
-    //   'axis',
-    //   setSelectedAxis,
-    //   true,
-    //   formatCorrectCaractersForTracking
-    // );
 
     if (axisTypes?.length === axisSelected.length && axisSelected.length > 0) {
       setAxisSelectedAll(true);
@@ -78,7 +69,6 @@ export default () => {
     setYearRange([initialMinYear, initialMaxYear]);
 
     getQueryParamsFromSelector('yearRange', setYearRange, true, parseYearRange);
-    // handleCookie('yearRange', setYearRange, true, yearRangeFormatter);
 
     //Get URL params and cookie for Unit
     setUnitSelected(pickedUnits ?? 'Unité');
@@ -88,8 +78,6 @@ export default () => {
       true,
       (value: string[]) => value[0]
     );
-
-    // handleCookie('unit', setUnitSelected);
   }, [matrice]);
 
   const groupedTerritories = [
@@ -194,33 +182,11 @@ export default () => {
 
   const handleTerritoriesSelected = (values: string[]) => {
     setTerritoriesSelected(values);
-    // setCookie('territories', fetchTerritoriesIdsFromMatrix(values));
+    setCookie('territories', fetchTerritoriesIdsFromMatrix(values));
 
     const ids = fetchTerritoriesIdsFromMatrix(values);
 
     updateURL('territories', ids);
-  };
-
-  const handleCookie = (
-    selector: string,
-    setter: any,
-    needToBeFormat: boolean = false,
-    formatter: any = () => {}
-  ) => {
-    const cookieValue = getCookie(selector);
-    if (cookieValue) {
-      if (needToBeFormat) {
-        setter(formatter(cookieValue));
-      } else {
-        setter(cookieValue);
-      }
-    }
-  };
-
-  const yearRangeFormatter = (yearRangeCookie: string) => {
-    return yearRangeCookie
-      .split(',')
-      .map((yearAsString: string) => parseInt(yearAsString, 10));
   };
 
   const handleAxisSelected = (event: any) => {
@@ -231,12 +197,10 @@ export default () => {
         setAxisSelectedAll(true);
         setSelectedAxis(axisTypes);
         updateURL('axis', axisTypes);
-        // setCookie('axis', axisTypes);
       } else {
         setAxisSelectedAll(false);
         setSelectedAxis([]);
         updateURL('axis', []);
-        // setCookie('axis', []);
       }
     } else {
       if (newValue.length === axisTypes.length) {
@@ -248,7 +212,6 @@ export default () => {
       }
       setSelectedAxis(newValue);
       updateURL('axis', newValue);
-      // setCookie('axis', newValue);
     }
   };
 
@@ -258,12 +221,10 @@ export default () => {
       'yearRange',
       newValue.map((value: number) => value.toString())
     );
-    // setCookie('yearRange', newValue);
   };
 
   const handleUnitRadio = (_event: Event, newValue: string) => {
     setUnitSelected(newValue);
-    // setCookie('unit', newValue);
     updateURL('unit', newValue);
   };
   return (
