@@ -262,9 +262,47 @@ export default () => {
           feature.properties.annee >= yearRange[0] &&
           feature.properties.annee <= yearRange[1]
       );
-
-      setFilteredMatrix(data);
     }
+    setFilteredMatrix(data);
+  };
+
+  const formattedColumns = () => {
+    let flattedColumns = [];
+
+    if (minMaxYearRange[0] !== 0 && minMaxYearRange[1] !== 0) {
+      for (let year = minMaxYearRange[0]; year <= minMaxYearRange[1]; year++) {
+        flattedColumns.push({ title: String(year), field: String(year) });
+      }
+    }
+
+    const columns = [
+      { title: 'Territories', field: 'territory' },
+      ...flattedColumns,
+    ];
+    return columns;
+  };
+
+  //exemple with Coût du SPGD par habitant
+  const formattedData = () => {
+    let summedByTerritory: any = {};
+
+    filteredMatrix?.forEach((feature: MatrixFeatures) => {
+      const territory = feature.properties.nom_territoire;
+      const annee = feature.properties.annee;
+      const value = feature.properties.valeur;
+
+      if (!summedByTerritory[territory]) {
+        summedByTerritory = { ...summedByTerritory, [territory]: {} };
+      }
+
+      if (!summedByTerritory[territory][annee]) {
+        summedByTerritory[territory][annee] = value;
+      } else {
+        summedByTerritory[territory][annee] =
+          summedByTerritory[territory][annee] + value;
+      }
+    });
+    return [];
   };
   return (
     <>
@@ -307,7 +345,12 @@ export default () => {
               setter={handleUnitRadio}
             />
           </div>
-          <div className="technical-sheet--table"></div>
+          <div className="technical-sheet--table">
+            <TableTabulator
+              tableColumns={formattedColumns()}
+              tableData={formattedData()}
+            />
+          </div>
         </>
       )}
     </>
