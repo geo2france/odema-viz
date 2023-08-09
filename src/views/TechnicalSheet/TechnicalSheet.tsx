@@ -283,27 +283,51 @@ export default () => {
   };
 
   //exemple with Coût du SPGD par habitant
-  const formattedData = () => {
+  const computeDataWithUnitForTable = () => {
     let summedByTerritory: any = {};
 
     filteredMatrix?.forEach((feature: MatrixFeatures) => {
       const territory = feature.properties.nom_territoire;
       const annee = feature.properties.annee;
       const value = feature.properties.valeur;
+      const populationRef = feature.properties.pop_reference;
+      const perInhabitants =
+        unitSelected === `${feature.properties.unite}/habitant`;
 
       if (!summedByTerritory[territory]) {
         summedByTerritory = { ...summedByTerritory, [territory]: {} };
       }
 
+      //The following calc is taking care of the unit selected and if population ref has a value
       if (!summedByTerritory[territory][annee]) {
-        summedByTerritory[territory][annee] = value;
+        summedByTerritory[territory][annee] = perInhabitants
+          ? populationRef === null
+            ? null
+            : value / populationRef
+          : value;
       } else {
         summedByTerritory[territory][annee] =
-          summedByTerritory[territory][annee] + value;
+          summedByTerritory[territory][annee] +
+          (perInhabitants
+            ? populationRef === null
+              ? null
+              : value / populationRef
+            : value);
       }
     });
-    return [];
+
+    const mappedValues = Object.keys(summedByTerritory).map(
+      (TerritoryName: string) => {
+        return {
+          territory: TerritoryName,
+          ...summedByTerritory[TerritoryName],
+        };
+      }
+    );
+
+    return mappedValues;
   };
+
   return (
     <>
       {matrice && (
@@ -348,7 +372,7 @@ export default () => {
           <div className="technical-sheet--table">
             <TableTabulator
               tableColumns={formattedColumns()}
-              tableData={formattedData()}
+              tableData={computeDataWithUnitForTable()}
             />
           </div>
         </>
