@@ -8,7 +8,7 @@ function App() {
   return (
     <IndicatorsProvider>
       <div className={`App-light`}>
-        <BrowserRouter>
+        <BrowserRouter basename="/public/odema/indicateur_dev">
           <Routes>
             <Route path="/" element={<DashBoard />} />
             <Route path="/technicalsheet/:guid" element={<TechnicalSheet />} />
