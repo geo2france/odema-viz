@@ -91,6 +91,21 @@ export default ({ minMaxYearRange, filteredData, unitSelected }: Props) => {
       );
     });
 
+    let sumByYear: any = {};
+    Object.keys(summedByTerritory).forEach((territoryName: string) => {
+      Object.keys(summedByTerritory[territoryName]).forEach(
+        (yearValue: string) => {
+          if (!sumByYear.hasOwnProperty(yearValue)) {
+            sumByYear = { ...sumByYear, [yearValue]: 0 };
+          }
+
+          sumByYear[yearValue] =
+            sumByYear[yearValue] +
+            (summedByTerritory[territoryName][yearValue] ?? 0);
+        }
+      );
+    });
+
     //We round values to two decimal
     roundValues(summedByTerritory);
 
