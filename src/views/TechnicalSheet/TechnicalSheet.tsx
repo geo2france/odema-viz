@@ -266,79 +266,6 @@ export default () => {
     setFilteredMatrix(data);
   };
 
-  const formattedColumns = () => {
-    let flattedColumns = [];
-
-    if (minMaxYearRange[0] !== 0 && minMaxYearRange[1] !== 0) {
-      for (let year = minMaxYearRange[0]; year <= minMaxYearRange[1]; year++) {
-        flattedColumns.push({ title: String(year), field: String(year) });
-      }
-    }
-
-    const columns = [
-      { title: 'Territories', field: 'territory' },
-      ...flattedColumns,
-    ];
-    return columns;
-  };
-
-  //exemple with Coût du SPGD par habitant
-  const computeDataWithUnitForTable = () => {
-    let summedByTerritory: any = {};
-
-    filteredMatrix?.forEach((feature: MatrixFeatures) => {
-      const territory = feature.properties.nom_territoire;
-      const annee = feature.properties.annee;
-      const value = feature.properties.valeur;
-      const populationRef = feature.properties.pop_reference;
-      const perInhabitants =
-        unitSelected === `${feature.properties.unite}/habitant`;
-
-      if (!summedByTerritory[territory]) {
-        summedByTerritory = { ...summedByTerritory, [territory]: {} };
-      }
-
-      //The following calc is taking care of the unit selected and if population ref has a value
-      if (!summedByTerritory[territory][annee]) {
-        summedByTerritory[territory][annee] = perInhabitants
-          ? populationRef === null
-            ? null
-            : value / populationRef
-          : value;
-      } else {
-        summedByTerritory[territory][annee] =
-          summedByTerritory[territory][annee] +
-          (perInhabitants
-            ? populationRef === null
-              ? null
-              : value / populationRef
-            : value);
-      }
-    });
-
-    //We round values to two decimal
-    Object.keys(summedByTerritory).map((territoryName: string) => {
-      for (let year in summedByTerritory[territoryName]) {
-        if (typeof summedByTerritory[territoryName][year] === 'number') {
-          summedByTerritory[territoryName][year] = parseFloat(
-            summedByTerritory[territoryName][year].toFixed(2)
-          );
-        }
-      }
-    });
-
-    const mappedValues = Object.keys(summedByTerritory).map(
-      (TerritoryName: string) => {
-        return {
-          territory: TerritoryName,
-          ...summedByTerritory[TerritoryName],
-        };
-      }
-    );
-
-    return mappedValues;
-  };
-
   return (
     <>
       {matrice && (
@@ -382,8 +309,9 @@ export default () => {
           </div>
           <div className="technical-sheet--table">
             <TableTabulator
-              tableColumns={formattedColumns()}
-              tableData={computeDataWithUnitForTable()}
+              minMaxYearRange={minMaxYearRange}
+              filteredData={filteredMatrix}
+              unitSelected={unitSelected}
             />
           </div>
         </>
