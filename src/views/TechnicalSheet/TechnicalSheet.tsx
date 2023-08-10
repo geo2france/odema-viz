@@ -316,6 +316,17 @@ export default () => {
       }
     });
 
+    //We round values to two decimal
+    Object.keys(summedByTerritory).map((territoryName: string) => {
+      for (let year in summedByTerritory[territoryName]) {
+        if (typeof summedByTerritory[territoryName][year] === 'number') {
+          summedByTerritory[territoryName][year] = parseFloat(
+            summedByTerritory[territoryName][year].toFixed(2)
+          );
+        }
+      }
+    });
+
     const mappedValues = Object.keys(summedByTerritory).map(
       (TerritoryName: string) => {
         return {
