@@ -27,6 +27,43 @@ export default ({ minMaxYearRange, filteredData, unitSelected }: Props) => {
     return columns;
   };
 
+  const calcSummedByTerritory = (
+    summedByTerritory: any,
+    territory: string,
+    annee: number,
+    value: number,
+    populationRef: number | null,
+    perInhabitants: boolean
+  ) => {
+    if (!summedByTerritory[territory][annee]) {
+      summedByTerritory[territory][annee] = perInhabitants
+        ? populationRef === null
+          ? null
+          : value / populationRef
+        : value;
+    } else {
+      summedByTerritory[territory][annee] =
+        summedByTerritory[territory][annee] +
+        (perInhabitants
+          ? populationRef === null
+            ? null
+            : value / populationRef
+          : value);
+    }
+  };
+
+  const roundValues = (summedByTerritory: any) => {
+    Object.keys(summedByTerritory).map((territoryName: string) => {
+      for (let year in summedByTerritory[territoryName]) {
+        if (typeof summedByTerritory[territoryName][year] === 'number') {
+          summedByTerritory[territoryName][year] = parseFloat(
+            summedByTerritory[territoryName][year].toFixed(2)
+          );
+        }
+      }
+    });
+  };
+
   //exemple with Coût du SPGD par habitant
   const computeDataWithUnitForTable = () => {
     let summedByTerritory: any = {};
@@ -44,33 +81,18 @@ export default ({ minMaxYearRange, filteredData, unitSelected }: Props) => {
       }
 
       //The following calc is taking care of the unit selected and if population ref has a value
-      if (!summedByTerritory[territory][annee]) {
-        summedByTerritory[territory][annee] = perInhabitants
-          ? populationRef === null
-            ? null
-            : value / populationRef
-          : value;
-      } else {
-        summedByTerritory[territory][annee] =
-          summedByTerritory[territory][annee] +
-          (perInhabitants
-            ? populationRef === null
-              ? null
-              : value / populationRef
-            : value);
-      }
+      calcSummedByTerritory(
+        summedByTerritory,
+        territory,
+        annee,
+        value,
+        populationRef,
+        perInhabitants
+      );
     });
 
     //We round values to two decimal
-    Object.keys(summedByTerritory).map((territoryName: string) => {
-      for (let year in summedByTerritory[territoryName]) {
-        if (typeof summedByTerritory[territoryName][year] === 'number') {
-          summedByTerritory[territoryName][year] = parseFloat(
-            summedByTerritory[territoryName][year].toFixed(2)
-          );
-        }
-      }
-    });
+    roundValues(summedByTerritory);
 
     const mappedValues = Object.keys(summedByTerritory).map(
       (TerritoryName: string) => {
