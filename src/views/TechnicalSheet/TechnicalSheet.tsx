@@ -106,6 +106,9 @@ export default () => {
     ),
   ];
 
+  const hasAxisNoValuesInHisSelector: boolean =
+    axisTypes.length === 1 && axisTypes[0] === null;
+
   const axisWithAllOption: string[] = ['Tout', ...axisTypes];
 
   const analyseAxisLabel: string = [
@@ -283,17 +286,18 @@ export default () => {
               setInputValue={setInputTerritories}
               placeHolder="Territoire"
             />
-            {!!axisTypes.length && (
-              <>
-                <SelectWithBoxes
-                  label={analyseAxisLabel}
-                  options={axisWithAllOption}
-                  propValue={axisSelected}
-                  handleValue={handleAxisSelected}
-                  selectedAll={axisSelectedAll}
-                />
-              </>
-            )}
+            <SelectWithBoxes
+              disabled={hasAxisNoValuesInHisSelector}
+              label={
+                hasAxisNoValuesInHisSelector
+                  ? "Aucun axe n'est disponible"
+                  : analyseAxisLabel
+              }
+              options={axisWithAllOption}
+              propValue={axisSelected}
+              handleValue={handleAxisSelected}
+              selectedAll={axisSelectedAll}
+            />
             <SliderRange
               value={yearRange}
               minValue={minMaxYearRange[0]}

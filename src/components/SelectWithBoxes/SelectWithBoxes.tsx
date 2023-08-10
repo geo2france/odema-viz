@@ -18,6 +18,7 @@ const MenuProps = {
 };
 
 type Props = {
+  disabled: boolean;
   label: string;
   options: string[];
   propValue?: string[];
@@ -26,6 +27,7 @@ type Props = {
 };
 
 export default ({
+  disabled,
   label,
   options,
   propValue,
@@ -45,6 +47,7 @@ export default ({
           input={<OutlinedInput label="Tag" />}
           renderValue={(selected) => selected.join(',')}
           MenuProps={MenuProps}
+          disabled={disabled}
         >
           {options.map((option, index) => (
             <MenuItem key={index} value={option}>
