@@ -30,5 +30,5 @@ export interface MatrixFeatureProperties {
   valeur: number;
   unite: string;
   unite_libel?: string | null;
-  pop_reference: string | null;
+  pop_reference: number | null;
 }

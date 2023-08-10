@@ -14,12 +14,17 @@ import SelectWithBoxes from '../../components/SelectWithBoxes/SelectWithBoxes';
 import SliderRange from '../../components/SliderRange/SliderRange';
 import RadioGroupUnit from '../../components/RadioGroupUnit/RadioGroupUnit';
 
+import TableTabulator from '../../components/TableTabulator/TableTabulator';
+
 import './TechnicalSheet.css';
 
 export default () => {
   const { guid } = useParams<{ guid: string }>();
 
   const [matrice, setMatrice] = useState<MatrixFromIndicator | null>(null);
+  const [filteredMatrix, setFilteredMatrix] = useState<MatrixFeatures[] | null>(
+    null
+  );
   const [territoriesSelected, setTerritoriesSelected] = useState<string[]>([]);
   const [territoriesInput, setInputTerritories] = useState<string>('');
 
@@ -79,6 +84,10 @@ export default () => {
       (value: string[]) => value[0]
     );
   }, [matrice]);
+
+  useEffect(() => {
+    computedTableData();
+  }, [territoriesSelected, axisSelected, yearRange, unitSelected]);
 
   const groupedTerritories = [
     //We want unique territory value from the API
@@ -227,6 +236,36 @@ export default () => {
     setUnitSelected(newValue);
     updateURL('unit', newValue);
   };
+  const computedTableData = () => {
+    const features = matrice?.features;
+    if (!features) {
+      return;
+    }
+    let data: MatrixFeatures[] = [...features];
+
+    if (!!territoriesSelected) {
+      const idTerritories = fetchTerritoriesIdsFromMatrix(territoriesSelected);
+      data = features?.filter((feature: MatrixFeatures) =>
+        idTerritories.includes(feature.properties.id_territoire)
+      );
+    }
+
+    if (!!axisSelected.length) {
+      data = data.filter((feature: MatrixFeatures) => {
+        return axisSelected.includes(feature.properties.valeur_axe);
+      });
+    }
+
+    if (initialMinYear !== 0 && initialMaxYear !== 0) {
+      data = data.filter(
+        (feature: MatrixFeatures) =>
+          feature.properties.annee >= yearRange[0] &&
+          feature.properties.annee <= yearRange[1]
+      );
+    }
+    setFilteredMatrix(data);
+  };
+
   return (
     <>
       {matrice && (
@@ -266,6 +305,13 @@ export default () => {
               units={units}
               selectedValue={unitSelected}
               setter={handleUnitRadio}
+            />
+          </div>
+          <div className="technical-sheet--table">
+            <TableTabulator
+              minMaxYearRange={minMaxYearRange}
+              filteredData={filteredMatrix}
+              unitSelected={unitSelected}
             />
           </div>
         </>
