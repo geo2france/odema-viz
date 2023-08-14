@@ -16,7 +16,11 @@ export default ({ minMaxYearRange, filteredData, unitSelected }: Props) => {
 
     if (minMaxYearRange[0] !== 0 && minMaxYearRange[1] !== 0) {
       for (let year = minMaxYearRange[0]; year <= minMaxYearRange[1]; year++) {
-        flattedColumns.push({ title: String(year), field: String(year) });
+        flattedColumns.push({
+          title: String(year),
+          field: String(year),
+          headerSort: false,
+        });
       }
     }
 

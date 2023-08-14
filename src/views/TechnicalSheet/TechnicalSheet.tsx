@@ -317,14 +317,12 @@ export default () => {
             />
           </div>
           <div className="technical-sheet--table">
-            {isTableDisplayed ? (
+            {isTableDisplayed && (
               <TableTabulator
                 minMaxYearRange={minMaxYearRange}
                 filteredData={filteredMatrix}
                 unitSelected={unitSelected}
               />
-            ) : (
-              'Veuillez sélectionner un jeu de données'
             )}
           </div>
         </>
