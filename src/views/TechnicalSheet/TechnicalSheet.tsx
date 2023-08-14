@@ -269,6 +269,11 @@ export default () => {
     setFilteredMatrix(data);
   };
 
+  const isTableDisplayed =
+    territoriesSelected.length > 0 &&
+    (hasAxisNoValuesInHisSelector ||
+      (!hasAxisNoValuesInHisSelector && axisSelected.length > 0));
+
   return (
     <>
       {matrice && (
@@ -312,11 +317,15 @@ export default () => {
             />
           </div>
           <div className="technical-sheet--table">
-            <TableTabulator
-              minMaxYearRange={minMaxYearRange}
-              filteredData={filteredMatrix}
-              unitSelected={unitSelected}
-            />
+            {isTableDisplayed ? (
+              <TableTabulator
+                minMaxYearRange={minMaxYearRange}
+                filteredData={filteredMatrix}
+                unitSelected={unitSelected}
+              />
+            ) : (
+              'Veuillez sélectionner un jeu de données'
+            )}
           </div>
         </>
       )}
