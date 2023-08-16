@@ -86,7 +86,7 @@ export default () => {
   }, [matrice]);
 
   useEffect(() => {
-    computedTableData();
+    computedDataFromFilters();
   }, [territoriesSelected, axisSelected, yearRange, unitSelected]);
 
   const groupedTerritories = [
@@ -239,7 +239,7 @@ export default () => {
     setUnitSelected(newValue);
     updateURL('unit', newValue);
   };
-  const computedTableData = () => {
+  const computedDataFromFilters = () => {
     const features = matrice?.features;
     if (!features) {
       return;
@@ -267,6 +267,58 @@ export default () => {
       );
     }
     setFilteredMatrix(data);
+  };
+
+  const calcSummedByTerritory = (
+    summedByTerritory: any,
+    territory: string,
+    annee: number,
+    value: number,
+    populationRef: number | null,
+    perInhabitants: boolean
+  ) => {
+    if (!summedByTerritory[territory][annee]) {
+      summedByTerritory[territory][annee] = perInhabitants
+        ? populationRef === null
+          ? null
+          : value / populationRef
+        : value;
+    } else {
+      summedByTerritory[territory][annee] =
+        summedByTerritory[territory][annee] +
+        (perInhabitants
+          ? populationRef === null
+            ? null
+            : value / populationRef
+          : value);
+    }
+  };
+  const formatTerritoriesWithYearStatistics = () => {
+    let summedByTerritory: any = {};
+
+    filteredMatrix?.forEach((feature: MatrixFeatures) => {
+      const territory = feature.properties.nom_territoire;
+      const annee = feature.properties.annee;
+      const value = feature.properties.valeur;
+      const populationRef = feature.properties.pop_reference;
+      const perInhabitants =
+        unitSelected === `${feature.properties.unite}/habitant`;
+
+      if (!summedByTerritory[territory]) {
+        summedByTerritory = { ...summedByTerritory, [territory]: {} };
+      }
+
+      //The following calc is taking care of the unit selected and if population ref has a value
+      calcSummedByTerritory(
+        summedByTerritory,
+        territory,
+        annee,
+        value,
+        populationRef,
+        perInhabitants
+      );
+    });
+    return summedByTerritory;
   };
 
   const isTableDisplayed =
@@ -320,7 +372,7 @@ export default () => {
             {isTableDisplayed && (
               <TableTabulator
                 minMaxYearRange={minMaxYearRange}
-                filteredData={filteredMatrix}
+                territoriesWithYearStatistics={formatTerritoriesWithYearStatistics()}
                 unitSelected={unitSelected}
               />
             )}

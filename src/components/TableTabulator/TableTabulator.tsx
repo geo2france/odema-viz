@@ -2,15 +2,15 @@ import { ReactTabulator } from 'react-tabulator';
 import 'react-tabulator/lib/styles.css';
 import 'react-tabulator/css/tabulator_bootstrap4.min.css';
 
-import { MatrixFeatures } from '../../models/matrice.types';
+import { convertZerosToNullFromObject } from '../../helpers/formatters.helper';
 
 type Props = {
   minMaxYearRange: number[];
-  filteredData: any;
+  territoriesWithYearStatistics: any;
   unitSelected: string;
 };
 
-export default ({ minMaxYearRange, filteredData, unitSelected }: Props) => {
+export default ({ minMaxYearRange, territoriesWithYearStatistics }: Props) => {
   const formattedColumns = () => {
     let flattedColumns = [];
 
@@ -31,31 +31,6 @@ export default ({ minMaxYearRange, filteredData, unitSelected }: Props) => {
     return columns;
   };
 
-  const calcSummedByTerritory = (
-    summedByTerritory: any,
-    territory: string,
-    annee: number,
-    value: number,
-    populationRef: number | null,
-    perInhabitants: boolean
-  ) => {
-    if (!summedByTerritory[territory][annee]) {
-      summedByTerritory[territory][annee] = perInhabitants
-        ? populationRef === null
-          ? null
-          : value / populationRef
-        : value;
-    } else {
-      summedByTerritory[territory][annee] =
-        summedByTerritory[territory][annee] +
-        (perInhabitants
-          ? populationRef === null
-            ? null
-            : value / populationRef
-          : value);
-    }
-  };
-
   const createSumOfTerritoriesValuesPerYear = (summedByTerritory: any) => {
     let sumByYear: any = {};
 
@@ -73,7 +48,8 @@ export default ({ minMaxYearRange, filteredData, unitSelected }: Props) => {
       );
     });
 
-    return sumByYear;
+    //We don't want any value displayed when it's null
+    return convertZerosToNullFromObject(sumByYear);
   };
 
   const createAverageOfTerritoriesValuesPerYear = (
@@ -103,8 +79,7 @@ export default ({ minMaxYearRange, filteredData, unitSelected }: Props) => {
       finalAverage[yearCoefficient] =
         sumByYear[yearCoefficient] / coefficientsPeryear[yearCoefficient];
     });
-
-    return finalAverage;
+    return convertZerosToNullFromObject(finalAverage);
   };
 
   const roundValues = (summedByTerritory: any) => {
@@ -121,54 +96,32 @@ export default ({ minMaxYearRange, filteredData, unitSelected }: Props) => {
 
   //exemple with Coût du SPGD par habitant
   const computeDataWithUnitForTable = () => {
-    let summedByTerritory: any = {};
-
-    filteredData?.forEach((feature: MatrixFeatures) => {
-      const territory = feature.properties.nom_territoire;
-      const annee = feature.properties.annee;
-      const value = feature.properties.valeur;
-      const populationRef = feature.properties.pop_reference;
-      const perInhabitants =
-        unitSelected === `${feature.properties.unite}/habitant`;
-
-      if (!summedByTerritory[territory]) {
-        summedByTerritory = { ...summedByTerritory, [territory]: {} };
-      }
-
-      //The following calc is taking care of the unit selected and if population ref has a value
-      calcSummedByTerritory(
-        summedByTerritory,
-        territory,
-        annee,
-        value,
-        populationRef,
-        perInhabitants
-      );
-    });
-
     const sumByYear = {
       territory: 'Somme totale par année',
-      ...createSumOfTerritoriesValuesPerYear(summedByTerritory),
+      ...createSumOfTerritoriesValuesPerYear(territoriesWithYearStatistics),
     };
     const averageByYear = {
       territory: 'Moyenne par année',
-      ...createAverageOfTerritoriesValuesPerYear(summedByTerritory, sumByYear),
+      ...createAverageOfTerritoriesValuesPerYear(
+        territoriesWithYearStatistics,
+        sumByYear
+      ),
     };
 
-    summedByTerritory = {
-      ...summedByTerritory,
+    const fullStatistics = {
+      ...territoriesWithYearStatistics,
       sumByYear,
       averageByYear,
     };
 
     //We round values to two decimal
-    roundValues(summedByTerritory);
+    roundValues(fullStatistics);
 
-    const mappedValues = Object.keys(summedByTerritory).map(
+    const mappedValues = Object.keys(fullStatistics).map(
       (TerritoryName: string) => {
         return {
           territory: TerritoryName,
-          ...summedByTerritory[TerritoryName],
+          ...fullStatistics[TerritoryName],
         };
       }
     );
