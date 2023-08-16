@@ -2,6 +2,8 @@ import { ReactTabulator } from 'react-tabulator';
 import 'react-tabulator/lib/styles.css';
 import 'react-tabulator/css/tabulator_bootstrap4.min.css';
 
+import { convertZerosToNullFromObject } from '../../helpers/formatters.helper';
+
 type Props = {
   minMaxYearRange: number[];
   territoriesWithYearStatistics: any;
@@ -46,7 +48,8 @@ export default ({ minMaxYearRange, territoriesWithYearStatistics }: Props) => {
       );
     });
 
-    return sumByYear;
+    //We don't want any value displayed when it's null
+    return convertZerosToNullFromObject(sumByYear);
   };
 
   const createAverageOfTerritoriesValuesPerYear = (
@@ -76,8 +79,7 @@ export default ({ minMaxYearRange, territoriesWithYearStatistics }: Props) => {
       finalAverage[yearCoefficient] =
         sumByYear[yearCoefficient] / coefficientsPeryear[yearCoefficient];
     });
-
-    return finalAverage;
+    return convertZerosToNullFromObject(finalAverage);
   };
 
   const roundValues = (summedByTerritory: any) => {
