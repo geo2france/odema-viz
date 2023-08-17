@@ -392,6 +392,12 @@ export default () => {
                   filteredData={formatTerritoriesWithYearStatistics()}
                   type={'bar'}
                 />
+                <StackLineChart
+                  minMaxYearRange={minMaxYearRange}
+                  filteredData={formatTerritoriesWithYearStatistics()}
+                  type={'bar'}
+                  stacked
+                />
               </>
             )}
           </div>
