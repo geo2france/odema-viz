@@ -4,9 +4,15 @@ type Props = {
   minMaxYearRange: number[];
   filteredData: any;
   type: string;
+  stacked?: boolean;
 };
 
-export default ({ minMaxYearRange, filteredData, type }: Props) => {
+export default ({
+  minMaxYearRange,
+  filteredData,
+  type,
+  stacked = false,
+}: Props) => {
   const flatYears = () => {
     let flattedYears = [];
     if (minMaxYearRange[0] !== 0 && minMaxYearRange[1] !== 0) {
@@ -27,6 +33,7 @@ export default ({ minMaxYearRange, filteredData, type }: Props) => {
         type,
         data: [],
         connectNulls: true,
+        stack: stacked ? 'x' : '',
       };
       abscissa.forEach((year: string) => {
         if (!filteredData[territory][year]) {
