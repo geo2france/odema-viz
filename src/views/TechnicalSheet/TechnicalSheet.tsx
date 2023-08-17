@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, SyntheticEvent } from 'react';
 import { useParams } from 'react-router-dom';
 import { Header } from '../../components/Header/Header';
 import SelectMultiple from '../../components/SelectMultiple/SelectMultiple';
@@ -19,6 +19,8 @@ import TableTabulator from '../../components/TableTabulator/TableTabulator';
 import StackLineChart from '../../components/StackLineChart/StackLineChart';
 
 import './TechnicalSheet.css';
+import Tabs from '../../components/Tabs/Tabs';
+import TabPanels from '../../components/TabPanels/TabPanels';
 
 export default () => {
   const { guid } = useParams<{ guid: string }>();
@@ -37,6 +39,8 @@ export default () => {
   const [minMaxYearRange, setMinMaxYearRange] = useState<number[]>([0, 0]);
 
   const [unitSelected, setUnitSelected] = useState<string>('');
+
+  const [indexTab, setIndexTab] = useState<number>(0);
 
   useEffect(() => {
     const fetchMatrixIndicator = async () => {
@@ -246,6 +250,10 @@ export default () => {
     setUnitSelected(newValue);
     updateURL('unit', newValue);
   };
+
+  const handleIndexTab = (_event: SyntheticEvent, newValue: number) => {
+    setIndexTab(newValue);
+  };
   const computedDataFromFilters = () => {
     const features = matrice?.features;
     if (!features) {
@@ -327,7 +335,6 @@ export default () => {
     });
     return summedByTerritory;
   };
-
   return (
     <>
       {matrice && (
@@ -382,22 +389,29 @@ export default () => {
           <div className="technichal-sheet--graphs">
             {areResultsDisplayed && (
               <>
-                <StackLineChart
-                  minMaxYearRange={minMaxYearRange}
-                  filteredData={formatTerritoriesWithYearStatistics()}
-                  type={'line'}
+                <Tabs
+                  labels={['Courbes', 'Fragments']}
+                  value={indexTab}
+                  handler={handleIndexTab}
                 />
-                <StackLineChart
-                  minMaxYearRange={minMaxYearRange}
-                  filteredData={formatTerritoriesWithYearStatistics()}
-                  type={'bar'}
-                />
-                <StackLineChart
-                  minMaxYearRange={minMaxYearRange}
-                  filteredData={formatTerritoriesWithYearStatistics()}
-                  type={'bar'}
-                  stacked
-                />
+                <TabPanels index={0} value={indexTab}>
+                  <StackLineChart
+                    minMaxYearRange={minMaxYearRange}
+                    filteredData={formatTerritoriesWithYearStatistics()}
+                    type={'line'}
+                  />
+                  <StackLineChart
+                    minMaxYearRange={minMaxYearRange}
+                    filteredData={formatTerritoriesWithYearStatistics()}
+                    type={'bar'}
+                  />
+                  <StackLineChart
+                    minMaxYearRange={minMaxYearRange}
+                    filteredData={formatTerritoriesWithYearStatistics()}
+                    type={'bar'}
+                    stacked
+                  />
+                </TabPanels>
               </>
             )}
           </div>
