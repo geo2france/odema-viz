@@ -41,13 +41,27 @@ export default ({ minMaxYearRange, filteredData }: Props) => {
     return territoryValues;
   };
 
+  const handleLegend = () => {
+    const flatData = flatDataPerTerritoriesPerYears();
+    let legend: string[] = [];
+    flatData.forEach((territoryData: any) => {
+      const hasValues =
+        territoryData.data.filter((dataSeries: any[]) => dataSeries !== null)
+          .length > 0;
+      if (hasValues) {
+        legend = [...legend, territoryData.name];
+      }
+    });
+    return legend;
+  };
+
   const option = {
     xAxis: {
       data: [...flatYears()],
     },
     yAxis: {},
     legend: {
-      data: Object.keys(filteredData),
+      data: handleLegend(),
       bottom: 0,
     },
     series: [...flatDataPerTerritoriesPerYears()],
