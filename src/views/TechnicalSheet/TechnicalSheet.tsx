@@ -16,6 +16,8 @@ import RadioGroupUnit from '../../components/RadioGroupUnit/RadioGroupUnit';
 
 import TableTabulator from '../../components/TableTabulator/TableTabulator';
 
+import StackLineChart from '../../components/StackLineChart/StackLineChart';
+
 import './TechnicalSheet.css';
 
 export default () => {
@@ -142,6 +144,11 @@ export default () => {
 
   const initialMinYear: number = Math.min(...groupedYears);
   const initialMaxYear: number = Math.max(...groupedYears);
+
+  const areResultsDisplayed =
+    territoriesSelected.length > 0 &&
+    (hasAxisNoValuesInHisSelector ||
+      (!hasAxisNoValuesInHisSelector && axisSelected.length > 0));
 
   const fetchTerritoriesIdsFromMatrix = (territories: string[]) => {
     let ids: string[] = [];
@@ -321,11 +328,6 @@ export default () => {
     return summedByTerritory;
   };
 
-  const isTableDisplayed =
-    territoriesSelected.length > 0 &&
-    (hasAxisNoValuesInHisSelector ||
-      (!hasAxisNoValuesInHisSelector && axisSelected.length > 0));
-
   return (
     <>
       {matrice && (
@@ -369,12 +371,28 @@ export default () => {
             />
           </div>
           <div className="technical-sheet--table">
-            {isTableDisplayed && (
+            {areResultsDisplayed && (
               <TableTabulator
                 minMaxYearRange={minMaxYearRange}
                 territoriesWithYearStatistics={formatTerritoriesWithYearStatistics()}
                 unitSelected={unitSelected}
               />
+            )}
+          </div>
+          <div className="technichal-sheet--graphs">
+            {areResultsDisplayed && (
+              <>
+                <StackLineChart
+                  minMaxYearRange={minMaxYearRange}
+                  filteredData={formatTerritoriesWithYearStatistics()}
+                  type={'line'}
+                />
+                <StackLineChart
+                  minMaxYearRange={minMaxYearRange}
+                  filteredData={formatTerritoriesWithYearStatistics()}
+                  type={'bar'}
+                />
+              </>
             )}
           </div>
         </>
