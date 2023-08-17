@@ -145,7 +145,7 @@ export default () => {
   const initialMinYear: number = Math.min(...groupedYears);
   const initialMaxYear: number = Math.max(...groupedYears);
 
-  const isTableDisplayed =
+  const areResultsDisplayed =
     territoriesSelected.length > 0 &&
     (hasAxisNoValuesInHisSelector ||
       (!hasAxisNoValuesInHisSelector && axisSelected.length > 0));
@@ -371,7 +371,7 @@ export default () => {
             />
           </div>
           <div className="technical-sheet--table">
-            {isTableDisplayed && (
+            {areResultsDisplayed && (
               <TableTabulator
                 minMaxYearRange={minMaxYearRange}
                 territoriesWithYearStatistics={formatTerritoriesWithYearStatistics()}
@@ -380,16 +380,20 @@ export default () => {
             )}
           </div>
           <div className="technichal-sheet--graphs">
-            <StackLineChart
-              minMaxYearRange={minMaxYearRange}
-              filteredData={formatTerritoriesWithYearStatistics()}
-              type={'line'}
-            />
-            <StackLineChart
-              minMaxYearRange={minMaxYearRange}
-              filteredData={formatTerritoriesWithYearStatistics()}
-              type={'bar'}
-            />
+            {areResultsDisplayed && (
+              <>
+                <StackLineChart
+                  minMaxYearRange={minMaxYearRange}
+                  filteredData={formatTerritoriesWithYearStatistics()}
+                  type={'line'}
+                />
+                <StackLineChart
+                  minMaxYearRange={minMaxYearRange}
+                  filteredData={formatTerritoriesWithYearStatistics()}
+                  type={'bar'}
+                />
+              </>
+            )}
           </div>
         </>
       )}
