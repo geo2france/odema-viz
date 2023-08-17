@@ -383,6 +383,12 @@ export default () => {
             <StackLineChart
               minMaxYearRange={minMaxYearRange}
               filteredData={formatTerritoriesWithYearStatistics()}
+              type={'line'}
+            />
+            <StackLineChart
+              minMaxYearRange={minMaxYearRange}
+              filteredData={formatTerritoriesWithYearStatistics()}
+              type={'bar'}
             />
           </div>
         </>

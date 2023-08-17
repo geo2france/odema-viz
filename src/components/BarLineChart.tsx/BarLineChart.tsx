@@ -3,10 +3,9 @@ import ReactEcharts from 'echarts-for-react';
 type Props = {
   minMaxYearRange: number[];
   filteredData: any;
-  type: string;
 };
 
-export default ({ minMaxYearRange, filteredData, type }: Props) => {
+export default ({ minMaxYearRange, filteredData }: Props) => {
   const flatYears = () => {
     let flattedYears = [];
     if (minMaxYearRange[0] !== 0 && minMaxYearRange[1] !== 0) {
@@ -24,7 +23,8 @@ export default ({ minMaxYearRange, filteredData, type }: Props) => {
     Object.keys(filteredData).forEach((territory: string) => {
       let series: any = {
         name: territory,
-        type,
+        type: 'line',
+        stack: 'x',
         data: [],
         connectNulls: true,
       };
