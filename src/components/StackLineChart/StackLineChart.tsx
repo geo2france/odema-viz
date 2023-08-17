@@ -1,0 +1,60 @@
+import ReactEcharts from 'echarts-for-react';
+
+type Props = {
+  minMaxYearRange: number[];
+  filteredData: any;
+};
+
+export default ({ minMaxYearRange, filteredData }: Props) => {
+  const flatYears = () => {
+    let flattedYears = [];
+    if (minMaxYearRange[0] !== 0 && minMaxYearRange[1] !== 0) {
+      for (let year = minMaxYearRange[0]; year <= minMaxYearRange[1]; year++) {
+        flattedYears.push(year.toString());
+      }
+    }
+
+    return flattedYears;
+  };
+
+  const flatDataPerTerritoriesPerYears = () => {
+    const abscissa: string[] = flatYears();
+    let territoryValues: any = [];
+    Object.keys(filteredData).forEach((territory: string) => {
+      let series: any = {
+        name: territory,
+        type: 'line',
+        stack: 'x',
+        data: [],
+        connectNulls: true,
+      };
+      abscissa.forEach((year: string) => {
+        if (!filteredData[territory][year]) {
+          series.data = [...series.data, null];
+        } else {
+          series.data = [...series.data, filteredData[territory][year]];
+        }
+      });
+      territoryValues = [...territoryValues, series];
+    });
+
+    return territoryValues;
+  };
+
+  const option = {
+    xAxis: {
+      data: [...flatYears()],
+    },
+    yAxis: {},
+    legend: {
+      data: Object.keys(filteredData),
+      bottom: 0,
+    },
+    series: [...flatDataPerTerritoriesPerYears()],
+  };
+  return (
+    <>
+      <ReactEcharts option={option} style={{ height: '400px' }} />
+    </>
+  );
+};

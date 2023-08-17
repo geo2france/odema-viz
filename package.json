@@ -17,6 +17,8 @@
     "@types/js-cookie": "^3.0.3",
     "@types/react-router-dom": "^5.3.3",
     "axios": "^1.4.0",
+    "echarts": "^5.4.3",
+    "echarts-for-react": "^3.0.2",
     "js-cookie": "^3.0.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
