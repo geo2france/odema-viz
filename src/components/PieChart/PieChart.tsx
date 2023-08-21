@@ -1,10 +1,12 @@
 import ReactEcharts from 'echarts-for-react';
+import Typography from '@mui/material/Typography';
 
 type Props = {
   filteredData: { [key: string]: number };
+  selectedYear: number;
 };
 
-export default ({ filteredData }: Props) => {
+export default ({ filteredData, selectedYear }: Props) => {
   const pieData = Object.keys(filteredData).map((axis: string) => {
     if (filteredData[axis] > 0) {
       return { name: axis, value: filteredData[axis] };
@@ -27,6 +29,13 @@ export default ({ filteredData }: Props) => {
   return (
     <>
       <ReactEcharts option={option} style={{ height: '400px' }} />
+      <Typography
+        style={{ textAlign: 'center' }}
+        id="range-slider"
+        gutterBottom
+      >
+        Année {selectedYear}
+      </Typography>
     </>
   );
 };

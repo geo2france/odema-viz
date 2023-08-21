@@ -458,7 +458,10 @@ export default () => {
                   />
                 </TabPanels>
                 <TabPanels index={1} value={indexTab}>
-                  <PieChart filteredData={formatDonutGraphData()} />
+                  <PieChart
+                    filteredData={formatDonutGraphData()}
+                    selectedYear={hoveredDonutValue}
+                  />
                 </TabPanels>
               </>
             )}
