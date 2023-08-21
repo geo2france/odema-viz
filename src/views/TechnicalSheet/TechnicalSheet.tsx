@@ -428,7 +428,6 @@ export default () => {
               <TableTabulator
                 minMaxYearRange={minMaxYearRange}
                 territoriesWithYearStatistics={formatTerritoriesWithYearStatistics()}
-                unitSelected={unitSelected}
               />
             )}
           </div>
