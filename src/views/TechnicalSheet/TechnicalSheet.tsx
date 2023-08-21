@@ -21,6 +21,7 @@ import StackLineChart from '../../components/StackLineChart/StackLineChart';
 import './TechnicalSheet.css';
 import Tabs from '../../components/Tabs/Tabs';
 import TabPanels from '../../components/TabPanels/TabPanels';
+import PieChart from '../../components/PieChart/PieChart';
 
 export default () => {
   const { guid } = useParams<{ guid: string }>();
@@ -41,6 +42,8 @@ export default () => {
   const [unitSelected, setUnitSelected] = useState<string>('');
 
   const [indexTab, setIndexTab] = useState<number>(0);
+
+  const [hoveredDonutValue, setHoveredDonutValue] = useState<number>(0);
 
   useEffect(() => {
     const fetchMatrixIndicator = async () => {
@@ -78,6 +81,7 @@ export default () => {
     //Get URL params and cookie for year Range
     setMinMaxYearRange([initialMinYear, initialMaxYear]);
     setYearRange([initialMinYear, initialMaxYear]);
+    setHoveredDonutValue(initialMaxYear);
 
     getQueryParamsFromSelector('yearRange', setYearRange, true, parseYearRange);
 
@@ -284,6 +288,48 @@ export default () => {
     setFilteredMatrix(data);
   };
 
+  const computedDataForGraphDonut = () => {
+    const features = matrice?.features ? [...matrice.features] : [];
+    if (
+      features.length === 0 ||
+      territoriesSelected.length === 0 ||
+      hasAxisNoValuesInHisSelector ||
+      axisSelected.length === 0 ||
+      initialMaxYear === 0
+    ) {
+      return [];
+    }
+
+    let data: MatrixFeatures[] = [...features];
+
+    const idTerritories = fetchTerritoriesIdsFromMatrix(territoriesSelected);
+
+    data = data.filter((feature: MatrixFeatures) => {
+      return (
+        idTerritories.includes(feature.properties.id_territoire) &&
+        axisSelected.includes(feature.properties.valeur_axe) &&
+        feature.properties.annee === hoveredDonutValue
+      );
+    });
+    return data;
+  };
+
+  const formatDonutGraphData = () => {
+    let donutData = [...computedDataForGraphDonut()];
+    let formattedDonutData: any = {};
+
+    axisSelected.forEach((axis: string) => {
+      formattedDonutData = { ...formattedDonutData, [axis]: 0 };
+    });
+
+    donutData.forEach((feature: MatrixFeatures) => {
+      formattedDonutData[feature.properties.valeur_axe] =
+        formattedDonutData[feature.properties.valeur_axe] +
+        feature.properties.valeur;
+    });
+    return formattedDonutData;
+  };
+
   const calcSummedByTerritory = (
     summedByTerritory: any,
     territory: string,
@@ -411,6 +457,9 @@ export default () => {
                     type={'bar'}
                     stacked
                   />
+                </TabPanels>
+                <TabPanels index={1} value={indexTab}>
+                  <PieChart filteredData={formatDonutGraphData()} />
                 </TabPanels>
               </>
             )}
