@@ -24,7 +24,7 @@ export default ({ yearRange, territoriesWithYearStatistics }: Props) => {
     }
 
     const columns = [
-      { title: 'Territories', field: 'territory' },
+      { title: 'Territoires', field: 'territory' },
       ...flattedColumns,
     ];
     return columns;
