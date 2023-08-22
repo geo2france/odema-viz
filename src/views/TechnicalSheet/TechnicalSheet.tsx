@@ -435,7 +435,13 @@ export default () => {
             {areResultsDisplayed && (
               <>
                 <Tabs
-                  labels={['Courbes', 'Fragments']}
+                  tabLabels={[
+                    { name: 'Courbes', disabled: false },
+                    {
+                      name: 'Fragments',
+                      disabled: hasAxisNoValuesInHisSelector,
+                    },
+                  ]}
                   value={indexTab}
                   handler={handleIndexTab}
                 />
