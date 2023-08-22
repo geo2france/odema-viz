@@ -7,7 +7,6 @@ import { convertZerosToNullFromObject } from '../../helpers/formatters.helper';
 type Props = {
   minMaxYearRange: number[];
   territoriesWithYearStatistics: any;
-  unitSelected: string;
 };
 
 export default ({ minMaxYearRange, territoriesWithYearStatistics }: Props) => {
