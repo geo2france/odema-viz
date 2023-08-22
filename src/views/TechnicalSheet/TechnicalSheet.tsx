@@ -86,7 +86,7 @@ export default () => {
     getQueryParamsFromSelector('yearRange', setYearRange, true, parseYearRange);
 
     //Get URL params and cookie for Unit
-    setUnitSelected(pickedUnits ?? 'Unité');
+    setUnitSelected(pickedUnits ?? 'unité');
     getQueryParamsFromSelector(
       'unit',
       setUnitSelected,
