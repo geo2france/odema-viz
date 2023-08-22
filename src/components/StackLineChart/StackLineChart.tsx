@@ -1,22 +1,17 @@
 import ReactEcharts from 'echarts-for-react';
 
 type Props = {
-  minMaxYearRange: number[];
+  yearRange: number[];
   filteredData: any;
   type: string;
   stacked?: boolean;
 };
 
-export default ({
-  minMaxYearRange,
-  filteredData,
-  type,
-  stacked = false,
-}: Props) => {
+export default ({ yearRange, filteredData, type, stacked = false }: Props) => {
   const flatYears = () => {
     let flattedYears = [];
-    if (minMaxYearRange[0] !== 0 && minMaxYearRange[1] !== 0) {
-      for (let year = minMaxYearRange[0]; year <= minMaxYearRange[1]; year++) {
+    if (yearRange[0] !== 0 && yearRange[1] !== 0) {
+      for (let year = yearRange[0]; year <= yearRange[1]; year++) {
         flattedYears.push(year.toString());
       }
     }
@@ -25,7 +20,7 @@ export default ({
   };
 
   const flatDataPerTerritoriesPerYears = () => {
-    const abscissa: string[] = flatYears();
+    const xCoordinates: string[] = flatYears();
     let territoryValues: any = [];
     Object.keys(filteredData).forEach((territory: string) => {
       let series: any = {
@@ -35,7 +30,7 @@ export default ({
         connectNulls: true,
         stack: stacked ? 'x' : '',
       };
-      abscissa.forEach((year: string) => {
+      xCoordinates.forEach((year: string) => {
         if (!filteredData[territory][year]) {
           series.data = [...series.data, null];
         } else {

@@ -426,7 +426,7 @@ export default () => {
           <div className="technical-sheet--table">
             {areResultsDisplayed && (
               <TableTabulator
-                minMaxYearRange={minMaxYearRange}
+                yearRange={yearRange}
                 territoriesWithYearStatistics={formatTerritoriesWithYearStatistics()}
               />
             )}
@@ -441,17 +441,17 @@ export default () => {
                 />
                 <TabPanels index={0} value={indexTab}>
                   <StackLineChart
-                    minMaxYearRange={minMaxYearRange}
+                    yearRange={yearRange}
                     filteredData={formatTerritoriesWithYearStatistics()}
                     type={'line'}
                   />
                   <StackLineChart
-                    minMaxYearRange={minMaxYearRange}
+                    yearRange={yearRange}
                     filteredData={formatTerritoriesWithYearStatistics()}
                     type={'bar'}
                   />
                   <StackLineChart
-                    minMaxYearRange={minMaxYearRange}
+                    yearRange={yearRange}
                     filteredData={formatTerritoriesWithYearStatistics()}
                     type={'bar'}
                     stacked

@@ -5,16 +5,16 @@ import 'react-tabulator/css/tabulator_bootstrap4.min.css';
 import { convertZerosToNullFromObject } from '../../helpers/formatters.helper';
 
 type Props = {
-  minMaxYearRange: number[];
+  yearRange: number[];
   territoriesWithYearStatistics: any;
 };
 
-export default ({ minMaxYearRange, territoriesWithYearStatistics }: Props) => {
+export default ({ yearRange, territoriesWithYearStatistics }: Props) => {
   const formattedColumns = () => {
     let flattedColumns = [];
 
-    if (minMaxYearRange[0] !== 0 && minMaxYearRange[1] !== 0) {
-      for (let year = minMaxYearRange[0]; year <= minMaxYearRange[1]; year++) {
+    if (yearRange[0] !== 0 && yearRange[1] !== 0) {
+      for (let year = yearRange[0]; year <= yearRange[1]; year++) {
         flattedColumns.push({
           title: String(year),
           field: String(year),
@@ -24,7 +24,7 @@ export default ({ minMaxYearRange, territoriesWithYearStatistics }: Props) => {
     }
 
     const columns = [
-      { title: 'Territories', field: 'territory' },
+      { title: 'Territoires', field: 'territory' },
       ...flattedColumns,
     ];
     return columns;
