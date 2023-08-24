@@ -158,6 +158,18 @@ export default () => {
     (hasAxisNoValuesInHisSelector ||
       (!hasAxisNoValuesInHisSelector && axisSelected.length > 0));
 
+  const checkIsTerritoryEPCI = (territoryName: string): boolean => {
+    const idTerritory: string | null = fetchTerritoriesIdsFromMatrix([
+      territoryName,
+    ])[0];
+
+    if (!idTerritory) {
+      return false;
+    }
+
+    return !idTerritory.includes('DEP') && !idTerritory.includes('REG');
+  };
+
   const fetchTerritoriesIdsFromMatrix = (territories: string[]) => {
     let ids: string[] = [];
     territories.forEach((territoryName: string) => {
@@ -428,6 +440,7 @@ export default () => {
               <TableTabulator
                 yearRange={yearRange}
                 territoriesWithYearStatistics={formatTerritoriesWithYearStatistics()}
+                checkIsTerritoryEPCI={checkIsTerritoryEPCI}
               />
             )}
           </div>
