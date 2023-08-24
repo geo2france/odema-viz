@@ -8,12 +8,14 @@ type Props = {
   yearRange: number[];
   territoriesWithYearStatistics: any;
   checkIsTerritoryEPCI: (territories: string) => boolean;
+  checkIsAtLeastOneEPCISelected: () => boolean;
 };
 
 export default ({
   yearRange,
   territoriesWithYearStatistics,
   checkIsTerritoryEPCI,
+  checkIsAtLeastOneEPCISelected,
 }: Props) => {
   const formattedColumns = () => {
     let flattedColumns = [];
@@ -101,23 +103,29 @@ export default ({
 
   //exemple with Coût du SPGD par habitant
   const computeDataWithUnitForTable = () => {
-    const sumByYear = {
-      territory: 'Somme totale par année (EPCI)',
-      ...createSumOfTerritoriesValuesPerYear(territoriesWithYearStatistics),
-    };
-    const averageByYear = {
-      territory: 'Moyenne par année (par EPCI)',
-      ...createAverageOfTerritoriesValuesPerYear(
-        territoriesWithYearStatistics,
-        sumByYear
-      ),
+    let fullStatistics = {
+      ...territoriesWithYearStatistics,
     };
 
-    const fullStatistics = {
-      ...territoriesWithYearStatistics,
-      sumByYear,
-      averageByYear,
-    };
+    if (checkIsAtLeastOneEPCISelected()) {
+      const sumByYear = {
+        territory: 'Somme totale par année (EPCI)',
+        ...createSumOfTerritoriesValuesPerYear(territoriesWithYearStatistics),
+      };
+      const averageByYear = {
+        territory: 'Moyenne par année (par EPCI)',
+        ...createAverageOfTerritoriesValuesPerYear(
+          territoriesWithYearStatistics,
+          sumByYear
+        ),
+      };
+
+      fullStatistics = {
+        ...fullStatistics,
+        sumByYear,
+        averageByYear,
+      };
+    }
 
     //We round values to two decimal
     roundValues(fullStatistics);
