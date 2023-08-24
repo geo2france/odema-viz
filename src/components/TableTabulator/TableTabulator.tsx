@@ -7,9 +7,14 @@ import { convertZerosToNullFromObject } from '../../helpers/formatters.helper';
 type Props = {
   yearRange: number[];
   territoriesWithYearStatistics: any;
+  checkIsTerritoryEPCI: (territories: string) => boolean;
 };
 
-export default ({ yearRange, territoriesWithYearStatistics }: Props) => {
+export default ({
+  yearRange,
+  territoriesWithYearStatistics,
+  checkIsTerritoryEPCI,
+}: Props) => {
   const formattedColumns = () => {
     let flattedColumns = [];
 
@@ -32,19 +37,20 @@ export default ({ yearRange, territoriesWithYearStatistics }: Props) => {
 
   const createSumOfTerritoriesValuesPerYear = (summedByTerritory: any) => {
     let sumByYear: any = {};
-
     Object.keys(summedByTerritory).forEach((territoryName: string) => {
-      Object.keys(summedByTerritory[territoryName]).forEach(
-        (yearValue: string) => {
-          if (!sumByYear.hasOwnProperty(yearValue)) {
-            sumByYear = { ...sumByYear, [yearValue]: 0 };
-          }
+      if (checkIsTerritoryEPCI(territoryName)) {
+        Object.keys(summedByTerritory[territoryName]).forEach(
+          (yearValue: string) => {
+            if (!sumByYear.hasOwnProperty(yearValue)) {
+              sumByYear = { ...sumByYear, [yearValue]: 0 };
+            }
 
-          sumByYear[yearValue] =
-            sumByYear[yearValue] +
-            (summedByTerritory[territoryName][yearValue] ?? 0);
-        }
-      );
+            sumByYear[yearValue] =
+              sumByYear[yearValue] +
+              (summedByTerritory[territoryName][yearValue] ?? 0);
+          }
+        );
+      }
     });
 
     //We don't want any value displayed when it's null
@@ -96,11 +102,11 @@ export default ({ yearRange, territoriesWithYearStatistics }: Props) => {
   //exemple with Coût du SPGD par habitant
   const computeDataWithUnitForTable = () => {
     const sumByYear = {
-      territory: 'Somme totale par année',
+      territory: 'Somme totale par année (EPCI)',
       ...createSumOfTerritoriesValuesPerYear(territoriesWithYearStatistics),
     };
     const averageByYear = {
-      territory: 'Moyenne par année',
+      territory: 'Moyenne par année (par EPCI)',
       ...createAverageOfTerritoriesValuesPerYear(
         territoriesWithYearStatistics,
         sumByYear
