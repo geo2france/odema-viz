@@ -14,7 +14,11 @@ export function parseYearRange(yearRangeAsString: string[]) {
 export function convertZerosToNullFromObject(object: any): any {
   const initialStateOfObject = { ...object };
   Object.keys(initialStateOfObject).map((key: string) => {
-    if (initialStateOfObject[key] === 0 || initialStateOfObject[key] === null) {
+    if (
+      initialStateOfObject[key] === 0 ||
+      initialStateOfObject[key] === null ||
+      isNaN(initialStateOfObject[key])
+    ) {
       return (initialStateOfObject[key] = null);
     }
   });
