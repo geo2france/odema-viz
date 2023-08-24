@@ -146,6 +146,20 @@ export default () => {
     ),
   ][0];
 
+  const checkIsAtLeastOneEPCISelected = () => {
+    const idsTerritories = [
+      ...new Set(
+        filteredMatrix?.map(
+          (feature: MatrixFeatures) =>
+            !feature.properties.id_territoire.includes('DEP') &&
+            !feature.properties.id_territoire.includes('REG')
+        )
+      ),
+    ];
+
+    return idsTerritories.includes(true);
+  };
+
   const units = !!pickedUnits
     ? [pickedUnits, `${pickedUnits}/habitant`]
     : ['Unité', 'Unité/habitant'];
@@ -393,6 +407,7 @@ export default () => {
     });
     return summedByTerritory;
   };
+
   return (
     <>
       {matrice && (
@@ -441,6 +456,7 @@ export default () => {
                 yearRange={yearRange}
                 territoriesWithYearStatistics={formatTerritoriesWithYearStatistics()}
                 checkIsTerritoryEPCI={checkIsTerritoryEPCI}
+                checkIsAtLeastOneEPCISelected={checkIsAtLeastOneEPCISelected}
               />
             )}
           </div>
