@@ -228,7 +228,7 @@ export default () => {
 
   const handleGetCookieTerritories = () => {
     const territories = getCookie('territories')?.split(',');
-    if (territories) {
+    if (territories && territories[0].length) {
       setTerritoriesSelected(fetchTerritoriesNameFromMatrix([...territories]));
       updateURL('territories', territories);
     }
