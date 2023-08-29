@@ -63,13 +63,13 @@ export default () => {
 
   useEffect(() => {
     //Get URL params and cookie for territories
+    handleGetCookieTerritories();
     getQueryParamsFromSelector(
       'territories',
       setTerritoriesSelected,
       true,
       fetchTerritoriesNameFromMatrix
     );
-    handleGetCookieTerritories();
 
     //Get URL params and cookie for axisTypes
     getQueryParamsFromSelector('axis', setSelectedAxis);
