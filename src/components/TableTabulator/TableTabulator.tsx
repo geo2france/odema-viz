@@ -67,15 +67,17 @@ export default ({
     let finalAverage: any = {};
 
     Object.keys(summedByTerritory).map((territoryName: string) => {
-      Object.keys(summedByTerritory[territoryName]).map((year: string) => {
-        if (!coefficientsPeryear.hasOwnProperty(year)) {
-          coefficientsPeryear = { ...coefficientsPeryear, [year]: 0 };
-        }
+      if (checkIsTerritoryEPCI(territoryName)) {
+        Object.keys(summedByTerritory[territoryName]).map((year: string) => {
+          if (!coefficientsPeryear.hasOwnProperty(year)) {
+            coefficientsPeryear = { ...coefficientsPeryear, [year]: 0 };
+          }
 
-        if (summedByTerritory[territoryName].hasOwnProperty(year)) {
-          coefficientsPeryear[year] = coefficientsPeryear[year] + 1;
-        }
-      });
+          if (summedByTerritory[territoryName].hasOwnProperty(year)) {
+            coefficientsPeryear[year] = coefficientsPeryear[year] + 1;
+          }
+        });
+      }
     });
 
     Object.keys(coefficientsPeryear).map((yearCoefficient: string) => {
