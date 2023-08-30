@@ -102,6 +102,13 @@ export default () => {
   }, [matrice]);
 
   useEffect(() => {
+    setCookie(
+      'territories',
+      fetchTerritoriesIdsFromMatrix(territoriesSelected)
+    );
+  }, [territoriesSelected]);
+
+  useEffect(() => {
     computedDataFromFilters();
   }, [territoriesSelected, axisSelected, yearRange, unitSelected]);
 
@@ -242,7 +249,6 @@ export default () => {
 
   const handleTerritoriesSelected = (values: string[]) => {
     setTerritoriesSelected(values);
-    setCookie('territories', fetchTerritoriesIdsFromMatrix(values));
 
     const ids = fetchTerritoriesIdsFromMatrix(values);
 
