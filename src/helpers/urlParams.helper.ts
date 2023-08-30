@@ -14,3 +14,8 @@ export function getQueryParamsFromSelector(
     setter(serializedValues);
   }
 }
+
+export function hasParametersOnUrl(selector: string) {
+  const queryParams = new URLSearchParams(window.location.search);
+  return !!queryParams.get(selector)?.split(';');
+}

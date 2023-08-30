@@ -8,7 +8,10 @@ import {
   MatrixFromIndicator,
 } from '../../models/matrice.types';
 import { getCookie, setCookie } from '../../helpers/cookie.helper';
-import { getQueryParamsFromSelector } from '../../helpers/urlParams.helper';
+import {
+  getQueryParamsFromSelector,
+  hasParametersOnUrl,
+} from '../../helpers/urlParams.helper';
 import { parseYearRange } from '../../helpers/formatters.helper';
 import SelectWithBoxes from '../../components/SelectWithBoxes/SelectWithBoxes';
 import SliderRange from '../../components/SliderRange/SliderRange';
@@ -63,7 +66,6 @@ export default () => {
 
   useEffect(() => {
     //Get URL params and cookie for territories
-    handleGetCookieTerritories();
     getQueryParamsFromSelector(
       'territories',
       setTerritoriesSelected,
@@ -71,11 +73,15 @@ export default () => {
       fetchTerritoriesNameFromMatrix
     );
 
+    if (!hasParametersOnUrl('territories')) {
+      handleGetCookieTerritories();
+    }
+
     //Get URL params and cookie for axisTypes
     getQueryParamsFromSelector('axis', setSelectedAxis);
 
-    if (axisTypes?.length === axisSelected.length && axisSelected.length > 0) {
-      setAxisSelectedAll(true);
+    if (!hasParametersOnUrl('axis') && axisTypes?.length) {
+      setSelectedAxis([...axisTypes]);
     }
 
     //Get URL params and cookie for year Range
@@ -94,6 +100,25 @@ export default () => {
       (value: string[]) => value[0]
     );
   }, [matrice]);
+
+  useEffect(() => {
+    setCookie(
+      'territories',
+      fetchTerritoriesIdsFromMatrix(territoriesSelected)
+    );
+  }, [territoriesSelected]);
+
+  useEffect(() => {
+    if (axisTypes?.length && axisTypes[0] !== null) {
+      updateURL('axis', [...axisSelected]);
+      if (
+        axisTypes?.length === axisSelected.length &&
+        axisSelected.length > 0
+      ) {
+        setAxisSelectedAll(true);
+      }
+    }
+  }, [axisSelected]);
 
   useEffect(() => {
     computedDataFromFilters();
@@ -236,7 +261,6 @@ export default () => {
 
   const handleTerritoriesSelected = (values: string[]) => {
     setTerritoriesSelected(values);
-    setCookie('territories', fetchTerritoriesIdsFromMatrix(values));
 
     const ids = fetchTerritoriesIdsFromMatrix(values);
 
@@ -250,11 +274,9 @@ export default () => {
       if (!axisSelectedAll) {
         setAxisSelectedAll(true);
         setSelectedAxis(axisTypes);
-        updateURL('axis', axisTypes);
       } else {
         setAxisSelectedAll(false);
         setSelectedAxis([]);
-        updateURL('axis', []);
       }
     } else {
       if (newValue.length === axisTypes.length) {
@@ -265,7 +287,6 @@ export default () => {
         setAxisSelectedAll(false);
       }
       setSelectedAxis(newValue);
-      updateURL('axis', newValue);
     }
   };
 
