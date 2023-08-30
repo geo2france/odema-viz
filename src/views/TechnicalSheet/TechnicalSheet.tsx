@@ -8,7 +8,10 @@ import {
   MatrixFromIndicator,
 } from '../../models/matrice.types';
 import { getCookie, setCookie } from '../../helpers/cookie.helper';
-import { getQueryParamsFromSelector } from '../../helpers/urlParams.helper';
+import {
+  getQueryParamsFromSelector,
+  hasParametersOnUrl,
+} from '../../helpers/urlParams.helper';
 import { parseYearRange } from '../../helpers/formatters.helper';
 import SelectWithBoxes from '../../components/SelectWithBoxes/SelectWithBoxes';
 import SliderRange from '../../components/SliderRange/SliderRange';
@@ -63,13 +66,16 @@ export default () => {
 
   useEffect(() => {
     //Get URL params and cookie for territories
-    handleGetCookieTerritories();
     getQueryParamsFromSelector(
       'territories',
       setTerritoriesSelected,
       true,
       fetchTerritoriesNameFromMatrix
     );
+
+    if (!hasParametersOnUrl('territories')) {
+      handleGetCookieTerritories();
+    }
 
     //Get URL params and cookie for axisTypes
     getQueryParamsFromSelector('axis', setSelectedAxis);
