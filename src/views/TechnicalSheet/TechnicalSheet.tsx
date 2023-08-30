@@ -80,8 +80,8 @@ export default () => {
     //Get URL params and cookie for axisTypes
     getQueryParamsFromSelector('axis', setSelectedAxis);
 
-    if (axisTypes?.length === axisSelected.length && axisSelected.length > 0) {
-      setAxisSelectedAll(true);
+    if (!hasParametersOnUrl('axis') && axisTypes?.length) {
+      setSelectedAxis([...axisTypes]);
     }
 
     //Get URL params and cookie for year Range
@@ -107,6 +107,18 @@ export default () => {
       fetchTerritoriesIdsFromMatrix(territoriesSelected)
     );
   }, [territoriesSelected]);
+
+  useEffect(() => {
+    if (axisTypes?.length && axisTypes[0] !== null) {
+      updateURL('axis', [...axisSelected]);
+      if (
+        axisTypes?.length === axisSelected.length &&
+        axisSelected.length > 0
+      ) {
+        setAxisSelectedAll(true);
+      }
+    }
+  }, [axisSelected]);
 
   useEffect(() => {
     computedDataFromFilters();
@@ -262,11 +274,9 @@ export default () => {
       if (!axisSelectedAll) {
         setAxisSelectedAll(true);
         setSelectedAxis(axisTypes);
-        updateURL('axis', axisTypes);
       } else {
         setAxisSelectedAll(false);
         setSelectedAxis([]);
-        updateURL('axis', []);
       }
     } else {
       if (newValue.length === axisTypes.length) {
@@ -277,7 +287,6 @@ export default () => {
         setAxisSelectedAll(false);
       }
       setSelectedAxis(newValue);
-      updateURL('axis', newValue);
     }
   };
 
