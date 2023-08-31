@@ -65,6 +65,7 @@ export default ({ yearRange, filteredData, type, stacked = false }: Props) => {
     legend: {
       data: handleLegend(),
       bottom: 0,
+      type: 'scroll',
     },
     series: [...flatDataPerTerritoriesPerYears()],
   };
