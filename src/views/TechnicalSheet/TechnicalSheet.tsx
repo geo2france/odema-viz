@@ -411,7 +411,7 @@ export default () => {
       const value = feature.properties.valeur;
       const populationRef = feature.properties.pop_reference;
       const perInhabitants =
-        unitSelected === `${feature.properties.unite}/habitant`;
+        unitSelected === `${feature.properties.unite ?? 'unité'}/habitant`;
 
       if (!summedByTerritory[territory]) {
         summedByTerritory = { ...summedByTerritory, [territory]: {} };
