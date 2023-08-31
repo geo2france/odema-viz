@@ -91,13 +91,18 @@ export default ({
     return convertZerosToNullFromObject(finalAverage);
   };
 
-  const roundValues = (summedByTerritory: any) => {
+  const roundAndSeparateThousandsOfValues = (summedByTerritory: any) => {
     Object.keys(summedByTerritory).map((territoryName: string) => {
       for (let year in summedByTerritory[territoryName]) {
         if (typeof summedByTerritory[territoryName][year] === 'number') {
           summedByTerritory[territoryName][year] = parseFloat(
             summedByTerritory[territoryName][year].toFixed(2)
           );
+          summedByTerritory[territoryName][year] = summedByTerritory[
+            territoryName
+          ][year]
+            .toString()
+            .replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
         }
       }
     });
@@ -130,7 +135,7 @@ export default ({
     }
 
     //We round values to two decimal
-    roundValues(fullStatistics);
+    roundAndSeparateThousandsOfValues(fullStatistics);
 
     const mappedValues = Object.keys(fullStatistics).map(
       (TerritoryName: string) => {
