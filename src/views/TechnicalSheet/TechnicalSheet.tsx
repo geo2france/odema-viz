@@ -247,7 +247,7 @@ export default () => {
     } else {
       queryParams.delete(selector);
     }
-    const newURL = `${window.location.pathname}?${queryParams.toString()}`;
+    // const newURL = `${window.location.pathname}?${queryParams.toString()}`;
     // window.history.pushState({ path: newURL }, '', newURL);
   };
 
