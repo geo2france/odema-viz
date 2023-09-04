@@ -248,7 +248,7 @@ export default () => {
       queryParams.delete(selector);
     }
     const newURL = `${window.location.pathname}?${queryParams.toString()}`;
-    window.history.pushState({ path: newURL }, '', newURL);
+    // window.history.pushState({ path: newURL }, '', newURL);
   };
 
   const handleGetCookieTerritories = () => {
