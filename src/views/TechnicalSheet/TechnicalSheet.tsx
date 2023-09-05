@@ -68,7 +68,9 @@ export default () => {
   }, []);
 
   useEffect(() => {
-    setTradeURL(`${window.location.host}/${window.location.hash}`);
+    setTradeURL(
+      `${window.location.host}${window.location.pathname}${window.location.hash}`
+    );
 
     const currentParams = window.location.hash.split('?')[1];
     //Get URL params and cookie for territories
