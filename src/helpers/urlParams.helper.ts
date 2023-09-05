@@ -1,10 +1,11 @@
 export function getQueryParamsFromSelector(
   selector: string,
   setter: (values: any) => any,
+  queryToString: string,
   needToBeFormat: boolean = false,
   formatter: (values: any) => any = () => {}
 ) {
-  const queryParams = new URLSearchParams(window.location.search);
+  const queryParams = new URLSearchParams(queryToString);
   let serializedValues = queryParams.get(selector)?.split(';');
   if (serializedValues) {
     if (needToBeFormat) {

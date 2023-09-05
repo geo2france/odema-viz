@@ -16,6 +16,7 @@ import { parseYearRange } from '../../helpers/formatters.helper';
 import SelectWithBoxes from '../../components/SelectWithBoxes/SelectWithBoxes';
 import SliderRange from '../../components/SliderRange/SliderRange';
 import RadioGroupUnit from '../../components/RadioGroupUnit/RadioGroupUnit';
+import TextField from '../../components/TextField/TextField';
 
 import TableTabulator from '../../components/TableTabulator/TableTabulator';
 
@@ -48,6 +49,8 @@ export default () => {
 
   const [hoveredDonutValue, setHoveredDonutValue] = useState<number>(0);
 
+  const [tradeURL, setTradeURL] = useState<string>(``);
+
   useEffect(() => {
     const fetchMatrixIndicator = async () => {
       const response = await geowebService.getMatrixForIndicator({
@@ -65,10 +68,12 @@ export default () => {
   }, []);
 
   useEffect(() => {
+    setTradeURL(`${window.location.host}/${window.location.hash}`);
     //Get URL params and cookie for territories
     getQueryParamsFromSelector(
       'territories',
       setTerritoriesSelected,
+      window.location.hash.split('?')[1],
       true,
       fetchTerritoriesNameFromMatrix
     );
@@ -78,7 +83,11 @@ export default () => {
     }
 
     //Get URL params and cookie for axisTypes
-    getQueryParamsFromSelector('axis', setSelectedAxis);
+    getQueryParamsFromSelector(
+      'axis',
+      setSelectedAxis,
+      window.location.hash.split('?')[1]
+    );
 
     if (!hasParametersOnUrl('axis') && axisTypes?.length) {
       setSelectedAxis([...axisTypes]);
@@ -89,13 +98,20 @@ export default () => {
     setYearRange([initialMinYear, initialMaxYear]);
     setHoveredDonutValue(initialMaxYear);
 
-    getQueryParamsFromSelector('yearRange', setYearRange, true, parseYearRange);
+    getQueryParamsFromSelector(
+      'yearRange',
+      setYearRange,
+      window.location.hash.split('?')[1],
+      true,
+      parseYearRange
+    );
 
     //Get URL params and cookie for Unit
     setUnitSelected(pickedUnits ?? 'unité');
     getQueryParamsFromSelector(
       'unit',
       setUnitSelected,
+      window.location.hash.split('?')[1],
       true,
       (value: string[]) => value[0]
     );
@@ -241,14 +257,20 @@ export default () => {
     const serializedValues = Array.isArray(newValues)
       ? newValues.join(';')
       : newValues;
-    const queryParams = new URLSearchParams(window.location.search);
+
+    const baseURL = tradeURL.split('?')[0];
+    const getQueryParamsFromUrl = tradeURL.split('?')[1];
+
+    const queryParams = new URLSearchParams(getQueryParamsFromUrl);
     if (!!newValues.length) {
       queryParams.set(selector, serializedValues);
     } else {
       queryParams.delete(selector);
     }
-    // const newURL = `${window.location.pathname}?${queryParams.toString()}`;
-    // window.history.pushState({ path: newURL }, '', newURL);
+
+    const newURL = `${baseURL}?${queryParams.toString()}`;
+
+    setTradeURL(newURL);
   };
 
   const handleGetCookieTerritories = () => {
@@ -471,6 +493,9 @@ export default () => {
               selectedValue={unitSelected}
               setter={handleUnitRadio}
             />
+          </div>
+          <div className="technical-sheet--trade-text">
+            <TextField label={'Url'} disabled={true} value={tradeURL} />
           </div>
           <div className="technical-sheet--table">
             {areResultsDisplayed && (
