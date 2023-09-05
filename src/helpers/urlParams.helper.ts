@@ -16,7 +16,7 @@ export function getQueryParamsFromSelector(
   }
 }
 
-export function hasParametersOnUrl(selector: string) {
-  const queryParams = new URLSearchParams(window.location.search);
+export function hasParametersOnUrl(selector: string, currentParams: string) {
+  const queryParams = new URLSearchParams(currentParams);
   return !!queryParams.get(selector)?.split(';');
 }

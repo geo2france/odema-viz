@@ -5,9 +5,16 @@ type Props = {
   disabled?: boolean;
   value: string;
   defaultValue?: string;
+  fullWidth?: boolean;
 };
 
-export default ({ label, disabled = false, value, defaultValue }: Props) => {
+export default ({
+  label,
+  disabled = false,
+  value,
+  defaultValue,
+  fullWidth = false,
+}: Props) => {
   return (
     <TextField
       disabled={disabled}
@@ -15,6 +22,7 @@ export default ({ label, disabled = false, value, defaultValue }: Props) => {
       label={label}
       value={value}
       defaultValue={defaultValue}
+      fullWidth={fullWidth}
     />
   );
 };

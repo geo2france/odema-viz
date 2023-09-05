@@ -69,27 +69,25 @@ export default () => {
 
   useEffect(() => {
     setTradeURL(`${window.location.host}/${window.location.hash}`);
+
+    const currentParams = window.location.hash.split('?')[1];
     //Get URL params and cookie for territories
     getQueryParamsFromSelector(
       'territories',
       setTerritoriesSelected,
-      window.location.hash.split('?')[1],
+      currentParams,
       true,
       fetchTerritoriesNameFromMatrix
     );
 
-    if (!hasParametersOnUrl('territories')) {
+    if (!hasParametersOnUrl('territories', currentParams)) {
       handleGetCookieTerritories();
     }
 
     //Get URL params and cookie for axisTypes
-    getQueryParamsFromSelector(
-      'axis',
-      setSelectedAxis,
-      window.location.hash.split('?')[1]
-    );
+    getQueryParamsFromSelector('axis', setSelectedAxis, currentParams);
 
-    if (!hasParametersOnUrl('axis') && axisTypes?.length) {
+    if (!hasParametersOnUrl('axis', currentParams) && axisTypes?.length) {
       setSelectedAxis([...axisTypes]);
     }
 
@@ -101,7 +99,7 @@ export default () => {
     getQueryParamsFromSelector(
       'yearRange',
       setYearRange,
-      window.location.hash.split('?')[1],
+      currentParams,
       true,
       parseYearRange
     );
@@ -111,7 +109,7 @@ export default () => {
     getQueryParamsFromSelector(
       'unit',
       setUnitSelected,
-      window.location.hash.split('?')[1],
+      currentParams,
       true,
       (value: string[]) => value[0]
     );
@@ -495,7 +493,12 @@ export default () => {
             />
           </div>
           <div className="technical-sheet--trade-text">
-            <TextField label={'Url'} disabled={true} value={tradeURL} />
+            <TextField
+              fullWidth={true}
+              label={'Url'}
+              disabled={true}
+              value={tradeURL}
+            />
           </div>
           <div className="technical-sheet--table">
             {areResultsDisplayed && (
