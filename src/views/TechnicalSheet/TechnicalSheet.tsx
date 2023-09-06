@@ -69,7 +69,7 @@ export default () => {
 
   useEffect(() => {
     setTradeURL(
-      `${window.location.host}${window.location.pathname}${window.location.hash}`
+      `${window.location.protocol}//${window.location.host}${window.location.pathname}${window.location.hash}`
     );
 
     const currentParams = window.location.hash.split('?')[1];
