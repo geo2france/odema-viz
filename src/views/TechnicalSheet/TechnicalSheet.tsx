@@ -49,7 +49,9 @@ export default () => {
 
   const [hoveredDonutValue, setHoveredDonutValue] = useState<number>(0);
 
-  const [tradeURL, setTradeURL] = useState<string>(``);
+  const [tradeURL, setTradeURL] = useState<string>(
+    `${window.location.protocol}//${window.location.host}${window.location.pathname}${window.location.hash}`
+  );
 
   useEffect(() => {
     const fetchMatrixIndicator = async () => {
@@ -68,10 +70,6 @@ export default () => {
   }, []);
 
   useEffect(() => {
-    setTradeURL(
-      `${window.location.protocol}//${window.location.host}${window.location.pathname}${window.location.hash}`
-    );
-
     const currentParams = window.location.hash.split('?')[1];
     //Get URL params and cookie for territories
     getQueryParamsFromSelector(
@@ -116,13 +114,6 @@ export default () => {
       (value: string[]) => value[0]
     );
   }, [matrice]);
-
-  useEffect(() => {
-    setCookie(
-      'territories',
-      fetchTerritoriesIdsFromMatrix(territoriesSelected)
-    );
-  }, [territoriesSelected]);
 
   useEffect(() => {
     if (axisTypes?.length && axisTypes[0] !== null) {
@@ -287,6 +278,7 @@ export default () => {
     const ids = fetchTerritoriesIdsFromMatrix(values);
 
     updateURL('territories', ids);
+    setCookie('territories', ids);
   };
 
   const handleAxisSelected = (event: any) => {
