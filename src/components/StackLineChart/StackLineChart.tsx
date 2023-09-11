@@ -71,7 +71,7 @@ export default ({ yearRange, filteredData, type, stacked = false }: Props) => {
   };
   return (
     <>
-      <ReactEcharts option={option} style={{ height: '400px' }} />
+      <ReactEcharts option={option} notMerge style={{ height: '400px' }} />
     </>
   );
 };
