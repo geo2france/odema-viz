@@ -16,6 +16,7 @@ import { parseYearRange } from '../../helpers/formatters.helper';
 import SelectWithBoxes from '../../components/SelectWithBoxes/SelectWithBoxes';
 import SliderRange from '../../components/SliderRange/SliderRange';
 import RadioGroupUnit from '../../components/RadioGroupUnit/RadioGroupUnit';
+import TextField from '../../components/TextField/TextField';
 
 import TableTabulator from '../../components/TableTabulator/TableTabulator';
 
@@ -48,6 +49,10 @@ export default () => {
 
   const [hoveredDonutValue, setHoveredDonutValue] = useState<number>(0);
 
+  const [tradeURL, setTradeURL] = useState<string>(
+    `${window.location.protocol}//${window.location.host}${window.location.pathname}${window.location.hash}`
+  );
+
   useEffect(() => {
     const fetchMatrixIndicator = async () => {
       const response = await geowebService.getMatrixForIndicator({
@@ -65,22 +70,24 @@ export default () => {
   }, []);
 
   useEffect(() => {
+    const currentParams = window.location.hash.split('?')[1];
     //Get URL params and cookie for territories
     getQueryParamsFromSelector(
       'territories',
       setTerritoriesSelected,
+      currentParams,
       true,
       fetchTerritoriesNameFromMatrix
     );
 
-    if (!hasParametersOnUrl('territories')) {
+    if (!hasParametersOnUrl('territories', currentParams)) {
       handleGetCookieTerritories();
     }
 
     //Get URL params and cookie for axisTypes
-    getQueryParamsFromSelector('axis', setSelectedAxis);
+    getQueryParamsFromSelector('axis', setSelectedAxis, currentParams);
 
-    if (!hasParametersOnUrl('axis') && axisTypes?.length) {
+    if (!hasParametersOnUrl('axis', currentParams) && axisTypes?.length) {
       setSelectedAxis([...axisTypes]);
     }
 
@@ -89,24 +96,24 @@ export default () => {
     setYearRange([initialMinYear, initialMaxYear]);
     setHoveredDonutValue(initialMaxYear);
 
-    getQueryParamsFromSelector('yearRange', setYearRange, true, parseYearRange);
+    getQueryParamsFromSelector(
+      'yearRange',
+      setYearRange,
+      currentParams,
+      true,
+      parseYearRange
+    );
 
     //Get URL params and cookie for Unit
     setUnitSelected(pickedUnits ?? 'unité');
     getQueryParamsFromSelector(
       'unit',
       setUnitSelected,
+      currentParams,
       true,
       (value: string[]) => value[0]
     );
   }, [matrice]);
-
-  useEffect(() => {
-    setCookie(
-      'territories',
-      fetchTerritoriesIdsFromMatrix(territoriesSelected)
-    );
-  }, [territoriesSelected]);
 
   useEffect(() => {
     if (axisTypes?.length && axisTypes[0] !== null) {
@@ -241,14 +248,20 @@ export default () => {
     const serializedValues = Array.isArray(newValues)
       ? newValues.join(';')
       : newValues;
-    const queryParams = new URLSearchParams(window.location.search);
+
+    const baseURL = tradeURL.split('?')[0];
+    const getQueryParamsFromUrl = tradeURL.split('?')[1];
+
+    const queryParams = new URLSearchParams(getQueryParamsFromUrl);
     if (!!newValues.length) {
       queryParams.set(selector, serializedValues);
     } else {
       queryParams.delete(selector);
     }
-    const newURL = `${window.location.pathname}?${queryParams.toString()}`;
-    window.history.pushState({ path: newURL }, '', newURL);
+
+    const newURL = `${baseURL}?${queryParams.toString()}`;
+
+    setTradeURL(newURL);
   };
 
   const handleGetCookieTerritories = () => {
@@ -265,6 +278,7 @@ export default () => {
     const ids = fetchTerritoriesIdsFromMatrix(values);
 
     updateURL('territories', ids);
+    setCookie('territories', ids);
   };
 
   const handleAxisSelected = (event: any) => {
@@ -470,6 +484,14 @@ export default () => {
               units={units}
               selectedValue={unitSelected}
               setter={handleUnitRadio}
+            />
+          </div>
+          <div className="technical-sheet--trade-text">
+            <TextField
+              fullWidth={true}
+              label={'Url'}
+              disabled={true}
+              value={tradeURL}
             />
           </div>
           <div className="technical-sheet--table">

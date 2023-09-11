@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HashRouter, Routes, Route } from 'react-router-dom';
 import TechnicalSheet from './views/TechnicalSheet/TechnicalSheet';
 import DashBoard from './views/DashBoard/Dashboard';
 import { IndicatorsProvider } from './context/IndicatorsContext';
@@ -8,12 +8,12 @@ function App() {
   return (
     <IndicatorsProvider>
       <div className={`App-light`}>
-        <BrowserRouter basename="/public/odema/indicateur_dev">
+        <HashRouter>
           <Routes>
             <Route path="/" element={<DashBoard />} />
             <Route path="/technicalsheet/:guid" element={<TechnicalSheet />} />
           </Routes>
-        </BrowserRouter>
+        </HashRouter>
       </div>
     </IndicatorsProvider>
   );
