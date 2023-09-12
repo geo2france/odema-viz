@@ -76,6 +76,15 @@ Les APIs exploitées sont répertoriées sous forme de services dans l'applicati
 
 Ici nous exploitons en partie les APIs de **Geo2France** (geoweb), ainsi nous disposons d'un fichier `geoweb.service.ts`. Il dispose de plusieurs fonctions représentant un appel personnalisé en fonction d'une URL choisi. Ainsi ces fonctions sont réutilisables à la demande dans le projet, et retourne la réponse sous forme de requêtes asynchrones (Promises).
 
+### Hiérarchie d'exploitation des données
+
+Afin d'exploiter les données de la manière la plus simple et la plus accessible à tout les composants d'une page, le traitement de ces données s'effectue en majeur partie en amont du composant page.
+
+Ainsi dans l'exemple de la page `TechnicalSheet.tsx`, on peut trouver les différentes variables traitant ces données.
+Il en va de paire que lorsqu'une de ces variables est passé en props dans un composant enfant, si elle nécessite d'être modifiée, est suivie de sa fonction setter. 
+Généralement ce type de variable est utilisée idéalement en `useState`. Pour les variables en lecture seule, elles sont stockées sous de simples variables constantes.
+
+
 ### Types
 
 Le projet utilise **TypeScript** afin d'aider le développeur dans le développement de l'application.
