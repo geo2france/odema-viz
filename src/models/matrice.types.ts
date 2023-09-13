@@ -1,4 +1,4 @@
-import { Geo2FranceGenericResponse } from './geo2france.types';
+import { Geo2FranceGenericResponse, Geometry } from './geo2france.types';
 
 export interface MatrixFromIndicator extends Geo2FranceGenericResponse {
   features: MatrixFeatures[];
@@ -7,15 +7,10 @@ export interface MatrixFromIndicator extends Geo2FranceGenericResponse {
 export interface MatrixFeatures {
   type: string;
   id: string;
-  geometry: any[];
+  geometry: Geometry | null;
   geometry_name: string;
   properties: MatrixFeatureProperties;
-  bbox: number[];
-}
-
-export interface GeometryMatrixFeatures {
-  type: string;
-  coordinates: number[][][][];
+  bbox?: number[];
 }
 
 export interface MatrixFeatureProperties {

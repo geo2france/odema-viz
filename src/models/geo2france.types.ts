@@ -7,3 +7,8 @@ export interface Geo2FranceGenericResponse {
   crs: string | null;
   bbox?: number[];
 }
+
+export interface Geometry {
+  type: string;
+  coordinates: number[][][][];
+}
