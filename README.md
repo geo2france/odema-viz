@@ -49,6 +49,21 @@ Transférez la structure du dossier `.dist` avec votre protocole favoris (SFTP p
 
 **Remarque**: la lecture du fichier index.html avec l'ensemble de son javascript et de son css nécessite à minima un serveur web pour le lire, il ne peut être lu directement par l'ouverture du fichier html sous peine de provoquer un CORS
 
+
+#### Contrôle d'envergure des fichiers js à la compilation
+
+Lorsque vous compilez l'application, les fichiers statiques en javascript sont générés. Dans notre cas un seul fichier js est généré mais il est possible à l'avenir d'en rencontrer plusieurs.
+
+Dans un soucis de performances, une directive `chunkSizeWarningLimit` est définie (par défaut à 500, 2500 dans notre cas) dans le fichier `vite.config.ts`.
+Elle définie un contrôle d'envergure du poids de ces fichiers en KB, mais n'est pas bloquante en build.
+
+À première échelle dans notre projet, afin d'alléger le poids de ces fichiers, une hiérarchie d'exploitation des librairies a été établie entre celles utilisées en production et en mode développement.
+
+Cette hiérarchie est définie dans le `package.json`.
+Les librairies à usage unique en mode développement sont listées dans la propriété `devDependencies`, celles étant pertinentes en production (mais aussi exploitables en mode développement) dans la propriété `dependencies`.
+
+Ainsi, les fichiers chunks seront allégés de toutes libraries 'inutiles'.
+
 ## Structure du projet
 Le projet est sous forme de Single Page Application (SPA), c'est à dire qu'en réalité le projet tourne sur une seule et unique page `index.html`, bien que le projet en soit découpé sous forme de pages (deux pages) incluants les différents composants développés en React.
 
