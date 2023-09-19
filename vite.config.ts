@@ -11,5 +11,6 @@ export default defineConfig({
         main: './index.html',
       },
     },
+    chunkSizeWarningLimit: 2500,
   },
 });
