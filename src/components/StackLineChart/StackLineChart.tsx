@@ -31,7 +31,10 @@ export default ({ yearRange, filteredData, type, stacked = false }: Props) => {
         stack: stacked ? 'x' : '',
       };
       xCoordinates.forEach((year: string) => {
-        if (!filteredData[territory][year]) {
+        if (
+          !filteredData[territory][year] &&
+          filteredData[territory][year] !== 0
+        ) {
           series.data = [...series.data, null];
         } else {
           series.data = [...series.data, filteredData[territory][year]];
@@ -39,7 +42,6 @@ export default ({ yearRange, filteredData, type, stacked = false }: Props) => {
       });
       territoryValues = [...territoryValues, series];
     });
-
     return territoryValues;
   };
 
