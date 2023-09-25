@@ -529,12 +529,6 @@ export default () => {
                     filteredData={formatTerritoriesWithYearStatistics()}
                     type={'bar'}
                   />
-                  <StackLineChart
-                    yearRange={yearRange}
-                    filteredData={formatTerritoriesWithYearStatistics()}
-                    type={'bar'}
-                    stacked
-                  />
                 </TabPanels>
                 <TabPanels index={1} value={indexTab}>
                   <PieChart
