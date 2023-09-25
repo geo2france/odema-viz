@@ -1,13 +1,21 @@
 import ReactEcharts from 'echarts-for-react';
+import {useState } from 'react';
+import Checkbox from '@mui/material/Checkbox';
 
 type Props = {
   yearRange: number[];
   filteredData: any;
-  type: string;
-  stacked?: boolean;
+  type: string
 };
 
-export default ({ yearRange, filteredData, type, stacked = false }: Props) => {
+export default ({ yearRange, filteredData, type }: Props) => {
+
+  const [stacked, setStacked] = useState(false);
+
+  const toggleStack = (e) => {
+        setStacked(e.target.checked);
+   };
+
   const flatYears = () => {
     let flattedYears = [];
     if (yearRange[0] !== 0 && yearRange[1] !== 0) {
@@ -73,6 +81,7 @@ export default ({ yearRange, filteredData, type, stacked = false }: Props) => {
   };
   return (
     <>
+      <Checkbox onChange={toggleStack} /> Empiler
       <ReactEcharts option={option} notMerge style={{ height: '400px' }} />
     </>
   );
