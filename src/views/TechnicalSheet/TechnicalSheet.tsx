@@ -522,12 +522,6 @@ export default () => {
                   <StackLineChart
                     yearRange={yearRange}
                     filteredData={formatTerritoriesWithYearStatistics()}
-                    type={'line'}
-                  />
-                  <StackLineChart
-                    yearRange={yearRange}
-                    filteredData={formatTerritoriesWithYearStatistics()}
-                    type={'bar'}
                   />
                 </TabPanels>
                 <TabPanels index={1} value={indexTab}>
