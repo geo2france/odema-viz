@@ -11,15 +11,12 @@ type Props = {
 export default ({ yearRange, filteredData, type }: Props) => {
 
   const [stacked, setStacked] = useState(false);
-
-  const toggleStack = (e) => {
-        setStacked(e.target.checked);
-   };
    
-  const [chartType, setChartType] = useState('line')
+  const [chartTypeLine, setChartTypeLine] = useState(false)
   const toggleChartType = (e) => {      
-        setChartType(e.target.checked ? 'bar' : 'line');
+        setChartTypeLine(e.target.checked);
    };
+
 
   const flatYears = () => {
     let flattedYears = [];
@@ -38,7 +35,7 @@ export default ({ yearRange, filteredData, type }: Props) => {
     Object.keys(filteredData).forEach((territory: string) => {
       let series: any = {
         name: territory,
-        type: chartType,
+        type: chartTypeLine ? 'bar' : 'line',
         data: [],
         connectNulls: true,
         stack: stacked ? 'x' : '',
@@ -86,8 +83,8 @@ export default ({ yearRange, filteredData, type }: Props) => {
   };
   return (
     <>
-      <Switch onChange={toggleStack}  inputProps={{ 'aria-label': 'Empiler' }} /> Emplier
-      <Switch onChange={toggleChartType}  inputProps={{ 'aria-label': 'Barre / Lignes' }} /> Barre / Lignes
+      <Switch onChange={() => setStacked(!stacked)} checked={ stacked } inputProps={{ 'aria-label': 'Empiler' }} /> Empiler
+      <Switch onChange={() => setChartTypeLine(!chartTypeLine)} checked={ chartTypeLine } inputProps={{ 'aria-label': 'Barre / Lignes' }} /> En barre
       <ReactEcharts option={option} notMerge style={{ height: '400px' }} />
     </>
   );
