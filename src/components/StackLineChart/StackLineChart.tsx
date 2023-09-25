@@ -35,6 +35,7 @@ export default ({ yearRange, filteredData }: Props) => {
         name: territory,
         type: chartTypeLine ? 'bar' : 'line',
         data: [],
+        areaStyle: stacked ? {} : null,
         connectNulls: true,
         stack: stacked ? 'x' : '',
       };
