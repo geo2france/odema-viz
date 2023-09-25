@@ -3,6 +3,7 @@ import {useState } from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import StackedBarChartIcon from '@mui/icons-material/StackedBarChart';
+import Tooltip from '@mui/material/Tooltip';
 
 type Props = {
   yearRange: number[];
@@ -80,8 +81,12 @@ export default ({ yearRange, filteredData }: Props) => {
   };
   return (
     <>
-      <ToggleButton onChange={() => setStacked(!stacked)} selected={ stacked } value={true}> <StackedBarChartIcon/> </ToggleButton>  
-      <ToggleButton onChange={() => setChartTypeLine(!chartTypeLine)} selected={ chartTypeLine } value={true} > <LeaderboardIcon/></ToggleButton>
+      <Tooltip title="Diagramme en barres">
+        <ToggleButton onChange={() => setChartTypeLine(!chartTypeLine)} selected={ chartTypeLine } value={true} > <LeaderboardIcon/></ToggleButton>
+      </Tooltip>
+      <Tooltip title="Empiler">
+        <ToggleButton onChange={() => setStacked(!stacked)} selected={ stacked } value={true}> <StackedBarChartIcon/> </ToggleButton>
+      </Tooltip>
       <ReactEcharts option={option} notMerge style={{ height: '400px' }} />
     </>
   );
