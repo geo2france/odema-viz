@@ -1,6 +1,6 @@
 import ReactEcharts from 'echarts-for-react';
 import {useState } from 'react';
-import Checkbox from '@mui/material/Checkbox';
+import Switch from '@mui/material/Switch';
 
 type Props = {
   yearRange: number[];
@@ -81,7 +81,7 @@ export default ({ yearRange, filteredData, type }: Props) => {
   };
   return (
     <>
-      <Checkbox onChange={toggleStack} /> Empiler
+      <Switch onChange={toggleStack}  inputProps={{ 'aria-label': 'Empiler' }} /> Empiler
       <ReactEcharts option={option} notMerge style={{ height: '400px' }} />
     </>
   );
