@@ -1,22 +1,19 @@
 import ReactEcharts from 'echarts-for-react';
 import {useState } from 'react';
-import Switch from '@mui/material/Switch';
+import ToggleButton from '@mui/material/ToggleButton';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import StackedBarChartIcon from '@mui/icons-material/StackedBarChart';
 
 type Props = {
   yearRange: number[];
   filteredData: any;
-  type: string
 };
 
-export default ({ yearRange, filteredData, type }: Props) => {
+export default ({ yearRange, filteredData }: Props) => {
 
   const [stacked, setStacked] = useState(false);
    
   const [chartTypeLine, setChartTypeLine] = useState(false)
-  const toggleChartType = (e) => {      
-        setChartTypeLine(e.target.checked);
-   };
-
 
   const flatYears = () => {
     let flattedYears = [];
@@ -83,8 +80,8 @@ export default ({ yearRange, filteredData, type }: Props) => {
   };
   return (
     <>
-      <Switch onChange={() => setStacked(!stacked)} checked={ stacked } inputProps={{ 'aria-label': 'Empiler' }} /> Empiler
-      <Switch onChange={() => setChartTypeLine(!chartTypeLine)} checked={ chartTypeLine } inputProps={{ 'aria-label': 'Barre / Lignes' }} /> En barre
+      <ToggleButton onChange={() => setStacked(!stacked)} selected={ stacked } value={true}> <StackedBarChartIcon/> </ToggleButton>  
+      <ToggleButton onChange={() => setChartTypeLine(!chartTypeLine)} selected={ chartTypeLine } value={true} > <LeaderboardIcon/></ToggleButton>
       <ReactEcharts option={option} notMerge style={{ height: '400px' }} />
     </>
   );
