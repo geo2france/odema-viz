@@ -78,6 +78,11 @@ export default ({ yearRange, filteredData }: Props) => {
       bottom: 0,
       type: 'scroll',
     },
+    toolbox: {
+      feature: {
+        saveAsImage: { show: true, title: "Exporter le graphique" }
+      }
+    },
     series: [...flatDataPerTerritoriesPerYears()],
   };
   return (
