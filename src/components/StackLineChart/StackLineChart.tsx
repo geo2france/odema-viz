@@ -1,9 +1,11 @@
 import ReactEcharts from 'echarts-for-react';
 import {useState } from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import StackedBarChartIcon from '@mui/icons-material/StackedBarChart';
-import Tooltip from '@mui/material/Tooltip';
+import SsidChartIcon from '@mui/icons-material/SsidChart';
+
 
 type Props = {
   yearRange: number[];
@@ -12,9 +14,7 @@ type Props = {
 
 export default ({ yearRange, filteredData }: Props) => {
 
-  const [stacked, setStacked] = useState(false);
-   
-  const [chartTypeLine, setChartTypeLine] = useState(false)
+  const [chartType, setChartType] = useState('line');
 
   const flatYears = () => {
     let flattedYears = [];
@@ -33,11 +33,10 @@ export default ({ yearRange, filteredData }: Props) => {
     Object.keys(filteredData).forEach((territory: string) => {
       let series: any = {
         name: territory,
-        type: chartTypeLine ? 'bar' : 'line',
+        type: chartType == 'line' ? 'line' : 'bar',
         data: [],
-        areaStyle: stacked ? {} : null,
         connectNulls: true,
-        stack: stacked ? 'x' : '',
+        stack: chartType == 'stackedBar' ? 'total' : '',
       };
       xCoordinates.forEach((year: string) => {
         if (
@@ -68,6 +67,14 @@ export default ({ yearRange, filteredData }: Props) => {
     return legend;
   };
 
+  const handleChartType = (
+      _event: React.MouseEvent<HTMLElement>,
+      newChartType: string | null) => {
+        if (newChartType !== null){
+            setChartType(newChartType);
+        }
+  }
+
   const option = {
     xAxis: {
       data: [...flatYears()],
@@ -87,12 +94,17 @@ export default ({ yearRange, filteredData }: Props) => {
   };
   return (
     <>
-      <Tooltip title="Diagramme en barres">
-        <ToggleButton onChange={() => setChartTypeLine(!chartTypeLine)} selected={ chartTypeLine } value={true} > <LeaderboardIcon/></ToggleButton>
-      </Tooltip>
-      <Tooltip title="Empiler">
-        <ToggleButton onChange={() => setStacked(!stacked)} selected={ stacked } value={true}> <StackedBarChartIcon/> </ToggleButton>
-      </Tooltip>
+      <ToggleButtonGroup exclusive onChange={handleChartType} value={chartType}>
+        <ToggleButton value='line' title='Lignes' >
+         <SsidChartIcon/>
+        </ToggleButton>         
+        <ToggleButton value='bar' title="Barres" >
+          <LeaderboardIcon/>
+        </ToggleButton>        
+        <ToggleButton value='stackedBar' title="Barres empilées"> 
+          <StackedBarChartIcon/>
+        </ToggleButton>
+      </ToggleButtonGroup>
       <ReactEcharts option={option} notMerge style={{ height: '400px' }} />
     </>
   );
