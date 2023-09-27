@@ -16,7 +16,8 @@ import { parseYearRange } from '../../helpers/formatters.helper';
 import SelectWithBoxes from '../../components/SelectWithBoxes/SelectWithBoxes';
 import SliderRange from '../../components/SliderRange/SliderRange';
 import RadioGroupUnit from '../../components/RadioGroupUnit/RadioGroupUnit';
-import TextField from '../../components/TextField/TextField';
+
+import ShareButton from '../../components/ShareButton/ShareButton';
 
 import TableTabulator from '../../components/TableTabulator/TableTabulator';
 
@@ -26,6 +27,7 @@ import './TechnicalSheet.css';
 import Tabs from '../../components/Tabs/Tabs';
 import TabPanels from '../../components/TabPanels/TabPanels';
 import PieChart from '../../components/PieChart/PieChart';
+
 
 export default () => {
   const { guid } = useParams<{ guid: string }>();
@@ -486,14 +488,9 @@ export default () => {
               setter={handleUnitRadio}
             />
           </div>
-          <div className="technical-sheet--trade-text">
-            <TextField
-              fullWidth={true}
-              label={'Url'}
-              disabled={true}
-              value={tradeURL}
-            />
-          </div>
+          
+          <ShareButton url={tradeURL} />
+          
           <div className="technical-sheet--table">
             {areResultsDisplayed && (
               <TableTabulator
