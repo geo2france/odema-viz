@@ -41,7 +41,7 @@ export default ({
     let sumByYear: any = {};
     Object.keys(summedByTerritory).forEach((territoryName: string) => {
       if (checkIsTerritoryEPCI(territoryName)) {
-        Object.keys(summedByTerritory[territoryName]).forEach(
+        Object.keys(summedByTerritory[territoryName]['values']).forEach(
           (yearValue: string) => {
             if (!sumByYear.hasOwnProperty(yearValue)) {
               sumByYear = { ...sumByYear, [yearValue]: 0 };
@@ -49,14 +49,14 @@ export default ({
 
             sumByYear[yearValue] =
               sumByYear[yearValue] +
-              (summedByTerritory[territoryName][yearValue] ?? 0);
+              (summedByTerritory[territoryName]['values'][yearValue] ?? 0);
           }
         );
       }
     });
 
     //We don't want any value displayed when it's null
-    return convertZerosToNullFromObject(sumByYear);
+    return {'values': convertZerosToNullFromObject(sumByYear) };
   };
 
   const createAverageOfTerritoriesValuesPerYear = (
@@ -68,12 +68,12 @@ export default ({
 
     Object.keys(summedByTerritory).map((territoryName: string) => {
       if (checkIsTerritoryEPCI(territoryName)) {
-        Object.keys(summedByTerritory[territoryName]).map((year: string) => {
+        Object.keys(summedByTerritory[territoryName]['values']).map((year: string) => {
           if (!coefficientsPeryear.hasOwnProperty(year)) {
             coefficientsPeryear = { ...coefficientsPeryear, [year]: 0 };
           }
 
-          if (summedByTerritory[territoryName].hasOwnProperty(year)) {
+          if (summedByTerritory[territoryName]['values'].hasOwnProperty(year)) {
             coefficientsPeryear[year] = coefficientsPeryear[year] + 1;
           }
         });
@@ -88,19 +88,19 @@ export default ({
       finalAverage[yearCoefficient] =
         sumByYear[yearCoefficient] / coefficientsPeryear[yearCoefficient];
     });
-    return convertZerosToNullFromObject(finalAverage);
+    return {'values': convertZerosToNullFromObject(finalAverage) };
   };
 
   const roundAndSeparateThousandsOfValues = (summedByTerritory: any) => {
     Object.keys(summedByTerritory).map((territoryName: string) => {
-      for (let year in summedByTerritory[territoryName]) {
-        if (typeof summedByTerritory[territoryName][year] === 'number') {
-          summedByTerritory[territoryName][year] = parseFloat(
-            summedByTerritory[territoryName][year].toFixed(2)
+      for (let year in summedByTerritory[territoryName]['values']) {
+        if (typeof summedByTerritory[territoryName]['values'][year] === 'number') {
+          summedByTerritory[territoryName]['values'][year] = parseFloat(
+            summedByTerritory[territoryName]['values'][year].toFixed(2)
           );
-          summedByTerritory[territoryName][year] = summedByTerritory[
+          summedByTerritory[territoryName]['values'][year] = summedByTerritory[
             territoryName
-          ][year]
+          ]['values'][year]
             .toString()
             .replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
         }
@@ -123,15 +123,14 @@ export default ({
         territory: 'Moyenne par année (par EPCI)',
         ...createAverageOfTerritoriesValuesPerYear(
           territoriesWithYearStatistics,
-          sumByYear
+          sumByYear['values']
         ),
       };
 
-      fullStatistics = {
-        ...fullStatistics,
-        sumByYear,
-        averageByYear,
-      };
+      fullStatistics['Somme totale par année (EPCI)'] = sumByYear
+      fullStatistics['Moyenne par année (par EPCI)'] = averageByYear
+
+      
     }
 
     //We round values to two decimal
@@ -141,7 +140,7 @@ export default ({
       (TerritoryName: string) => {
         return {
           territory: TerritoryName,
-          ...fullStatistics[TerritoryName],
+          ...fullStatistics[TerritoryName]['values'],
         };
       }
     );

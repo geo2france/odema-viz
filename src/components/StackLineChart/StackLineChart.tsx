@@ -36,16 +36,16 @@ export default ({ yearRange, filteredData }: Props) => {
         type: chartType == 'line' ? 'line' : 'bar',
         data: [],
         connectNulls: true,
-        stack: chartType == 'stackedBar' ? 'total' : '',
+        stack: chartType == 'stackedBar' ? filteredData[territory]['territory_type'] : '',
       };
       xCoordinates.forEach((year: string) => {
         if (
-          !filteredData[territory][year] &&
-          filteredData[territory][year] !== 0
+          !filteredData[territory]['values'][year] &&
+          filteredData[territory]['values'][year] !== 0
         ) {
           series.data = [...series.data, null];
         } else {
-          series.data = [...series.data, filteredData[territory][year]];
+          series.data = [...series.data, filteredData[territory]['values'][year]];
         }
       });
       territoryValues = [...territoryValues, series];
