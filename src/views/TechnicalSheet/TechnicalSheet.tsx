@@ -506,9 +506,9 @@ export default () => {
               <>
                 <Tabs
                   tabLabels={[
-                    { name: 'Courbes', disabled: false },
+                    { name: 'Evolution', disabled: false },
                     {
-                      name: 'Fragments',
+                      name: hasAxisNoValuesInHisSelector ? '' : 'Répartition par '+analyseAxisLabel,
                       disabled: hasAxisNoValuesInHisSelector,
                     },
                   ]}
@@ -527,6 +527,7 @@ export default () => {
                     selectedYear={hoveredDonutValue}
                   />
                 </TabPanels>
+                
               </>
             )}
           </div>
