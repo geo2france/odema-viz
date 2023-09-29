@@ -1,13 +1,21 @@
 import ReactEcharts from 'echarts-for-react';
+import {useState } from 'react';
+import ToggleButton from '@mui/material/ToggleButton';
+import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import LeaderboardIcon from '@mui/icons-material/Leaderboard';
+import StackedBarChartIcon from '@mui/icons-material/StackedBarChart';
+import SsidChartIcon from '@mui/icons-material/SsidChart';
+
 
 type Props = {
   yearRange: number[];
   filteredData: any;
-  type: string;
-  stacked?: boolean;
 };
 
-export default ({ yearRange, filteredData, type, stacked = false }: Props) => {
+export default ({ yearRange, filteredData }: Props) => {
+
+  const [chartType, setChartType] = useState('line');
+
   const flatYears = () => {
     let flattedYears = [];
     if (yearRange[0] !== 0 && yearRange[1] !== 0) {
@@ -25,19 +33,19 @@ export default ({ yearRange, filteredData, type, stacked = false }: Props) => {
     Object.keys(filteredData).forEach((territory: string) => {
       let series: any = {
         name: territory,
-        type,
+        type: chartType == 'line' ? 'line' : 'bar',
         data: [],
         connectNulls: true,
-        stack: stacked ? 'x' : '',
+        stack: chartType == 'stackedBar' ? filteredData[territory]['territory_type'] : '',
       };
       xCoordinates.forEach((year: string) => {
         if (
-          !filteredData[territory][year] &&
-          filteredData[territory][year] !== 0
+          !filteredData[territory]['values'][year] &&
+          filteredData[territory]['values'][year] !== 0
         ) {
           series.data = [...series.data, null];
         } else {
-          series.data = [...series.data, filteredData[territory][year]];
+          series.data = [...series.data, filteredData[territory]['values'][year]];
         }
       });
       territoryValues = [...territoryValues, series];
@@ -59,6 +67,14 @@ export default ({ yearRange, filteredData, type, stacked = false }: Props) => {
     return legend;
   };
 
+  const handleChartType = (
+      _event: React.MouseEvent<HTMLElement>,
+      newChartType: string | null) => {
+        if (newChartType !== null){
+            setChartType(newChartType);
+        }
+  }
+
   const option = {
     xAxis: {
       data: [...flatYears()],
@@ -69,10 +85,26 @@ export default ({ yearRange, filteredData, type, stacked = false }: Props) => {
       bottom: 0,
       type: 'scroll',
     },
+    toolbox: {
+      feature: {
+        saveAsImage: { show: true, title: "Exporter le graphique" }
+      }
+    },
     series: [...flatDataPerTerritoriesPerYears()],
   };
   return (
     <>
+      <ToggleButtonGroup exclusive onChange={handleChartType} value={chartType}>
+        <ToggleButton value='line' title='Lignes' >
+         <SsidChartIcon/>
+        </ToggleButton>         
+        <ToggleButton value='bar' title="Barres" >
+          <LeaderboardIcon/>
+        </ToggleButton>        
+        <ToggleButton value='stackedBar' title="Barres empilées"> 
+          <StackedBarChartIcon/>
+        </ToggleButton>
+      </ToggleButtonGroup>
       <ReactEcharts option={option} notMerge style={{ height: '400px' }} />
     </>
   );

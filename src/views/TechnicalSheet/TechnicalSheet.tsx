@@ -16,7 +16,8 @@ import { parseYearRange } from '../../helpers/formatters.helper';
 import SelectWithBoxes from '../../components/SelectWithBoxes/SelectWithBoxes';
 import SliderRange from '../../components/SliderRange/SliderRange';
 import RadioGroupUnit from '../../components/RadioGroupUnit/RadioGroupUnit';
-import TextField from '../../components/TextField/TextField';
+
+import ShareButton from '../../components/ShareButton/ShareButton';
 
 import TableTabulator from '../../components/TableTabulator/TableTabulator';
 
@@ -26,6 +27,7 @@ import './TechnicalSheet.css';
 import Tabs from '../../components/Tabs/Tabs';
 import TabPanels from '../../components/TabPanels/TabPanels';
 import PieChart from '../../components/PieChart/PieChart';
+
 
 export default () => {
   const { guid } = useParams<{ guid: string }>();
@@ -215,6 +217,24 @@ export default () => {
 
     return !idTerritory.includes('DEP') && !idTerritory.includes('REG');
   };
+  
+  
+  enum territoryType {
+      EPCI = "EPCI",
+      DEPARTEMENT = "departement",
+      REGION = "region",
+      AUTRE = "autre"
+  };
+  
+  const getTerritoryType = (idTerritory: string): territoryType => {
+    if (idTerritory.includes('DEP')){
+      return territoryType.DEPARTEMENT
+    }else if (idTerritory.includes('REG')){
+      return territoryType.REGION
+    }else {
+      return territoryType.EPCI
+    }
+  }
 
   const fetchTerritoriesIdsFromMatrix = (territories: string[]) => {
     let ids: string[] = [];
@@ -395,32 +415,35 @@ export default () => {
   const calcSummedByTerritory = (
     summedByTerritory: any,
     territory: string,
+    territory_type: territoryType,
     annee: number,
     value: number,
     populationRef: number | null,
     perInhabitants: boolean
   ) => {
-    if (!summedByTerritory[territory][annee]) {
-      summedByTerritory[territory][annee] = perInhabitants
+    if (!summedByTerritory[territory]['values'][annee]) {
+      summedByTerritory[territory]['values'][annee] = perInhabitants
         ? populationRef === null
           ? null
           : value / populationRef
         : value;
     } else {
-      summedByTerritory[territory][annee] =
-        summedByTerritory[territory][annee] +
+      summedByTerritory[territory]['values'][annee] =
+        summedByTerritory[territory]['values'][annee] +
         (perInhabitants
           ? populationRef === null
             ? null
             : value / populationRef
           : value);
     }
+    summedByTerritory[territory]['territory_type'] = territory_type
   };
   const formatTerritoriesWithYearStatistics = () => {
     let summedByTerritory: any = {};
 
     filteredMatrix?.forEach((feature: MatrixFeatures) => {
       const territory = feature.properties.nom_territoire;
+      const territory_type = getTerritoryType(feature.properties.id_territoire)
       const annee = feature.properties.annee;
       const value = feature.properties.valeur;
       const populationRef = feature.properties.pop_reference;
@@ -428,13 +451,14 @@ export default () => {
         unitSelected === `${feature.properties.unite ?? 'unité'}/habitant`;
 
       if (!summedByTerritory[territory]) {
-        summedByTerritory = { ...summedByTerritory, [territory]: {} };
+        summedByTerritory = { ...summedByTerritory, [territory]: {'values':{}} };
       }
 
       //The following calc is taking care of the unit selected and if population ref has a value
       calcSummedByTerritory(
         summedByTerritory,
         territory,
+        territory_type,
         annee,
         value,
         populationRef,
@@ -486,14 +510,9 @@ export default () => {
               setter={handleUnitRadio}
             />
           </div>
-          <div className="technical-sheet--trade-text">
-            <TextField
-              fullWidth={true}
-              label={'Url'}
-              disabled={true}
-              value={tradeURL}
-            />
-          </div>
+          
+          <ShareButton url={tradeURL} />
+          
           <div className="technical-sheet--table">
             {areResultsDisplayed && (
               <TableTabulator
@@ -509,9 +528,9 @@ export default () => {
               <>
                 <Tabs
                   tabLabels={[
-                    { name: 'Courbes', disabled: false },
+                    { name: 'Evolution', disabled: false },
                     {
-                      name: 'Fragments',
+                      name: hasAxisNoValuesInHisSelector ? '' : 'Répartition par '+analyseAxisLabel,
                       disabled: hasAxisNoValuesInHisSelector,
                     },
                   ]}
@@ -522,18 +541,6 @@ export default () => {
                   <StackLineChart
                     yearRange={yearRange}
                     filteredData={formatTerritoriesWithYearStatistics()}
-                    type={'line'}
-                  />
-                  <StackLineChart
-                    yearRange={yearRange}
-                    filteredData={formatTerritoriesWithYearStatistics()}
-                    type={'bar'}
-                  />
-                  <StackLineChart
-                    yearRange={yearRange}
-                    filteredData={formatTerritoriesWithYearStatistics()}
-                    type={'bar'}
-                    stacked
                   />
                 </TabPanels>
                 <TabPanels index={1} value={indexTab}>
@@ -542,6 +549,7 @@ export default () => {
                     selectedYear={hoveredDonutValue}
                   />
                 </TabPanels>
+                
               </>
             )}
           </div>
