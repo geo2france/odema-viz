@@ -1,10 +1,14 @@
 import './header.css';
 
-export const Header = () => {
+type Props = {
+  indicatorName: string;
+};
+
+export const Header = ({ indicatorName }: Props) => {
   return (
     <header className="App-header">
       <div className="indicator-infos">
-        <div>Indicateur 1</div>
+        <div>{indicatorName}</div>
       </div>
     </header>
   );
