@@ -1,15 +1,32 @@
-import './header.css';
+import "./header.css";
+
+import { useContext } from "react";
+import { Navbar, Container, Nav } from "react-bootstrap";
+import DarkModeToggle from "./DarkmodeToggle/DarkmodeToggle";
+import { DarkModeContext } from "../../context/DarkModeProvider";
+
+import "bootstrap/dist/css/bootstrap.min.css";
 
 type Props = {
   indicatorName: string;
 };
 
 export const Header = ({ indicatorName }: Props) => {
+  const { darkMode } = useContext(DarkModeContext);
   return (
-    <header className="App-header">
-      <div className="indicator-infos">
-        <div>{indicatorName}</div>
-      </div>
-    </header>
+    <Navbar expand="lg" className={darkMode ? "bg-secondary" : "bg-primary"}>
+      <Container>
+        <Navbar.Brand className="text-light">{indicatorName}</Navbar.Brand>
+        <Navbar.Toggle aria-controls="basic-navbar-nav" />
+        <Navbar.Collapse id="basic-navbar-nav">
+          <Nav className="ms-auto">
+            <DarkModeToggle />
+            <Nav.Link className="ms-5 text-light" href="/">
+              Accueil
+            </Nav.Link>
+          </Nav>
+        </Navbar.Collapse>
+      </Container>
+    </Navbar>
   );
 };
