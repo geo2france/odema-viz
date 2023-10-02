@@ -23,6 +23,7 @@ export interface FeatureProperties {
   granularite?: string;
   sources?: string;
   tags?: string | null;
+  tags_array?: Array<string> | null;
   is_public?: boolean;
   commentaires?: string | null;
 }
