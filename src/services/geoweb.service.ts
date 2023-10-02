@@ -11,7 +11,6 @@ class GeoWebService {
     response.data.features.forEach((feature) => {
         feature.properties.tags = feature.properties.tags.split('|')
     });
-    console.log(response.data);
     return response.data;
   }
   async getMatrixForIndicator({
