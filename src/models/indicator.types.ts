@@ -22,7 +22,8 @@ export interface FeatureProperties {
   nombre_valeurs?: number;
   granularite?: string;
   sources?: string;
-  tags?: Array<string> | null;
+  tags?: string | null;
+  tags_array?: Array<string> | null;
   is_public?: boolean;
   commentaires?: string | null;
 }
