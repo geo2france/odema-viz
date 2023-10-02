@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Indicator } from '../models/indicator.types';
+import { Indicator, Feature } from '../models/indicator.types';
 import { MatrixFromIndicator } from '../models/matrice.types';
 
 const GEO2FRANCE_BASE_REQUEST =
@@ -8,8 +8,8 @@ class GeoWebService {
   async getFilteredIndicatorsProperties(): Promise<Indicator[]> {
     const url = `${GEO2FRANCE_BASE_REQUEST}&TYPENAMES=odema:ind_ref_dev&PROPERTYNAME=guid,nom_indicateur,tags`;
     let response = await axios.get(url);
-    response.data.features.forEach((feature) => {
-        feature.properties.tags = feature.properties.tags.split('|')
+    response.data.features.forEach((feature: Feature) => {
+        feature.properties.tags_array = feature.properties.tags ? feature.properties.tags.split('|') : null;
     });
     return response.data;
   }
