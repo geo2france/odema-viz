@@ -102,7 +102,7 @@ export default () => {
               pagination={false}
               bordered={true}
               size={"middle"}
-              rowClassName={(record, index) =>
+              rowClassName={(_, index) =>
                 index % 2 === 0 ? " table-row-dark " : "table-row-light "
               } // record doit etre utilisé
               rowKey={(indicator: Feature) => indicator.id}
