@@ -8,7 +8,7 @@ import { DarkModeContext } from "../../context/DarkModeProvider";
 import "bootstrap/dist/css/bootstrap.min.css";
 
 type Props = {
-  indicatorName: string;
+  indicatorName?: string;
 };
 
 export const Header = ({ indicatorName }: Props) => {
