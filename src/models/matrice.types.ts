@@ -25,6 +25,7 @@ export interface MatrixFeatureProperties {
   guid_indicateur: string;
   id_territoire: string;
   nom_territoire: string;
+  type_territoire: territoryType | null;
   nom_axe: string;
   valeur_axe: string;
   valeur: number;
@@ -32,3 +33,10 @@ export interface MatrixFeatureProperties {
   unite_libel?: string | null;
   pop_reference: number | null;
 }
+
+export enum territoryType {
+      EPCI = "EPCI",
+      DEPARTEMENT = "departement",
+      REGION = "region",
+      AUTRE = "autre"
+  };
