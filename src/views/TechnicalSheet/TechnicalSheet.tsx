@@ -6,6 +6,7 @@ import geowebService from '../../services/geoweb.service';
 import {
   MatrixFeatures,
   MatrixFromIndicator,
+  territoryType
 } from '../../models/matrice.types';
 import { getCookie, setCookie } from '../../helpers/cookie.helper';
 import {
@@ -223,22 +224,6 @@ export default () => {
   };
   
   
-  enum territoryType {
-      EPCI = "EPCI",
-      DEPARTEMENT = "departement",
-      REGION = "region",
-      AUTRE = "autre"
-  };
-  
-  const getTerritoryType = (idTerritory: string): territoryType => {
-    if (idTerritory.includes('DEP')){
-      return territoryType.DEPARTEMENT
-    }else if (idTerritory.includes('REG')){
-      return territoryType.REGION
-    }else {
-      return territoryType.EPCI
-    }
-  }
 
   const fetchTerritoriesIdsFromMatrix = (territories: string[]) => {
     let ids: string[] = [];
@@ -419,7 +404,7 @@ export default () => {
   const calcSummedByTerritory = (
     summedByTerritory: any,
     territory: string,
-    territory_type: territoryType,
+    territory_type: territoryType | null,
     annee: number,
     value: number,
     populationRef: number | null,
@@ -447,7 +432,7 @@ export default () => {
 
     filteredMatrix?.forEach((feature: MatrixFeatures) => {
       const territory = feature.properties.nom_territoire;
-      const territory_type = getTerritoryType(feature.properties.id_territoire)
+      const territory_type = feature.properties.type_territoire;
       const annee = feature.properties.annee;
       const value = feature.properties.valeur;
       const populationRef = feature.properties.pop_reference;
