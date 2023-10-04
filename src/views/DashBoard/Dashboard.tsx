@@ -38,14 +38,20 @@ export default () => {
     },
     {
       title: "Mots clés",
-      key: "Tag",
+      key: "tags",
       dataIndex: ["properties", "tags"],
-      render: () => (
-        <>
-          <Tag color="rgb(13, 110, 253)">ODEMA</Tag>
-          <Tag color="rgb(255, 119, 0)">Dechets</Tag>
-        </>
-      ),
+      render: (tags: string) => {
+        const tagArray = tags.split("|"); // Divisez la chaîne en un tableau de tags
+        return (
+          <>
+            {tagArray.map((tag, index) => (
+              <Tag key={index} color="rgb(13, 110, 253)">
+                {tag}
+              </Tag>
+            ))}
+          </>
+        );
+      },
     },
   ];
 
@@ -89,7 +95,6 @@ export default () => {
             />
 
             <Table
-              className="test"
               dataSource={indicators?.features.filter(
                 (
                   indicator: Feature //Feature permet d'accéder à l'objet actueldu tableau
