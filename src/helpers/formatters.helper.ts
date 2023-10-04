@@ -24,3 +24,15 @@ export function convertZerosToNullFromObject(object: any): any {
   });
   return initialStateOfObject;
 }
+    
+export function flatGeojson(geojson: any){
+    // Aplatit le geojson. Utile pour créer un Arquero.Table (avec Table.from() )
+    return geojson.features.map((feature: any)  => {
+        delete feature.type;
+        const new_feat = {...feature.properties, ...feature };
+        delete new_feat.properties;
+        return new_feat
+    })
+}
+
+

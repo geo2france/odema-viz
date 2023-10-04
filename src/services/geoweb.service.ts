@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { Indicator, Feature } from '../models/indicator.types';
 import { MatrixFromIndicator, MatrixFeatures, territoryType } from '../models/matrice.types';
+import {flatGeojson} from '../helpers/formatters.helper';
 
 const GEO2FRANCE_BASE_REQUEST =
   'https://www.geo2france.fr/geoserver/odema/ows?SERVICE=WFS&REQUEST=GetFeature&VERSION=2.0.0&OUTPUTFORMAT=application/json';
@@ -11,6 +12,7 @@ class GeoWebService {
     response.data.features.forEach((feature: Feature) => {
         feature.properties.tags_array = feature.properties.tags ? feature.properties.tags.split('|') : null;
     });
+    console.log(flatGeojson(response.data)) //dev
     return response.data;
   }
   async getMatrixForIndicator({
@@ -31,7 +33,7 @@ class GeoWebService {
               feature.properties.type_territoire = territoryType.EPCI
             }
     });
-    
+    console.log(flatGeojson(response.data)) //dev
     return response.data;
   }
 }
