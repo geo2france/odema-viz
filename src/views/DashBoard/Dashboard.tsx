@@ -26,6 +26,29 @@ export default () => {
 
   const { darkMode } = useContext(DarkModeContext);
 
+  const generateTagColor = (tag: string) => {
+    // Utilisez une fonction pour générer une couleur en fonction du nom du tag
+    const hash = Array.from(tag).reduce(
+      (acc, char) => char.charCodeAt(0) + acc,
+      0
+    );
+    const colorIndex = hash % tagColorsPalette.length;
+    return tagColorsPalette[colorIndex];
+  };
+
+  const tagColorsPalette = [
+    "#FF5733", // Rouge
+    "#FF9333", // Orange
+    "#33A5FF", // Ciel
+    "#B233FF", // Violet
+    "#337AFF", // Bleu
+    "#c47a45", // Maron
+    "#28a745", // Vert
+    "#343a40", //Noir
+    "#091731", // Bleu foncé
+    "#155a25", // Vert foncé
+  ];
+
   const columns = [
     {
       title: "Nom de l'indicateur",
@@ -44,11 +67,14 @@ export default () => {
         const tagArray = tags.split("|"); // Divisez la chaîne en un tableau de tags
         return (
           <>
-            {tagArray.map((tag, index) => (
-              <Tag key={index} color="rgb(13, 110, 253)">
-                {tag}
-              </Tag>
-            ))}
+            {tagArray.map((tag, index) => {
+              const color = generateTagColor(tag);
+              return (
+                <Tag key={index} color={color}>
+                  {tag}
+                </Tag>
+              );
+            })}
           </>
         );
       },
@@ -57,13 +83,12 @@ export default () => {
 
   const darkThemeAnt = {
     // Configuration du thème sombre
-
-    //Token pour tous les composant
+    // Token pour tous les composants
     token: {
       colorBgContainer: "#2c2c2c",
       colorTextDescription: "#aca9b0",
       colorTextPlaceholder: "#aca9b0",
-      colorPrimaryHover: "#ff7700 ",
+      colorPrimaryHover: "#ff7700",
     },
     components: {
       Table: {},
@@ -85,7 +110,6 @@ export default () => {
       <Container className="dashboard-map d-flex justify-content-around">
         <Col xs={12} lg={8}>
           {/* SearchBar */}
-
           <ConfigProvider theme={theme}>
             <Input.Search
               className={darkMode ? "dark mb-3 mt-3" : "light mb-3 mt-3"}
@@ -93,15 +117,11 @@ export default () => {
               value={searchText}
               onChange={(e) => setSearchText(e.target.value)}
             />
-
             <Table
-              dataSource={indicators?.features.filter(
-                (
-                  indicator: Feature //Feature permet d'accéder à l'objet actueldu tableau
-                ) =>
-                  indicator.properties.nom_indicateur
-                    .toLowerCase()
-                    .includes(searchText.toLowerCase())
+              dataSource={indicators?.features.filter((indicator: Feature) =>
+                indicator.properties.nom_indicateur
+                  .toLowerCase()
+                  .includes(searchText.toLowerCase())
               )}
               columns={columns}
               pagination={false}
@@ -109,7 +129,7 @@ export default () => {
               size={"middle"}
               rowClassName={(_, index) =>
                 index % 2 === 0 ? " table-row-dark " : "table-row-light "
-              } // record doit etre utilisé
+              }
               rowKey={(indicator: Feature) => indicator.id}
             />
           </ConfigProvider>
