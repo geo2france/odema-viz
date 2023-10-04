@@ -44,7 +44,7 @@ export default () => {
     "#337AFF", // Bleu
     "#c47a45", // Maron
     "#28a745", // Vert
-    "#343a40", //Noir
+    "#343a40", // Noir
     "#091731", // Bleu foncé
     "#155a25", // Vert foncé
   ];
@@ -80,6 +80,21 @@ export default () => {
       },
     },
   ];
+
+  const filteredIndicators = indicators?.features.filter(
+    (indicator: Feature) => {
+      const lowercaseSearchText = searchText.toLowerCase();
+      const lowercaseNomIndicateur =
+        indicator.properties.nom_indicateur.toLowerCase();
+      const tagArray = indicator.properties.tags?.split("|");
+
+      // Vérifie si le nom de l'indicateur ou l'un de ses tags correspond à la recherche
+      return (
+        lowercaseNomIndicateur.includes(lowercaseSearchText) ||
+        tagArray?.some((tag) => tag.toLowerCase().includes(lowercaseSearchText))
+      );
+    }
+  );
 
   const darkThemeAnt = {
     // Configuration du thème sombre
@@ -118,17 +133,13 @@ export default () => {
               onChange={(e) => setSearchText(e.target.value)}
             />
             <Table
-              dataSource={indicators?.features.filter((indicator: Feature) =>
-                indicator.properties.nom_indicateur
-                  .toLowerCase()
-                  .includes(searchText.toLowerCase())
-              )}
+              dataSource={filteredIndicators}
               columns={columns}
               pagination={false}
               bordered={true}
               size={"middle"}
               rowClassName={(_, index) =>
-                index % 2 === 0 ? " table-row-dark " : "table-row-light "
+                index % 2 === 0 ? "table-row-dark" : "table-row-light"
               }
               rowKey={(indicator: Feature) => indicator.id}
             />
