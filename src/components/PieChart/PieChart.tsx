@@ -21,7 +21,7 @@ export default ({ filteredData, selectedYear }: Props) => {
       x: "center",
       data: Object.keys(filteredData),
       textStyle: {
-        color: darkMode ? "white" : "dark",
+        color: darkMode ? "white" : "black",
       }
     },
     series: [
