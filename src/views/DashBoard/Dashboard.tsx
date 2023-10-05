@@ -73,7 +73,7 @@ export default () => {
 
   return (
     <>
-      <Header indicatorName="ODEMA" />
+      <Header indicatorName="" />
       <Container className="dashboard-map d-flex justify-content-around">
         <Col xs={12} lg={8}>
           {/* SearchBar */}
