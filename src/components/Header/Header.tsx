@@ -16,7 +16,7 @@ export const Header = ({ indicatorName }: Props) => {
   const { darkMode } = useContext(DarkModeContext);
 
   return (
-    <Navbar expand="lg" className={darkMode ? "bg-secondary" : "bg-primary"}>
+    <Navbar expand="lg" className={darkMode ? "bg-secondary" : "bg-odema"}>
       <Container>
         <img src={Icone} height="55" />
         <Navbar.Brand className="ms-5 text-light">{indicatorName}</Navbar.Brand>
