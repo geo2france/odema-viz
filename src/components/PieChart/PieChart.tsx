@@ -1,7 +1,7 @@
 import ReactEcharts from 'echarts-for-react';
 import Typography from '@mui/material/Typography';
 import {useContext} from 'react';
-import DarkModeProvider, {DarkModeContext,} from "../../context/DarkModeProvider";
+import {DarkModeContext,} from "../../context/DarkModeProvider";
 
 type Props = {
   filteredData: { [key: string]: number };

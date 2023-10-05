@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Table, Tag, Input, ConfigProvider } from "antd";
+import { Table, Tag, Input } from "antd";
 import geowebService from "../../services/geoweb.service";
 import { IndicatorsContext } from "../../context/IndicatorsContext";
 import { Feature } from "../../models/indicator.types";
@@ -49,27 +49,6 @@ export default () => {
     },
   ];
 
-  const darkThemeAnt = {
-    // Configuration du thème sombre
-
-    //Token pour tous les composant
-    token: {
-      colorBgContainer: "#2c2c2c",
-      colorTextDescription: "#aca9b0",
-      colorTextPlaceholder: "#aca9b0",
-      colorPrimaryHover: "#ff7700 ",
-    },
-    components: {
-      Table: {},
-    },
-  };
-
-  const lightThemeAnt = {
-    token: {},
-    components: {
-      Table: {},
-    },
-  };
 
   return (
     <>

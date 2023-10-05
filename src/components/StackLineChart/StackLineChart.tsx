@@ -6,7 +6,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import StackedBarChartIcon from '@mui/icons-material/StackedBarChart';
 import SsidChartIcon from '@mui/icons-material/SsidChart';
-import DarkModeProvider, { DarkModeContext } from "../../context/DarkModeProvider"; 
+import  { DarkModeContext } from "../../context/DarkModeProvider"; 
 
 
   
