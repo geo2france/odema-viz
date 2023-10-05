@@ -1,12 +1,15 @@
 import ReactEcharts from 'echarts-for-react';
-import {useState } from 'react';
+
+import {useState, useContext} from 'react';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import LeaderboardIcon from '@mui/icons-material/Leaderboard';
 import StackedBarChartIcon from '@mui/icons-material/StackedBarChart';
 import SsidChartIcon from '@mui/icons-material/SsidChart';
+import DarkModeProvider, { DarkModeContext } from "../../context/DarkModeProvider"; 
 
 
+  
 type Props = {
   yearRange: number[];
   filteredData: any;
@@ -74,6 +77,8 @@ export default ({ yearRange, filteredData }: Props) => {
             setChartType(newChartType);
         }
   }
+  
+  const { darkMode } = useContext(DarkModeContext);
 
   const option = {
     xAxis: {
@@ -83,12 +88,15 @@ export default ({ yearRange, filteredData }: Props) => {
     legend: {
       data: handleLegend(),
       bottom: 0,
-      type: 'scroll',
+      type: "scroll",
+      textStyle: {
+        color: darkMode ? "white" : "dark", // Changez ici la couleur de la légende en blanc
+      },
     },
     toolbox: {
       feature: {
-        saveAsImage: { show: true, title: "Exporter le graphique" }
-      }
+        saveAsImage: { show: true, title: "Exporter le graphique" },
+      },
     },
     series: [...flatDataPerTerritoriesPerYears()],
   };
