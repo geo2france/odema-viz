@@ -71,16 +71,12 @@ export default () => {
     },
   };
 
-  const theme = darkMode ? darkThemeAnt : lightThemeAnt;
-
   return (
     <>
       <Header indicatorName="ODEMA" />
       <Container className="dashboard-map d-flex justify-content-around">
         <Col xs={12} lg={8}>
           {/* SearchBar */}
-
-          <ConfigProvider theme={theme}>
             <Input.Search
               className={darkMode ? "dark mb-3 mt-3" : "light mb-3 mt-3"}
               placeholder="Rechercher un indicateur"
@@ -107,7 +103,7 @@ export default () => {
               } // record doit etre utilisé
               rowKey={(indicator: Feature) => indicator.id}
             />
-          </ConfigProvider>
+
         </Col>
       </Container>
     </>

@@ -1,7 +1,7 @@
-export const lightThemeConfig = {
-  components: {
-    Select: {
-      // ... Configuration spécifique au mode clair
-    },
+import { createTheme } from "@mui/material/styles";
+
+export const lightThemeConfig = createTheme({
+  palette: {
+    mode: "light",
   },
-};
+});
