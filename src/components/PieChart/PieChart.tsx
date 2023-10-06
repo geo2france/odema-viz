@@ -22,13 +22,16 @@ export default ({ filteredData, selectedYear }: Props) => {
       data: Object.keys(filteredData),
       textStyle: {
         color: darkMode ? "white" : "black",
-      }
+      },
     },
     series: [
       {
         type: "pie",
         data: [...pieData],
         radius: ["40%", "70%"],
+        label: {
+          color: darkMode ? "white" : "black", // Changer la couleur du texte ici
+        },
       },
     ],
   };
