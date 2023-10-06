@@ -105,6 +105,7 @@ export default () => {
       colorTextPlaceholder: "#aca9b0",
       colorPrimaryHover: "#ff7700",
       colorText: "white"
+
     },
     components: {
       Table: {},
