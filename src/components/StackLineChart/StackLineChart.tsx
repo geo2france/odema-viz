@@ -90,7 +90,7 @@ export default ({ yearRange, filteredData }: Props) => {
       bottom: 0,
       type: "scroll",
       textStyle: {
-        color: darkMode ? "white" : "dark", // Changez ici la couleur de la légende en blanc
+        color: darkMode ? "white" : "black", // Changez ici la couleur de la légende en blanc
       },
     },
     toolbox: {
