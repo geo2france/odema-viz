@@ -8,6 +8,8 @@ import { Header } from "../../components/Header/Header";
 import { Container, Col } from "react-bootstrap";
 import { DarkModeContext } from "../../context/DarkModeProvider";
 
+
+
 import "./Dashboard.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
@@ -64,7 +66,6 @@ export default () => {
             />
 
             <Table
-              className="test"
               dataSource={indicators?.features.filter(
                 (
                   indicator: Feature //Feature permet d'accéder à l'objet actueldu tableau
