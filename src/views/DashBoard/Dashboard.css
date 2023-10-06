@@ -8,19 +8,19 @@
 
 /* Gestion de couleur ligne impair et pair */
 .table-row-light {
-    background-color: rgb(247, 245, 245);  
+    background-color: #dead8f27;  
 }
 .table-row-light:hover td {
     background-color: rgba(165, 155, 155, 0.325) !important;
 }
 .table-row-dark {
-    background-color: rgba(159, 159, 202, 0.2);    
+    background-color: #dead8f61;    
 }
 .table-row-dark:hover td {
     background-color: rgba(165, 155, 155, 0.325) !important;
 }
 .indicator-cell {
-    color: rgb(13, 110, 253)
+    color: rgba(0, 0, 0, 0.767)
 }
 
 .indicator-cell:hover{
@@ -34,7 +34,7 @@
     position: absolute;
     width: 0;
     height: 4px;
-    background-color: #007bff;
+    background-color: #dead8f;
     /* Couleur du soulignement */
     bottom: 0;
     left: 0;
