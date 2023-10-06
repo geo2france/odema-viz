@@ -104,6 +104,8 @@ export default () => {
       colorTextDescription: "#aca9b0",
       colorTextPlaceholder: "#aca9b0",
       colorPrimaryHover: "#ff7700",
+      colorText: "white"
+
     },
     components: {
       Table: {},
@@ -121,7 +123,7 @@ export default () => {
 
   return (
     <>
-      <Header indicatorName="ODEMA" />
+      <Header />
       <Container className="dashboard-map d-flex justify-content-around">
         <Col xs={12} lg={8}>
           {/* SearchBar */}

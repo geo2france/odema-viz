@@ -1,4 +1,5 @@
-import { useEffect, useState, SyntheticEvent } from 'react';
+import {
+  useEffect, useState, SyntheticEvent} from 'react';
 import { useParams } from 'react-router-dom';
 import { Header } from '../../components/Header/Header';
 import SelectMultiple from '../../components/SelectMultiple/SelectMultiple';
@@ -27,6 +28,7 @@ import './TechnicalSheet.css';
 import Tabs from '../../components/Tabs/Tabs';
 import TabPanels from '../../components/TabPanels/TabPanels';
 import PieChart from '../../components/PieChart/PieChart';
+
 
 
 
@@ -476,7 +478,7 @@ export default () => {
   return (
     <>
       {matrice && (
-        <>
+        <div>
           <Header
             indicatorName={
               matrice?.features[0].properties.nom_indicateur
@@ -561,7 +563,7 @@ export default () => {
               </>
             )}
           </div>
-        </>
+        </div>
       )}
     </>
   );

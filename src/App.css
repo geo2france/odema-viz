@@ -8,16 +8,16 @@
 }
 
 body {
-  margin: 0;
   font-family: 'Roboto', Helvetica, Arial, sans-serif;
+  height : 100%;
+  background-color: rgb(44, 44, 44);
 }
 
-.dark {
+ .dark {
   background-color: rgb(44, 44, 44);
-
+  
 }
 
 .light {
   background-color: rgb(255, 255, 255);
-
-}
+}  
