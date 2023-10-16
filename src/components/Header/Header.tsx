@@ -2,6 +2,7 @@ import "./header.css";
 
 import { useContext } from "react";
 import { Navbar, Container, Nav } from "react-bootstrap";
+import {LinkContainer} from 'react-router-bootstrap';
 import DarkModeToggle from "./DarkmodeToggle/DarkmodeToggle";
 import { DarkModeContext } from "../../context/DarkModeProvider";
 
@@ -24,9 +25,11 @@ export const Header = ({ indicatorName }: Props) => {
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
             <DarkModeToggle />
-            <Nav.Link className="ms-5 text-light" href="/">
+            <LinkContainer to={`/`}>
+            <Nav.Link className="ms-5 text-light" >
               Accueil
             </Nav.Link>
+            </LinkContainer>
           </Nav>
         </Navbar.Collapse>
       </Container>
