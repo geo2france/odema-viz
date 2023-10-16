@@ -1,8 +1,15 @@
-import { ReactTabulator } from 'react-tabulator';
-import 'react-tabulator/lib/styles.css';
-import 'react-tabulator/css/tabulator_bootstrap4.min.css';
+import { useContext, useEffect } from "react";
+import { ReactTabulator } from "react-tabulator";
 
-import { convertZerosToNullFromObject } from '../../helpers/formatters.helper';
+import { DarkModeContext } from "../../context/DarkModeProvider";
+import { convertZerosToNullFromObject } from "../../helpers/formatters.helper";
+
+//import "react-tabulator/css/tabulator_midnight.min.css";
+import "./tabulator_midnight.css";
+
+import "./TableTabulator.css";
+
+import "react-tabulator/css/tabulator.min.css";
 
 type Props = {
   yearRange: number[];
@@ -17,6 +24,19 @@ export default ({
   checkIsTerritoryEPCI,
   checkIsAtLeastOneEPCISelected,
 }: Props) => {
+
+  // Gestion du darkMode
+  const { darkMode } = useContext(DarkModeContext);
+  useEffect(() => {
+    const tableElement = document.getElementById("tab");
+    if (tableElement) {
+      tableElement.classList.add("hidden-table");
+      setTimeout(() => {
+        tableElement.classList.remove("hidden-table");
+      }, 1); // problème changement de thème du tableau
+    }
+  }, [darkMode]);
+
   const formattedColumns = () => {
     let flattedColumns = [];
 
@@ -31,7 +51,7 @@ export default ({
     }
 
     const columns = [
-      { title: 'Territoires', field: 'territory' },
+      { title: "Territoires", field: "territory" },
       ...flattedColumns,
     ];
     return columns;
@@ -41,7 +61,7 @@ export default ({
     let sumByYear: any = {};
     Object.keys(summedByTerritory).forEach((territoryName: string) => {
       if (checkIsTerritoryEPCI(territoryName)) {
-        Object.keys(summedByTerritory[territoryName]['values']).forEach(
+        Object.keys(summedByTerritory[territoryName]["values"]).forEach(
           (yearValue: string) => {
             if (!sumByYear.hasOwnProperty(yearValue)) {
               sumByYear = { ...sumByYear, [yearValue]: 0 };
@@ -49,14 +69,14 @@ export default ({
 
             sumByYear[yearValue] =
               sumByYear[yearValue] +
-              (summedByTerritory[territoryName]['values'][yearValue] ?? 0);
+              (summedByTerritory[territoryName]["values"][yearValue] ?? 0);
           }
         );
       }
     });
 
     //We don't want any value displayed when it's null
-    return {'values': convertZerosToNullFromObject(sumByYear) };
+    return { values: convertZerosToNullFromObject(sumByYear) };
   };
 
   const createAverageOfTerritoriesValuesPerYear = (
@@ -68,15 +88,19 @@ export default ({
 
     Object.keys(summedByTerritory).map((territoryName: string) => {
       if (checkIsTerritoryEPCI(territoryName)) {
-        Object.keys(summedByTerritory[territoryName]['values']).map((year: string) => {
-          if (!coefficientsPeryear.hasOwnProperty(year)) {
-            coefficientsPeryear = { ...coefficientsPeryear, [year]: 0 };
-          }
+        Object.keys(summedByTerritory[territoryName]["values"]).map(
+          (year: string) => {
+            if (!coefficientsPeryear.hasOwnProperty(year)) {
+              coefficientsPeryear = { ...coefficientsPeryear, [year]: 0 };
+            }
 
-          if (summedByTerritory[territoryName]['values'].hasOwnProperty(year)) {
-            coefficientsPeryear[year] = coefficientsPeryear[year] + 1;
+            if (
+              summedByTerritory[territoryName]["values"].hasOwnProperty(year)
+            ) {
+              coefficientsPeryear[year] = coefficientsPeryear[year] + 1;
+            }
           }
-        });
+        );
       }
     });
 
@@ -88,21 +112,23 @@ export default ({
       finalAverage[yearCoefficient] =
         sumByYear[yearCoefficient] / coefficientsPeryear[yearCoefficient];
     });
-    return {'values': convertZerosToNullFromObject(finalAverage) };
+    return { values: convertZerosToNullFromObject(finalAverage) };
   };
 
   const roundAndSeparateThousandsOfValues = (summedByTerritory: any) => {
     Object.keys(summedByTerritory).map((territoryName: string) => {
-      for (let year in summedByTerritory[territoryName]['values']) {
-        if (typeof summedByTerritory[territoryName]['values'][year] === 'number') {
-          summedByTerritory[territoryName]['values'][year] = parseFloat(
-            summedByTerritory[territoryName]['values'][year].toFixed(2)
+      for (let year in summedByTerritory[territoryName]["values"]) {
+        if (
+          typeof summedByTerritory[territoryName]["values"][year] === "number"
+        ) {
+          summedByTerritory[territoryName]["values"][year] = parseFloat(
+            summedByTerritory[territoryName]["values"][year].toFixed(2)
           );
-          summedByTerritory[territoryName]['values'][year] = summedByTerritory[
+          summedByTerritory[territoryName]["values"][year] = summedByTerritory[
             territoryName
-          ]['values'][year]
+          ]["values"][year]
             .toString()
-            .replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+            .replace(/\B(?=(\d{3})+(?!\d))/g, " ");
         }
       }
     });
@@ -116,21 +142,19 @@ export default ({
 
     if (checkIsAtLeastOneEPCISelected()) {
       const sumByYear = {
-        territory: 'Somme totale par année (EPCI)',
+        territory: "Somme totale par année (EPCI)",
         ...createSumOfTerritoriesValuesPerYear(territoriesWithYearStatistics),
       };
       const averageByYear = {
-        territory: 'Moyenne par année (par EPCI)',
+        territory: "Moyenne par année (par EPCI)",
         ...createAverageOfTerritoriesValuesPerYear(
           territoriesWithYearStatistics,
-          sumByYear['values']
+          sumByYear["values"]
         ),
       };
 
-      fullStatistics['Somme totale par année (EPCI)'] = sumByYear
-      fullStatistics['Moyenne par année (par EPCI)'] = averageByYear
-
-      
+      fullStatistics["Somme totale par année (EPCI)"] = sumByYear;
+      fullStatistics["Moyenne par année (par EPCI)"] = averageByYear;
     }
 
     //We round values to two decimal
@@ -140,7 +164,7 @@ export default ({
       (TerritoryName: string) => {
         return {
           territory: TerritoryName,
-          ...fullStatistics[TerritoryName]['values'],
+          ...fullStatistics[TerritoryName]["values"],
         };
       }
     );
@@ -151,9 +175,11 @@ export default ({
   return (
     <div>
       <ReactTabulator
+        id="tab"
+        className={`${darkMode ? "dark" : ""}`}
         data={computeDataWithUnitForTable()}
         columns={formattedColumns()}
-        layout={'fitdata'}
+        layout={"fitData"}
       />
     </div>
   );

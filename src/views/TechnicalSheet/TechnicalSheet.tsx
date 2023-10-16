@@ -1,4 +1,5 @@
-import { useEffect, useState, SyntheticEvent } from 'react';
+import {
+  useEffect, useState, SyntheticEvent} from 'react';
 import { useParams } from 'react-router-dom';
 import { Header } from '../../components/Header/Header';
 import SelectMultiple from '../../components/SelectMultiple/SelectMultiple';
@@ -29,6 +30,9 @@ import TabPanels from '../../components/TabPanels/TabPanels';
 import PieChart from '../../components/PieChart/PieChart';
 
 
+
+
+
 export default () => {
   const { guid } = useParams<{ guid: string }>();
 
@@ -54,6 +58,8 @@ export default () => {
   const [tradeURL, setTradeURL] = useState<string>(
     `${window.location.protocol}//${window.location.host}${window.location.pathname}${window.location.hash}`
   );
+
+  
 
   useEffect(() => {
     const fetchMatrixIndicator = async () => {
@@ -468,16 +474,19 @@ export default () => {
     return summedByTerritory;
   };
 
+  
   return (
     <>
       {matrice && (
-        <>
+        <div>
           <Header
-            indicatorName={matrice?.features[0].properties.nom_indicateur}
+            indicatorName={
+              matrice?.features[0].properties.nom_indicateur
+            }
           />
           <div className="technical-sheet--selectors">
             <SelectMultiple
-              label={'Territoire(s)'}
+              label={"Territoire(s)"}
               values={territoriesSelected}
               options={groupedTerritories}
               setFunction={handleTerritoriesSelected}
@@ -504,15 +513,15 @@ export default () => {
               setter={handleYearRange}
             />
             <RadioGroupUnit
-              label={'Unité'}
+              label={"Unité"}
               units={units}
               selectedValue={unitSelected}
               setter={handleUnitRadio}
             />
           </div>
-          
+
           <ShareButton url={tradeURL} />
-          
+
           <div className="technical-sheet--table">
             {areResultsDisplayed && (
               <TableTabulator
@@ -528,9 +537,11 @@ export default () => {
               <>
                 <Tabs
                   tabLabels={[
-                    { name: 'Evolution', disabled: false },
+                    { name: "Evolution", disabled: false },
                     {
-                      name: hasAxisNoValuesInHisSelector ? '' : 'Répartition par '+analyseAxisLabel,
+                      name: hasAxisNoValuesInHisSelector
+                        ? ""
+                        : "Répartition par " + analyseAxisLabel,
                       disabled: hasAxisNoValuesInHisSelector,
                     },
                   ]}
@@ -549,11 +560,10 @@ export default () => {
                     selectedYear={hoveredDonutValue}
                   />
                 </TabPanels>
-                
               </>
             )}
           </div>
-        </>
+        </div>
       )}
     </>
   );

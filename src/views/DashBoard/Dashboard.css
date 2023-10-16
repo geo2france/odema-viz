@@ -1,0 +1,100 @@
+/* Taille des colonne */
+.indicator-cell {
+    padding: 3px;
+}
+
+
+/* ! Thème light  */
+
+/* Gestion de couleur ligne impair et pair */
+.table-row-light {
+    background-color: #dead8f27;  
+}
+.table-row-light:hover td {
+    background-color: rgba(165, 155, 155, 0.325) !important;
+}
+.table-row-dark {
+    background-color: #dead8f61;    
+}
+.table-row-dark:hover td {
+    background-color: rgba(165, 155, 155, 0.325) !important;
+}
+.indicator-cell {
+    color: rgba(0, 0, 0, 0.767)
+}
+
+.indicator-cell:hover{
+    color: rgb(45, 29, 113) !important;
+}
+
+
+/* Animation de soulignement */
+.indicator-cell::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 4px;
+    background-color: #dead8f;
+    /* Couleur du soulignement */
+    bottom: 0;
+    left: 0;
+    transition: width 0.5s ease;
+    /* Durée de l'animation */
+}
+
+.indicator-cell:hover::before {
+    width: 100%;
+}
+
+/* ! Thème dark  */
+
+/* Gestion de couleur ligne impair et pair */
+.dark .table-row-light {
+    background-color: #2c2c2c;
+}
+.dark .table-row-light:hover td {
+    background-color: rgba(0, 0, 0, 0.633) !important;
+}
+
+.dark .table-row-dark {
+    background-color: #423F3E;
+}
+.dark .table-row-dark:hover td {
+    background-color: rgba(0, 0, 0, 0.633) !important;
+}
+
+/* Header du tableau */
+.dark .ant-table .ant-table-container .ant-table-content table thead.ant-table-thead .ant-table-cell {
+    background-color: rgb(108, 117, 125);
+    color : white
+}
+
+.dark .indicator-cell{
+    color : rgb(255, 255, 255);
+    padding : 3px;
+}
+.dark .indicator-cell:hover {
+    color: #ff7700 !important;
+}
+
+/* Animation de soulignement */
+.dark .indicator-cell::before {
+    content: "";
+    position: absolute;
+    width: 0;
+    height: 4px;
+    background-color: #ff7700;
+    /* Couleur du soulignement */
+    bottom: 0;
+    left: 0;
+    transition: width 0.5s ease;
+    /* Durée de l'animation */
+}
+
+.dark .indicator-cell:hover::before {
+    width: 100%;
+}
+
+
+
+

@@ -1,0 +1,16 @@
+.dark .tabulator-table{
+    color : white !important
+}
+
+.tabulator-col-title {
+    text-align: center;
+}
+
+.technical-sheet--table{
+    width: fit-content;
+    margin: auto
+}
+
+.hidden-table {
+    display: none !important;
+}
