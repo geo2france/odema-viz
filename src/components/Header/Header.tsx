@@ -19,17 +19,16 @@ export const Header = ({ indicatorName }: Props) => {
   return (
     <Navbar expand="lg" className={darkMode ? "bg-secondary" : "bg-odema"}>
       <Container>
-        <img src={Icone} height="55" />
+        <LinkContainer to={`/`}>
+          <Nav.Link className="ms-5" >
+            <img src={Icone} height="55" />
+          </Nav.Link>
+          </LinkContainer>
         <Navbar.Brand className="ms-5 text-light">{indicatorName}</Navbar.Brand>
         <Navbar.Toggle aria-controls="basic-navbar-nav" />
         <Navbar.Collapse id="basic-navbar-nav">
           <Nav className="ms-auto">
             <DarkModeToggle />
-            <LinkContainer to={`/`}>
-            <Nav.Link className="ms-5 text-light" >
-              Accueil
-            </Nav.Link>
-            </LinkContainer>
           </Nav>
         </Navbar.Collapse>
       </Container>
