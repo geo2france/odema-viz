@@ -7,6 +7,8 @@ import DarkModeProvider, { DarkModeContext } from "./context/DarkModeProvider";
 import { darkThemeConfig } from "./theme/darkThemeConfig";
 import { lightThemeConfig } from "./theme/lightThemeConfig";
 import { ThemeProvider } from "@mui/material/styles";
+import frFR from "antd/locale/fr_FR"
+import { ConfigProvider } from "antd";
 
 import "./App.css";
 
@@ -15,7 +17,9 @@ function App() {
   return (
     <IndicatorsProvider>
       <DarkModeProvider>
-        <AppContent />
+        <ConfigProvider locale={frFR}>
+          <AppContent />
+        </ConfigProvider>
       </DarkModeProvider>
     </IndicatorsProvider>
   );
