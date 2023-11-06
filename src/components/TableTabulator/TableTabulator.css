@@ -6,10 +6,15 @@
     text-align: center;
 }
 
-.technical-sheet--table{
+@media (min-width: 1000px) {
+    .tabulator
+    {
     width: fit-content;
     margin: auto
+    }
+
 }
+
 
 .hidden-table {
     display: none !important;

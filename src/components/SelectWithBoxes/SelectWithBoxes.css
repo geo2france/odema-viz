@@ -1,13 +1,15 @@
-.SelectBoxes {
-    /* Styles communs aux deux modes */
-}
-
-.lightSelect {
-    /* Styles pour le mode clair */
-}
 
 .darkSelect {
     /* Styles pour le mode sombre */
     background-color: #7d1717 !important;
     color: #ffffff !important;
+}
+
+.MuiFormControl-root{
+    width : 100% ;
+
+}
+
+#demo-multiple-checkbox-label{
+    margin-top: -8px 
 }

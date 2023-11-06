@@ -1,11 +1,11 @@
-.technical-sheet--selectors {
-  display: flex;
-  align-items: center;
-  flex-wrap: wrap;
+.configComponents{
+  margin-top: 10px;
+  margin-bottom: 10px;
 }
 
-.technical-sheet--table {
-  padding: 10px 5px;
+/* mobile-styles.css */
+@media (max-width: 768px) {
+  .marginCol{
+    margin-bottom: 20px;
+  }
 }
-
-
