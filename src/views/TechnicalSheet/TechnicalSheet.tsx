@@ -483,7 +483,7 @@ export default () => {
             align="middle"
             className="configComponents"
           >
-            <Col xs={22} lg={6} className="marginCol">
+            <Col xs={22} sm={10} lg={6} className="marginCol">
               <SelectMultiple
                 label={"Territoire(s)"}
                 values={territoriesSelected}
@@ -494,7 +494,7 @@ export default () => {
                 placeHolder="Territoire"
               />
             </Col>
-            <Col xs={22} lg={6} className="marginCol">
+            <Col xs={22} sm={10} lg={6} className="marginCol">
               <SelectWithBoxes
                 disabled={hasAxisNoValuesInHisSelector}
                 label={
@@ -508,7 +508,7 @@ export default () => {
                 selectedAll={axisSelectedAll}
               />
             </Col>
-            <Col xs={18} lg={3}>
+            <Col xs={18} sm={10} lg={4}>
               <SliderRange
                 value={yearRange}
                 minValue={minMaxYearRange[0]}
@@ -516,7 +516,7 @@ export default () => {
                 setter={handleYearRange}
               />
             </Col>
-            <Col xs={20} lg={5}>
+            <Col xs={20} sm={10} lg={5}>
               <RadioGroupUnit
                 label={"Unité"}
                 units={units}
