@@ -8,4 +8,7 @@
   .marginCol{
     margin-bottom: 20px;
   }
+  .headerTitle {
+    text-align: center;
+  }
 }

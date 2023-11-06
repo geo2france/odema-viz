@@ -23,7 +23,9 @@ export default ({ filteredData, selectedYear }: Props) => {
       textStyle: {
         color: darkMode ? "white" : "black",
       },
+      bottom :[-5],
     },
+    
     series: [
       {
         type: "pie",
@@ -37,14 +39,14 @@ export default ({ filteredData, selectedYear }: Props) => {
   };
   return (
     <>
-      <ReactEcharts option={option} style={{ height: '400px' }} />
       <Typography
-        style={{ textAlign: 'center' }}
+        style={{ textAlign: "center" }}
         id="range-slider"
         gutterBottom
       >
         Année {selectedYear}
       </Typography>
+      <ReactEcharts option={option} style={{ height: "450px", marginTop:"-50px"}} />
     </>
   );
 };
