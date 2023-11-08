@@ -3,6 +3,8 @@ export const antdThemeConfig = {
     Slider: {
       trackBg: "#ff5f4a",
       trackHoverBg: "#ff5f4a",
+      railBg: "rgba(0, 0, 0, 0.3)",
+      railHoverBg: "rgba(0, 0, 0, 0.3)",
     },
   },
   token: {
