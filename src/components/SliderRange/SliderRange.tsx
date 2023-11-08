@@ -2,6 +2,7 @@ import Box from '@mui/material/Box';
 import Slider from '@mui/material/Slider';
 import Typography from '@mui/material/Typography';
 
+
 type Props = {
   value: number[];
   minValue: number;

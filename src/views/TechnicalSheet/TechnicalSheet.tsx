@@ -14,7 +14,7 @@ import {
 } from "../../helpers/urlParams.helper";
 import { parseYearRange } from "../../helpers/formatters.helper";
 import SelectWithBoxes from "../../components/SelectWithBoxes/SelectWithBoxes";
-import SliderRange from "../../components/SliderRange/SliderRange";
+import SliderRange from "../../components/SliderRange/SliderRangeAntd";
 import RadioGroupUnit from "../../components/RadioGroupUnit/RadioGroupUnit";
 
 import ShareButton from "../../components/ShareButton/ShareButton";
@@ -31,6 +31,8 @@ import PieChart from "../../components/PieChart/PieChart";
 import { Col, Row } from "antd";
 
 export default () => {
+
+  
   const { guid } = useParams<{ guid: string }>();
 
   const [matrice, setMatrice] = useState<MatrixFromIndicator | null>(null);
@@ -324,12 +326,9 @@ export default () => {
     }
   };
 
-  const handleYearRange = (_event: Event, newValue: number[]) => {
+  const handleYearRange = (newValue: number | number[]) => {
     setYearRange(newValue as number[]);
-    updateURL(
-      "yearRange",
-      newValue.map((value: number) => value.toString())
-    );
+    updateURL("yearRange", newValue.toString());
   };
 
   const handleUnitRadio = (_event: Event, newValue: string) => {
@@ -470,6 +469,10 @@ export default () => {
     });
     return summedByTerritory;
   };
+
+
+
+
 
   return (
     <>
