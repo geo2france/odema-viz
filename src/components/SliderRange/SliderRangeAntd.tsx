@@ -1,7 +1,7 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Slider, ConfigProvider } from "antd";
+import { Slider } from "antd";
 
 type Props = {
   value: number[];
