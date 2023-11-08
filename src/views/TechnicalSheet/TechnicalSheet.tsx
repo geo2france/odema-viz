@@ -7,9 +7,10 @@ import geowebService from '../../services/geoweb.service';
 import {
   MatrixFeatures,
   MatrixFromIndicator,
-  territoryType
+  MatrixFeatureProperties
 } from '../../models/matrice.types';
 import { getCookie, setCookie } from '../../helpers/cookie.helper';
+import {flatGeojson} from '../../helpers/formatters.helper';
 import {
   getQueryParamsFromSelector,
   hasParametersOnUrl,
@@ -30,7 +31,7 @@ import Tabs from '../../components/Tabs/Tabs';
 import TabPanels from '../../components/TabPanels/TabPanels';
 import PieChart from '../../components/PieChart/PieChart';
 
-
+import { op, from, escape } from 'arquero';
 
 
 
@@ -41,6 +42,9 @@ export default () => {
   const [filteredMatrix, setFilteredMatrix] = useState<MatrixFeatures[] | null>(
     null
   );
+  const [filteredMatrix_dev, setFilteredMatrix_dev] = useState<any | null>(
+    null
+  );  
   const [territoriesSelected, setTerritoriesSelected] = useState<string[]>([]);
   const [territoriesInput, setInputTerritories] = useState<string>('');
 
@@ -332,23 +336,32 @@ export default () => {
     setIndexTab(newValue);
   };
   const computedDataFromFilters = () => {
+
     const features = matrice?.features;
     if (!features) {
       return;
     }
     let data: MatrixFeatures[] = [...features];
 
+    let features_dev = from(flatGeojson(matrice));
+
+
     if (!!territoriesSelected) {
       const idTerritories = fetchTerritoriesIdsFromMatrix(territoriesSelected);
       data = features?.filter((feature: MatrixFeatures) =>
         idTerritories.includes(feature.properties.id_territoire)
       );
+      //dev arquero
+      features_dev = features_dev.params({t_ref:idTerritories}).filter((f : MatrixFeatureProperties,$ : any) => op.includes($.t_ref, f.id_territoire, 0));
+
     }
 
     if (!!axisSelected.length) {
       data = data.filter((feature: MatrixFeatures) => {
         return axisSelected.includes(feature.properties.valeur_axe);
       });
+      //dev arquero
+      features_dev = features_dev.params({axe_ref:axisSelected}).filter((f : MatrixFeatureProperties,$ : any) => op.includes($.axe_ref, f.valeur_axe, 0));
     }
 
     if (initialMinYear !== 0 && initialMaxYear !== 0) {
@@ -357,8 +370,14 @@ export default () => {
           feature.properties.annee >= yearRange[0] &&
           feature.properties.annee <= yearRange[1]
       );
+      //dev arquero
+      features_dev = features_dev.params({year_min:yearRange[0], year_max:yearRange[1] }).filter(
+              (f : MatrixFeatureProperties,$ : any) =>  f.annee >= $.year_min && f.annee <= $.year_max 
+              );
+
     }
-    setFilteredMatrix(data);
+    setFilteredMatrix(data); //A supprimer quand ne sera plus utilisé par checkIsAtLeastOneEPCISelected
+    setFilteredMatrix_dev(features_dev);
   };
 
   const computedDataForGraphDonut = () => {
@@ -403,7 +422,7 @@ export default () => {
     return formattedDonutData;
   };
 
-  const calcSummedByTerritory = (
+  /*const calcSummedByTerritory = (
     summedByTerritory: any,
     territory: string,
     territory_type: territoryType | null,
@@ -428,11 +447,39 @@ export default () => {
           : value);
     }
     summedByTerritory[territory]['territory_type'] = territory_type
-  };
+  };*/
   const formatTerritoriesWithYearStatistics = () => {
-    let summedByTerritory: any = {};
 
-    filteredMatrix?.forEach((feature: MatrixFeatures) => {
+    //let summedByTerritory: any = {};
+
+    if (filteredMatrix_dev !== null){
+      let data_grouped = filteredMatrix_dev
+
+      data_grouped = data_grouped.derive({valeur:escape( //On divise par la pop de référence si c'est sélectionné
+        function(d:MatrixFeatureProperties ){
+          if (!unitSelected.endsWith('/habitant')) {return d.valeur} // Attention aux indicateurs qui ont comme unité "€/habitant", vérifier qu'on est bien sur une unité relative du point de vue de l'application
+          else if (d.pop_reference === null) { return null }
+          else { return d.valeur / d.pop_reference }
+        }
+      )})
+
+      data_grouped = data_grouped.groupby(['id_territoire', 'nom_territoire', 'type_territoire' , 'annee'])
+      .rollup({value: (f: any) => op.sum(f.valeur)} ); //Somme par territoire et année (quelque soit la valeur axe)
+
+      let data_output =  data_grouped.groupby('nom_territoire').rollup( // Pour adapter a la structure précédente de l'appli
+        { values : (f:any) => op.object_agg(f.annee, f.value  ),
+        territory_type:(f:any) => op.max(f.type_territoire)})
+      .groupby('nom_territoire')
+      .objects({grouped:'object'})
+      
+      Object.keys(data_output).forEach((k: string) =>
+      data_output[k] = data_output[k][0] // Pour adapter la structure renvoyée par Arquero
+      )
+
+      return data_output
+    }
+
+     /* filteredMatrix?.forEach((feature: MatrixFeatures) => {
       const territory = feature.properties.nom_territoire;
       const territory_type = feature.properties.type_territoire;
       const annee = feature.properties.annee;
@@ -456,7 +503,9 @@ export default () => {
         perInhabitants
       );
     });
-    return summedByTerritory;
+    //console.log(summedByTerritory)
+    //return summedByTerritory*/
+    return {};
   };
 
   
