@@ -1,7 +1,7 @@
 import { useEffect } from "react";
 import Box from "@mui/material/Box";
 import Typography from "@mui/material/Typography";
-import { Slider,ConfigProvider } from "antd";
+import { Slider } from "antd";
 
 type Props = {
   value: number[];
@@ -22,7 +22,6 @@ const SliderRangeAntd = ({ value, minValue, maxValue, setter }: Props) => {
         useEffect(() => {
           setter([initVal, value[1]]);
         }, []);
-
     return (
       <Box>
         <Typography id="range-slider" gutterBottom>
