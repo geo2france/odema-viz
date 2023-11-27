@@ -7,7 +7,7 @@ import DarkModeToggle from "./DarkmodeToggle/DarkmodeToggle";
 import { DarkModeContext } from "../../context/DarkModeProvider";
 
 import "bootstrap/dist/css/bootstrap.min.css";
-import Icone from '../../images/logoOdema.png';
+import Icone from '../../images/logo.png';
 
 type Props = {
   indicatorName?: string;
