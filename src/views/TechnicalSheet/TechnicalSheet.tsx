@@ -14,7 +14,7 @@ import {
 } from "../../helpers/urlParams.helper";
 import { parseYearRange } from "../../helpers/formatters.helper";
 import SelectWithBoxes from "../../components/SelectWithBoxes/SelectWithBoxes";
-import SliderRange from "../../components/SliderRange/SliderRangeAntd";
+import SliderRange from "../../components/SliderRange/SliderRange";
 import RadioGroupUnit from "../../components/RadioGroupUnit/RadioGroupUnit";
 
 import ShareButton from "../../components/ShareButton/ShareButton";

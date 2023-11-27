@@ -10,7 +10,7 @@ type Props = {
   setter: (newValue: number | number[]) => void;
 };
 
-const SliderRangeAntd = ({ value, minValue, maxValue, setter }: Props) => {
+const SliderRange = ({ value, minValue, maxValue, setter }: Props) => {
   
   //Gestion du responsive
   const isMobile = window.innerWidth <= 600;
@@ -41,4 +41,4 @@ const SliderRangeAntd = ({ value, minValue, maxValue, setter }: Props) => {
   }
 };
 
-export default SliderRangeAntd;
+export default SliderRange;
