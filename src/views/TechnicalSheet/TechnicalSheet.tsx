@@ -1,39 +1,38 @@
-import {
-  useEffect, useState, SyntheticEvent} from 'react';
-import { useParams } from 'react-router-dom';
-import { Header } from '../../components/Header/Header';
-import SelectMultiple from '../../components/SelectMultiple/SelectMultiple';
-import geowebService from '../../services/geoweb.service';
+import { useEffect, useState, SyntheticEvent } from "react";
+import { useParams } from "react-router-dom";
+import { Header } from "../../components/Header/Header";
+import SelectMultiple from "../../components/SelectMultiple/SelectMultiple";
+import geowebService from "../../services/geoweb.service";
 import {
   MatrixFeatures,
   MatrixFromIndicator,
-} from '../../models/matrice.types';
-import { getCookie, setCookie } from '../../helpers/cookie.helper';
+} from "../../models/matrice.types";
+import { getCookie, setCookie } from "../../helpers/cookie.helper";
 import {
   getQueryParamsFromSelector,
   hasParametersOnUrl,
-} from '../../helpers/urlParams.helper';
-import { parseYearRange } from '../../helpers/formatters.helper';
-import SelectWithBoxes from '../../components/SelectWithBoxes/SelectWithBoxes';
-import SliderRange from '../../components/SliderRange/SliderRange';
-import RadioGroupUnit from '../../components/RadioGroupUnit/RadioGroupUnit';
+} from "../../helpers/urlParams.helper";
+import { parseYearRange } from "../../helpers/formatters.helper";
+import SelectWithBoxes from "../../components/SelectWithBoxes/SelectWithBoxes";
+import SliderRange from "../../components/SliderRange/SliderRange";
+import RadioGroupUnit from "../../components/RadioGroupUnit/RadioGroupUnit";
 
-import ShareButton from '../../components/ShareButton/ShareButton';
+import ShareButton from "../../components/ShareButton/ShareButton";
 
-import TableTabulator from '../../components/TableTabulator/TableTabulator';
+import TableTabulator from "../../components/TableTabulator/TableTabulator";
 
-import StackLineChart from '../../components/StackLineChart/StackLineChart';
+import StackLineChart from "../../components/StackLineChart/StackLineChart";
 
-import './TechnicalSheet.css';
-import Tabs from '../../components/Tabs/Tabs';
-import TabPanels from '../../components/TabPanels/TabPanels';
-import PieChart from '../../components/PieChart/PieChart';
+import "./TechnicalSheet.css";
+import Tabs from "../../components/Tabs/Tabs";
+import TabPanels from "../../components/TabPanels/TabPanels";
+import PieChart from "../../components/PieChart/PieChart";
 
-
-
-
+import { Col, Row } from "antd";
 
 export default () => {
+
+  
   const { guid } = useParams<{ guid: string }>();
 
   const [matrice, setMatrice] = useState<MatrixFromIndicator | null>(null);
@@ -41,7 +40,7 @@ export default () => {
     null
   );
   const [territoriesSelected, setTerritoriesSelected] = useState<string[]>([]);
-  const [territoriesInput, setInputTerritories] = useState<string>('');
+  const [territoriesInput, setInputTerritories] = useState<string>("");
 
   const [axisSelected, setSelectedAxis] = useState<string[]>([]);
   const [axisSelectedAll, setAxisSelectedAll] = useState<boolean>(false);
@@ -49,7 +48,7 @@ export default () => {
   const [yearRange, setYearRange] = useState<number[]>([0, 0]);
   const [minMaxYearRange, setMinMaxYearRange] = useState<number[]>([0, 0]);
 
-  const [unitSelected, setUnitSelected] = useState<string>('');
+  const [unitSelected, setUnitSelected] = useState<string>("");
 
   const [indexTab, setIndexTab] = useState<number>(0);
 
@@ -58,8 +57,6 @@ export default () => {
   const [tradeURL, setTradeURL] = useState<string>(
     `${window.location.protocol}//${window.location.host}${window.location.pathname}${window.location.hash}`
   );
-
-  
 
   useEffect(() => {
     const fetchMatrixIndicator = async () => {
@@ -78,24 +75,24 @@ export default () => {
   }, []);
 
   useEffect(() => {
-    const currentParams = window.location.hash.split('?')[1];
+    const currentParams = window.location.hash.split("?")[1];
     //Get URL params and cookie for territories
     getQueryParamsFromSelector(
-      'territories',
+      "territories",
       setTerritoriesSelected,
       currentParams,
       true,
       fetchTerritoriesNameFromMatrix
     );
 
-    if (!hasParametersOnUrl('territories', currentParams)) {
+    if (!hasParametersOnUrl("territories", currentParams)) {
       handleGetCookieTerritories();
     }
 
     //Get URL params and cookie for axisTypes
-    getQueryParamsFromSelector('axis', setSelectedAxis, currentParams);
+    getQueryParamsFromSelector("axis", setSelectedAxis, currentParams);
 
-    if (!hasParametersOnUrl('axis', currentParams) && axisTypes?.length) {
+    if (!hasParametersOnUrl("axis", currentParams) && axisTypes?.length) {
       setSelectedAxis([...axisTypes]);
     }
 
@@ -105,7 +102,7 @@ export default () => {
     setHoveredDonutValue(initialMaxYear);
 
     getQueryParamsFromSelector(
-      'yearRange',
+      "yearRange",
       setYearRange,
       currentParams,
       true,
@@ -113,9 +110,9 @@ export default () => {
     );
 
     //Get URL params and cookie for Unit
-    setUnitSelected(pickedUnits ?? 'unité');
+    setUnitSelected(pickedUnits ?? "unité");
     getQueryParamsFromSelector(
-      'unit',
+      "unit",
       setUnitSelected,
       currentParams,
       true,
@@ -125,7 +122,7 @@ export default () => {
 
   useEffect(() => {
     if (axisTypes?.length && axisTypes[0] !== null) {
-      updateURL('axis', [...axisSelected]);
+      updateURL("axis", [...axisSelected]);
       if (
         axisTypes?.length === axisSelected.length &&
         axisSelected.length > 0
@@ -159,7 +156,7 @@ export default () => {
   const hasAxisNoValuesInHisSelector: boolean =
     axisTypes.length === 1 && axisTypes[0] === null;
 
-  const axisWithAllOption: string[] = ['Tout', ...axisTypes];
+  const axisWithAllOption: string[] = ["Tout", ...axisTypes];
 
   const analyseAxisLabel: string = [
     ...new Set(
@@ -191,8 +188,8 @@ export default () => {
       ...new Set(
         filteredMatrix?.map(
           (feature: MatrixFeatures) =>
-            !feature.properties.id_territoire.includes('DEP') &&
-            !feature.properties.id_territoire.includes('REG')
+            !feature.properties.id_territoire.includes("DEP") &&
+            !feature.properties.id_territoire.includes("REG")
         )
       ),
     ];
@@ -202,7 +199,7 @@ export default () => {
 
   const units = !!pickedUnits
     ? [pickedUnits, `${pickedUnits}/habitant`]
-    : ['Unité', 'Unité/habitant'];
+    : ["Unité", "Unité/habitant"];
 
   const initialMinYear: number = Math.min(...groupedYears);
   const initialMaxYear: number = Math.max(...groupedYears);
@@ -221,26 +218,25 @@ export default () => {
       return false;
     }
 
-    return !idTerritory.includes('DEP') && !idTerritory.includes('REG');
+    return !idTerritory.includes("DEP") && !idTerritory.includes("REG");
   };
-  
-  
+
   enum territoryType {
-      EPCI = "EPCI",
-      DEPARTEMENT = "departement",
-      REGION = "region",
-      AUTRE = "autre"
-  };
-  
-  const getTerritoryType = (idTerritory: string): territoryType => {
-    if (idTerritory.includes('DEP')){
-      return territoryType.DEPARTEMENT
-    }else if (idTerritory.includes('REG')){
-      return territoryType.REGION
-    }else {
-      return territoryType.EPCI
-    }
+    EPCI = "EPCI",
+    DEPARTEMENT = "departement",
+    REGION = "region",
+    AUTRE = "autre",
   }
+
+  const getTerritoryType = (idTerritory: string): territoryType => {
+    if (idTerritory.includes("DEP")) {
+      return territoryType.DEPARTEMENT;
+    } else if (idTerritory.includes("REG")) {
+      return territoryType.REGION;
+    } else {
+      return territoryType.EPCI;
+    }
+  };
 
   const fetchTerritoriesIdsFromMatrix = (territories: string[]) => {
     let ids: string[] = [];
@@ -272,11 +268,11 @@ export default () => {
 
   const updateURL = (selector: string, newValues: string | string[]) => {
     const serializedValues = Array.isArray(newValues)
-      ? newValues.join(';')
+      ? newValues.join(";")
       : newValues;
 
-    const baseURL = tradeURL.split('?')[0];
-    const getQueryParamsFromUrl = tradeURL.split('?')[1];
+    const baseURL = tradeURL.split("?")[0];
+    const getQueryParamsFromUrl = tradeURL.split("?")[1];
 
     const queryParams = new URLSearchParams(getQueryParamsFromUrl);
     if (!!newValues.length) {
@@ -291,10 +287,10 @@ export default () => {
   };
 
   const handleGetCookieTerritories = () => {
-    const territories = getCookie('territories')?.split(',');
+    const territories = getCookie("territories")?.split(",");
     if (territories && territories[0].length) {
       setTerritoriesSelected(fetchTerritoriesNameFromMatrix([...territories]));
-      updateURL('territories', territories);
+      updateURL("territories", territories);
     }
   };
 
@@ -303,14 +299,14 @@ export default () => {
 
     const ids = fetchTerritoriesIdsFromMatrix(values);
 
-    updateURL('territories', ids);
-    setCookie('territories', ids);
+    updateURL("territories", ids);
+    setCookie("territories", ids);
   };
 
   const handleAxisSelected = (event: any) => {
     const newValue = event.target.value;
 
-    if (newValue.includes('Tout')) {
+    if (newValue.includes("Tout")) {
       if (!axisSelectedAll) {
         setAxisSelectedAll(true);
         setSelectedAxis(axisTypes);
@@ -330,17 +326,14 @@ export default () => {
     }
   };
 
-  const handleYearRange = (_event: Event, newValue: number[]) => {
+  const handleYearRange = (newValue: number | number[]) => {
     setYearRange(newValue as number[]);
-    updateURL(
-      'yearRange',
-      newValue.map((value: number) => value.toString())
-    );
+    updateURL("yearRange", newValue.toString());
   };
 
   const handleUnitRadio = (_event: Event, newValue: string) => {
     setUnitSelected(newValue);
-    updateURL('unit', newValue);
+    updateURL("unit", newValue);
   };
 
   const handleIndexTab = (_event: SyntheticEvent, newValue: number) => {
@@ -427,37 +420,40 @@ export default () => {
     populationRef: number | null,
     perInhabitants: boolean
   ) => {
-    if (!summedByTerritory[territory]['values'][annee]) {
-      summedByTerritory[territory]['values'][annee] = perInhabitants
+    if (!summedByTerritory[territory]["values"][annee]) {
+      summedByTerritory[territory]["values"][annee] = perInhabitants
         ? populationRef === null
           ? null
           : value / populationRef
         : value;
     } else {
-      summedByTerritory[territory]['values'][annee] =
-        summedByTerritory[territory]['values'][annee] +
+      summedByTerritory[territory]["values"][annee] =
+        summedByTerritory[territory]["values"][annee] +
         (perInhabitants
           ? populationRef === null
             ? null
             : value / populationRef
           : value);
     }
-    summedByTerritory[territory]['territory_type'] = territory_type
+    summedByTerritory[territory]["territory_type"] = territory_type;
   };
   const formatTerritoriesWithYearStatistics = () => {
     let summedByTerritory: any = {};
 
     filteredMatrix?.forEach((feature: MatrixFeatures) => {
       const territory = feature.properties.nom_territoire;
-      const territory_type = getTerritoryType(feature.properties.id_territoire)
+      const territory_type = getTerritoryType(feature.properties.id_territoire);
       const annee = feature.properties.annee;
       const value = feature.properties.valeur;
       const populationRef = feature.properties.pop_reference;
       const perInhabitants =
-        unitSelected === `${feature.properties.unite ?? 'unité'}/habitant`;
+        unitSelected === `${feature.properties.unite ?? "unité"}/habitant`;
 
       if (!summedByTerritory[territory]) {
-        summedByTerritory = { ...summedByTerritory, [territory]: {'values':{}} };
+        summedByTerritory = {
+          ...summedByTerritory,
+          [territory]: { values: {} },
+        };
       }
 
       //The following calc is taking care of the unit selected and if population ref has a value
@@ -474,95 +470,114 @@ export default () => {
     return summedByTerritory;
   };
 
-  
+
+
+
+
   return (
     <>
       {matrice && (
         <div>
           <Header
-            indicatorName={
-              matrice?.features[0].properties.nom_indicateur
-            }
+            indicatorName={matrice?.features[0].properties.nom_indicateur}
           />
-          <div className="technical-sheet--selectors">
-            <SelectMultiple
-              label={"Territoire(s)"}
-              values={territoriesSelected}
-              options={groupedTerritories}
-              setFunction={handleTerritoriesSelected}
-              inputValue={territoriesInput}
-              setInputValue={setInputTerritories}
-              placeHolder="Territoire"
-            />
-            <SelectWithBoxes
-              disabled={hasAxisNoValuesInHisSelector}
-              label={
-                hasAxisNoValuesInHisSelector
-                  ? "Aucun axe n'est disponible"
-                  : analyseAxisLabel
-              }
-              options={axisWithAllOption}
-              propValue={axisSelected}
-              handleValue={handleAxisSelected}
-              selectedAll={axisSelectedAll}
-            />
-            <SliderRange
-              value={yearRange}
-              minValue={minMaxYearRange[0]}
-              maxValue={minMaxYearRange[1]}
-              setter={handleYearRange}
-            />
-            <RadioGroupUnit
-              label={"Unité"}
-              units={units}
-              selectedValue={unitSelected}
-              setter={handleUnitRadio}
-            />
-          </div>
-
-          <ShareButton url={tradeURL} />
-
-          <div className="technical-sheet--table">
-            {areResultsDisplayed && (
-              <TableTabulator
-                yearRange={yearRange}
-                territoriesWithYearStatistics={formatTerritoriesWithYearStatistics()}
-                checkIsTerritoryEPCI={checkIsTerritoryEPCI}
-                checkIsAtLeastOneEPCISelected={checkIsAtLeastOneEPCISelected}
+          <Row
+            justify="space-around"
+            align="middle"
+            className="configComponents"
+          >
+            <Col xs={22} sm={10} lg={6} className="marginCol">
+              <SelectMultiple
+                label={"Territoire(s)"}
+                values={territoriesSelected}
+                options={groupedTerritories}
+                setFunction={handleTerritoriesSelected}
+                inputValue={territoriesInput}
+                setInputValue={setInputTerritories}
+                placeHolder="Territoire"
               />
-            )}
-          </div>
-          <div className="technichal-sheet--graphs">
-            {areResultsDisplayed && (
-              <>
-                <Tabs
-                  tabLabels={[
-                    { name: "Evolution", disabled: false },
-                    {
-                      name: hasAxisNoValuesInHisSelector
-                        ? ""
-                        : "Répartition par " + analyseAxisLabel,
-                      disabled: hasAxisNoValuesInHisSelector,
-                    },
-                  ]}
-                  value={indexTab}
-                  handler={handleIndexTab}
+            </Col>
+            <Col xs={22} sm={10} lg={6} className="marginCol">
+              <SelectWithBoxes
+                disabled={hasAxisNoValuesInHisSelector}
+                label={
+                  hasAxisNoValuesInHisSelector
+                    ? "Aucun axe n'est disponible"
+                    : analyseAxisLabel
+                }
+                options={axisWithAllOption}
+                propValue={axisSelected}
+                handleValue={handleAxisSelected}
+                selectedAll={axisSelectedAll}
+              />
+            </Col>
+            <Col xs={18} sm={10} lg={4}>
+              <SliderRange
+                value={yearRange}
+                minValue={minMaxYearRange[0]}
+                maxValue={minMaxYearRange[1]}
+                setter={handleYearRange}
+              />
+            </Col>
+            <Col xs={20} sm={10} lg={5}>
+              <RadioGroupUnit
+                label={"Unité"}
+                units={units}
+                selectedValue={unitSelected}
+                setter={handleUnitRadio}
+              />
+            </Col>
+
+            <ShareButton url={tradeURL} />
+          </Row>
+
+          <Row justify="space-around" align="middle">
+            <Col span={23}>
+              {areResultsDisplayed && (
+                <TableTabulator
+                  yearRange={yearRange}
+                  territoriesWithYearStatistics={formatTerritoriesWithYearStatistics()}
+                  checkIsTerritoryEPCI={checkIsTerritoryEPCI}
+                  checkIsAtLeastOneEPCISelected={checkIsAtLeastOneEPCISelected}
                 />
-                <TabPanels index={0} value={indexTab}>
-                  <StackLineChart
-                    yearRange={yearRange}
-                    filteredData={formatTerritoriesWithYearStatistics()}
-                  />
-                </TabPanels>
-                <TabPanels index={1} value={indexTab}>
-                  <PieChart
-                    filteredData={formatDonutGraphData()}
-                    selectedYear={hoveredDonutValue}
-                  />
-                </TabPanels>
-              </>
-            )}
-          </div>
+              )}
+            </Col>
+          </Row>
+          <Row justify="space-around" align="middle">
+            <Col span={24}>
+              <div className="technichal-sheet--graphs">
+                {areResultsDisplayed && (
+                  <>
+                    <Tabs
+                      tabLabels={[
+                        { name: "Evolution", disabled: false },
+                        {
+                          name: hasAxisNoValuesInHisSelector
+                            ? ""
+                            : "Répartition par " + analyseAxisLabel,
+                          disabled: hasAxisNoValuesInHisSelector,
+                        },
+                      ]}
+                      value={indexTab}
+                      handler={handleIndexTab}
+                    />
+                    <TabPanels index={0} value={indexTab}>
+                      <StackLineChart
+                        yearRange={yearRange}
+                        filteredData={formatTerritoriesWithYearStatistics()}
+                      />
+                    </TabPanels>
+                    <TabPanels index={1} value={indexTab}>
+                      <PieChart
+                        filteredData={formatDonutGraphData()}
+                        selectedYear={hoveredDonutValue}
+                      />
+                    </TabPanels>
+                  </>
+                )}
+              </div>
+            </Col>
+          </Row>
         </div>
       )}
     </>

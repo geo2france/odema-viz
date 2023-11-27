@@ -1,5 +1,6 @@
 import Autocomplete from "@mui/material/Autocomplete";
 import TextField from "@mui/material/TextField";
+import './SelectMultiple.css'
 
 type Props = {
   label: string;
@@ -31,7 +32,7 @@ export default function SelectMultiple({
       renderInput={(params) => (
         <TextField {...params} label={label} placeholder={placeHolder} />
       )}
-      sx={{ width: "400px", margin: "10px 30px" }}
+      
       onChange={(_event: any, newValue: any) => setFunction(newValue)}
       value={values}
       inputValue={inputValue}

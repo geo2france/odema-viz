@@ -1,28 +1,44 @@
-import Box from '@mui/material/Box';
-import Slider from '@mui/material/Slider';
-import Typography from '@mui/material/Typography';
+import { useEffect } from "react";
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import { Slider } from "antd";
 
 type Props = {
   value: number[];
   minValue: number;
   maxValue: number;
-  setter: (_event: Event, newValue: any) => void;
+  setter: (newValue: number | number[]) => void;
 };
 
-export default ({ value, minValue, maxValue, setter }: Props) => {
-  return (
-    <Box sx={{ width: 300, margin: '10px 60px' }}>
-      <Typography id="range-slider" gutterBottom>
-        Années : {value[0]} - {value[1]}
-      </Typography>
-      <Slider
-        value={value}
-        onChange={setter}
-        valueLabelDisplay="auto"
-        aria-labelledby="range-slider"
-        min={minValue}
-        max={maxValue}
-      />
-    </Box>
-  );
+const SliderRange = ({ value, minValue, maxValue, setter }: Props) => {
+  
+  //Gestion du responsive
+  const isMobile = window.innerWidth <= 600;
+  const initVal = isMobile ? value[1] - 5 : value[0];
+
+    
+    //Eviter les valeur infini a l'ppel du composant
+    if (Number.isFinite(initVal)) {
+        useEffect(() => {
+          setter([initVal, value[1]]);
+        }, []);
+    return (
+      <Box>
+        <Typography id="range-slider" gutterBottom>
+          Années : {value[0]} - {value[1]}
+        </Typography>
+        <Slider
+          range
+          defaultValue={[initVal, value[1]]}
+          min={minValue}
+          max={maxValue}
+          onChange={setter}
+        />
+      </Box>
+    );
+  } else {
+    return false;
+  }
 };
+
+export default SliderRange;

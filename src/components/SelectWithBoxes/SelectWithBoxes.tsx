@@ -6,6 +6,8 @@ import ListItemText from '@mui/material/ListItemText';
 import Select from '@mui/material/Select';
 import Checkbox from '@mui/material/Checkbox';
 
+import './SelectWithBoxes.css'
+
 const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
@@ -36,7 +38,7 @@ export default ({
 }: Props) => {
   return (
     <div>
-      <FormControl sx={{ width: 400, margin: '10px 30px' }}>
+      <FormControl >
         <InputLabel id="demo-multiple-checkbox-label">{label}</InputLabel>
         <Select
           labelId="demo-multiple-checkbox-label"

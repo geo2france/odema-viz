@@ -26,3 +26,12 @@ a {
 .bg-odema{
 background-color: #dead8f;
 }
+
+
+
+@media (min-width: 1000px) {
+  .headerTitle{
+    margin-left: 50px;
+  }
+
+}
