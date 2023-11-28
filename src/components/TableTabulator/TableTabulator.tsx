@@ -1,7 +1,9 @@
 import { useContext, useEffect, useRef } from "react";
 import { ReactTabulator } from "react-tabulator";
+import Button from '@mui/material/Button';
 
 import { DarkModeContext } from "../../context/DarkModeProvider";
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { convertZerosToNullFromObject } from "../../helpers/formatters.helper";
 
 //import "react-tabulator/css/tabulator_midnight.min.css";
@@ -26,7 +28,7 @@ export default ({
 }: Props) => {
 
   let tableRef: any = useRef(null);
-  
+
   // Gestion du darkMode
   const { darkMode } = useContext(DarkModeContext);
   useEffect(() => {
@@ -183,7 +185,6 @@ export default ({
 
   return (
     <div>
-      <button onClick={handleExportCSV}>Export CSV</button>
       <ReactTabulator
         onRef={(r) => (tableRef = r)}
         id="tab"
@@ -196,6 +197,9 @@ export default ({
           downloadReady: (_fileContents:any, blob:any) => blob,
       }}
       />
+      <Button  size="small" variant="contained" startIcon={<FileDownloadIcon />} onClick={handleExportCSV}>
+        Exporter
+      </Button>
     </div>
   );
 };
