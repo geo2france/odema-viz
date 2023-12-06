@@ -1,5 +1,7 @@
 import { HashRouter, Routes, Route } from "react-router-dom";
 import TechnicalSheet from "./views/TechnicalSheet/TechnicalSheet";
+import IndicateurOjbectif from "./views/IndicateurOjbectif/IndicateurOjbectif";
+
 import DashBoard from "./views/DashBoard/Dashboard";
 import { useContext } from "react";
 import { IndicatorsProvider } from "./context/IndicatorsContext";
@@ -46,6 +48,7 @@ function AppContent() {
           <Routes>
             <Route path="/" element={<DashBoard />} />
             <Route path="/technicalsheet/:guid" element={<TechnicalSheet />} />
+            <Route path="/indicateur_objectif" element={<IndicateurOjbectif />} />
           </Routes>
         </HashRouter>
       </ThemeProvider>
