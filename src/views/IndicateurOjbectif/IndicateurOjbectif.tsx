@@ -48,8 +48,11 @@ function ProgressToGoal(props){
   const is_exceeded: boolean = value > 1;
   return(
     <>
-      {/*<Text>{(value*100).toFixed(1)} %</Text> */}
-      <ProgressBar style={{'width':'10rem'}}  value={value*100} color="teal" className="mt-3" />
+    <Flex>
+      <Text><b>{props.valeur_n} kg/hab</b> &bull; {(value*100).toFixed(0)}%</Text>
+      <Text>{props.goal} kg/hab</Text>
+    </Flex>
+      <ProgressBar style={{'width':'15rem'}} color={value > 0 ? 'teal' : 'rose'} value={value*100} className="mt-3" />
       {is_exceeded ?
       (<Badge size="xs" color='green'>
       {'Objectif dépassé !'} 
@@ -60,20 +63,10 @@ function ProgressToGoal(props){
 }
 
 function MiniAreaChart(props){
-  function generateRandomData(yearA, yearB) { //pour dev maquette
-      const data = [];
-    
-      for (let year = yearA; year <= yearB; year++) {
-        const randomValue = Math.floor(Math.random() * 101); // Valeur aléatoire entre 0 et 100
-        const dataEntry = { 'date': String(year), 'value': randomValue };
-        data.push(dataEntry);
-      }
-    
-      return data;
-  }
+
   let color: string;
-  let chart_data = generateRandomData(2011,2023);
-  if (chart_data[0].value > chart_data[chart_data.length-1].value){
+  let chart_data = props.data;
+  if (chart_data[0].valeur_n > chart_data[chart_data.length-1].valeur_n){
     color = 'green'
   }else{
     color = 'red'
@@ -93,10 +86,10 @@ function MiniAreaChart(props){
   return (             
     <AreaChart
       className="h-10 mt-4"
-      data={props.data }
+      data={chart_data}
       index="date"
       categories={props.categories}
-      colors={['green']} 
+      colors={[color]} 
       showXAxis={false}
       showYAxis={false}
       showLegend={false} 
@@ -197,7 +190,7 @@ export default () => {
                     <TexteTronque longueurMax={50}>{element.territoire.nom}</TexteTronque>
                     </TableCell>
                     <TableCell> 
-                        Valeur de référence : <b>{element.objectif.valeur_ref} kg/hab</b> en {element.objectif.annee_ref}.<br/>
+                        Référence : <b>{element.objectif.valeur_ref} kg/hab</b> en {element.objectif.annee_ref}.<br/>
                         Objectif : <b>{element.objectif.valeur_objectif} kg/hab</b> en {element.objectif.annee_objectif} 
                     </TableCell>
                     <TableCell>
@@ -207,7 +200,7 @@ export default () => {
                         <DeltaObjectifN value={element.indicateur_objectif_n.ecart_objectif_n} evolution={element.indicateur_objectif_n.ecart_objectif_n_evolution}/>
                     </TableCell> 
                     <TableCell>
-                      <ProgressToGoal value={element.indicateur_objectif_n.ecart_objectif_final} />
+                      <ProgressToGoal value={element.indicateur_objectif_n.ecart_objectif_final} valeur_n={element.indicateur_objectif_n.valeur_n} goal={element.objectif.valeur_objectif} />
                     </TableCell> 
                   </TableRow>
               ) )}
