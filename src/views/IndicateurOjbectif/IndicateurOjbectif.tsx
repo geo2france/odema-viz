@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { ProgressBar, DeltaBar, Card, Flex,   Text, BadgeDelta, Badge, Divider, AreaChart,
+import { ProgressBar, DeltaBar, Card, Flex,  Title, Text, BadgeDelta, Badge, Divider, AreaChart,
   Table,
   TableHead,
   TableHeaderCell,
@@ -28,8 +28,16 @@ function DeltaObjectifN(props){
     tooltip = 'Conforme' ;
     color = 'orange'
   }
+  let deltaType: string;
+  if (props.evolution > 0) {
+      deltaType = 'moderateIncrease'
+  }else {
+    deltaType = 'moderateDecrease'
+  }
+
   return (
     <>
+    { props.evolution && false ? <BadgeDelta deltaType={deltaType}>{/*(props.evolution*100).toFixed(0) */}</BadgeDelta> : <></>}
     <DeltaBar style={{'width':'5rem'}} value={deltaValue*100} isIncreasePositive={true} className="mt-3" tooltip={tooltip} />
     </>
   )
@@ -43,7 +51,7 @@ function ProgressToGoal(props){
       {/*<Text>{(value*100).toFixed(1)} %</Text> */}
       <ProgressBar style={{'width':'10rem'}}  value={value*100} color="teal" className="mt-3" />
       {is_exceeded ?
-      (<Badge deltaType="moderateIncrease" isIncreasePositive={true} size="xs" color='green'>
+      (<Badge size="xs" color='green'>
       {'Objectif dépassé !'} 
       </Badge>
       ):( <></>) }
@@ -74,20 +82,54 @@ function MiniAreaChart(props){
   chart_data[0]['value'] = 100;
   chart_data[chart_data.length-1]['trajectoire'] = 80;
 
+  const minValue = props.data.reduce((min, objet) => {
+    return Math.min(min, objet['valeur_n']);
+  }, Infinity);
+
+  const maxValue = props.data.reduce((max, objet) => {
+    return Math.max(max, objet['valeur_n']);
+  }, -Infinity);
+
   return (             
     <AreaChart
       className="h-10 mt-4"
-      data={chart_data }
+      data={props.data }
       index="date"
-      categories={["value"]}
-      colors={[color, 'blue']} 
+      categories={props.categories}
+      colors={['green']} 
       showXAxis={false}
       showYAxis={false}
       showLegend={false} 
       showGridLines={false} 
-      connectNulls={true}/>
+      showTooltip={false}
+      connectNulls={true}
+      minValue={minValue} maxValue={maxValue}/>
   )
 }
+
+function TexteTronque (props) {
+  const texteTronque = props.children.length > props.longueurMax ? `${props.children.slice(0, props.longueurMax)}...` : props.children;
+
+  return (
+      <>{texteTronque}</>
+  );
+};
+
+function processData(data){
+  data.forEach((e) => {
+    
+    for (let i = 1; i < e.indicateur_objectif.length; i++) {
+      const difference = e.indicateur_objectif[i].ecart_objectif_n - e.indicateur_objectif[i - 1].ecart_objectif_n;
+      e.indicateur_objectif[i].ecart_objectif_n_evolution = difference;
+    }
+
+    e.indicateur_objectif_n = e.indicateur_objectif.find((v) => v.annee === 2021)
+
+  })
+
+  return data;
+}
+
 
 export default () => {
     const [data, setData] = useState([]);
@@ -95,8 +137,8 @@ export default () => {
     useEffect(() => {
         const getData = async () => {
           const response = await IndicateurObjectifService.getIndObjectifData();
-          console.log(response)
-          setData(response);
+          console.log(processData(response))
+          setData(processData(response));
         };
     
         getData();
@@ -107,15 +149,15 @@ export default () => {
             <Header />
             <Card className="max-w-5xl mx-auto">
 
-              <text> 
-                <p>Objectif : Réduire de <b>30%</b> la production de DMA en <b>2030</b> par rapport à <b>2010</b>.</p>
+              <Text> 
+                <p>Objectif : Réduire de <b>15%</b> la production de DMA en <b>2030</b> par rapport à <b>2010</b> (<a href="https://www.legifrance.gouv.fr/codes/article_lc/LEGIARTI000043974936">référence).</a></p>
 
                 <p>L'indicateur retenu pour évaluer cet objectif est la <b>quantité de DMA collectée par le service publique</b>.
                 (Limite : ne tient pas compte des déchets collectés hors SPGD)</p>
                 
                 <Divider/><p> L'année de référence retenu est <b>2011</b> (pas d'enquête Collecte en 2010)</p>
               <p>Le tableau ci-dessous montre l'évolution de l'indicateur, l'écart à la trajectoire, et la complétion de l'objectif</p>
-              </text>
+              </Text>
 
               <Flex className="max-w-xl mx-auto">
                 <div>
@@ -137,37 +179,36 @@ export default () => {
             </Card>
             <Divider/>
             <Card className="max-w-7xl mx-auto" >
+            <Title>Réduction de 15% des quantités de DMA produites par habitant en 2030 par rapport à 2010</Title>
               <Table className="mt-5"> 
               <TableHead>
                 <TableRow>
                   <TableHeaderCell>Territoire</TableHeaderCell>
+                  <TableHeaderCell>Références</TableHeaderCell>
                   <TableHeaderCell>Evolution</TableHeaderCell>
                   <TableHeaderCell>Trajectoire</TableHeaderCell>
                   <TableHeaderCell>Objectif 2030</TableHeaderCell>
                 </TableRow>
               </TableHead>
               <TableBody>
-              {data.map((element, index) => (
+              {data.filter((element) => element.indicateur_objectif_n !== undefined).map((element, index) => (
                 <TableRow key={index}>
-                    <TableCell> {element.territoire.nom}</TableCell>
-                        {element.indicateur_objectif.map((indicateur, indice) => {
-                            if (indicateur.annee === 2021) {
-                              return (
-                                <>
-                                <TableCell>
-                                  <MiniAreaChart />
-                                </TableCell>
-                                <TableCell>  
-                                    <DeltaObjectifN value={indicateur.ecart_objectif_n} />
-                                </TableCell> 
-                                <TableCell>
-                                  <ProgressToGoal value={indicateur.ecart_objectif_final} />
-                                    </TableCell> 
-                                </>  
-                              )
-                            }
-                        })
-                      }
+                    <TableCell> 
+                    <TexteTronque longueurMax={50}>{element.territoire.nom}</TexteTronque>
+                    </TableCell>
+                    <TableCell> 
+                        Valeur de référence : <b>{element.objectif.valeur_ref} kg/hab</b> en {element.objectif.annee_ref}.<br/>
+                        Objectif : <b>{element.objectif.valeur_objectif} kg/hab</b> en {element.objectif.annee_objectif} 
+                    </TableCell>
+                    <TableCell>
+                      <MiniAreaChart data={element.indicateur_objectif} index='annee' categories={['valeur_n']} />
+                    </TableCell>
+                    <TableCell>  
+                        <DeltaObjectifN value={element.indicateur_objectif_n.ecart_objectif_n} evolution={element.indicateur_objectif_n.ecart_objectif_n_evolution}/>
+                    </TableCell> 
+                    <TableCell>
+                      <ProgressToGoal value={element.indicateur_objectif_n.ecart_objectif_final} />
+                    </TableCell> 
                   </TableRow>
               ) )}
               </TableBody>
