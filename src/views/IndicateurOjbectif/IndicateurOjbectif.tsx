@@ -1,5 +1,5 @@
 import { useContext, useEffect, useState } from "react";
-import { ProgressBar, DeltaBar, Card, Flex,  Title, Text, BadgeDelta, Badge, Divider, AreaChart,
+import { ProgressBar, DeltaBar, Card, Flex,  Title, Text, BadgeDelta, Badge, Divider, AreaChart, ProgressCircle,
   Table,
   TableHead,
   TableHeaderCell,
@@ -123,15 +123,25 @@ function processData(data){
   return data;
 }
 
+function fdataResume(data){
+  const goal_ok = data.filter((e) => e.indicateur_objectif_n !== undefined && e.indicateur_objectif_n.ecart_objectif_final > 1).length
+  const trajectoire_ok = data.filter((e) => e.indicateur_objectif_n !== undefined && e.indicateur_objectif_n.ecart_objectif_n > 1).length
+  console.info(data)
+  const n_territoire =  data.length
+  console.log(goal_ok)
+  return{'ok':goal_ok, 'trajectoire_ok':trajectoire_ok, 'n_territoire':n_territoire}
+}
 
 export default () => {
     const [data, setData] = useState([]);
+    const [dataResume, setDataResume] = useState({});
 
     useEffect(() => {
         const getData = async () => {
           const response = await IndicateurObjectifService.getIndObjectifData();
           console.log(processData(response))
           setData(processData(response));
+          setDataResume(fdataResume(processData(response)))
         };
     
         getData();
@@ -169,6 +179,17 @@ export default () => {
                 </div>
 
               </Flex>
+            </Card>
+            <Divider/>
+            <Card className="max-w-5xl mx-auto" >
+                <Flex justifyContent="center">
+                  <ProgressCircle value={ (dataResume.trajectoire_ok / dataResume.n_territoire)*100 }>
+                  <span className="text-xs text-gray-700 font-medium">Trajectoire</span>
+                  </ProgressCircle>
+                  <ProgressCircle value={ (dataResume.ok / dataResume.n_territoire)*100 }>
+                  <span className="text-xs text-gray-700 font-medium">Objectif</span>
+                  </ProgressCircle>
+                </Flex>
             </Card>
             <Divider/>
             <Card className="max-w-7xl mx-auto" >
