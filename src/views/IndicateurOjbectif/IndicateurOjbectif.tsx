@@ -109,7 +109,8 @@ function TexteTronque (props) {
 };
 
 function processData(data){
-  data.forEach((e) => {
+  console.log(data)
+  data.forEach((e) => { /* ATTENTION ICI on perd les données au niveau root ? */
     
     for (let i = 1; i < e.indicateur_objectif.length; i++) {
       const difference = e.indicateur_objectif[i].ecart_objectif_n - e.indicateur_objectif[i - 1].ecart_objectif_n;
@@ -119,14 +120,13 @@ function processData(data){
     e.indicateur_objectif_n = e.indicateur_objectif.find((v) => v.annee === 2021)
 
   })
-
+  console.info(data)
   return data;
 }
 
 function fdataResume(data){
   const goal_ok = data.filter((e) => e.indicateur_objectif_n !== undefined && e.indicateur_objectif_n.ecart_objectif_final > 1).length
   const trajectoire_ok = data.filter((e) => e.indicateur_objectif_n !== undefined && e.indicateur_objectif_n.ecart_objectif_n > 1).length
-  console.info(data)
   const n_territoire =  data.length
   console.log(goal_ok)
   return{'ok':goal_ok, 'trajectoire_ok':trajectoire_ok, 'n_territoire':n_territoire}
@@ -139,6 +139,7 @@ export default () => {
     useEffect(() => {
         const getData = async () => {
           const response = await IndicateurObjectifService.getIndObjectifData();
+          console.log(response)
           console.log(processData(response))
           setData(processData(response));
           setDataResume(fdataResume(processData(response)))
@@ -183,12 +184,13 @@ export default () => {
             <Divider/>
             <Card className="max-w-5xl mx-auto" >
                 <Flex justifyContent="center">
-                  <ProgressCircle value={ (dataResume.trajectoire_ok / dataResume.n_territoire)*100 }>
+<ProgressCircle value={ (dataResume.trajectoire_ok / dataResume.n_territoire)*100 }>
                   <span className="text-xs text-gray-700 font-medium">Trajectoire</span>
                   </ProgressCircle>
                   <ProgressCircle value={ (dataResume.ok / dataResume.n_territoire)*100 }>
                   <span className="text-xs text-gray-700 font-medium">Objectif</span>
                   </ProgressCircle>
+                  <ProgressBar value={50/*data.objectif.annee_objectif - data.objectif.annee_objectif*/} color="teal" className="mt-3" />
                 </Flex>
             </Card>
             <Divider/>
