@@ -4,13 +4,13 @@ import {useContext} from 'react';
 import {DarkModeContext,} from "../../context/DarkModeProvider";
 
 type Props = {
-  filteredData: { [key: string]: number };
+  filteredData: { [key: string]: { [key: string]: number } };
   selectedYear: number;
 };
 
 export default ({ filteredData, selectedYear }: Props) => {
   const pieData = Object.keys(filteredData).map((axis: string) => {
-    if (filteredData[axis] > 0) {
+    if (filteredData[selectedYear] && filteredData[selectedYear][axis] > 0) {
       return { name: axis, value: filteredData[axis] };
     }
   });
