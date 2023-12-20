@@ -52,6 +52,7 @@ export default () => {
 
   const [indexTab, setIndexTab] = useState<number>(0);
 
+// @ts-ignore
   const [hoveredDonutValue, setHoveredDonutValue] = useState<number>(0);
 
   const [tradeURL, setTradeURL] = useState<string>(
@@ -388,8 +389,7 @@ export default () => {
     data = data.filter((feature: MatrixFeatures) => {
       return (
         idTerritories.includes(feature.properties.id_territoire) &&
-        axisSelected.includes(feature.properties.valeur_axe) &&
-        feature.properties.annee === hoveredDonutValue
+        axisSelected.includes(feature.properties.valeur_axe)
       );
     });
     return data;
@@ -404,9 +404,14 @@ export default () => {
     });
 
     donutData.forEach((feature: MatrixFeatures) => {
-      formattedDonutData[feature.properties.valeur_axe] =
-        formattedDonutData[feature.properties.valeur_axe] +
-        feature.properties.valeur;
+      const annee = feature.properties.annee;
+        if (!formattedDonutData[annee]) {
+        formattedDonutData[annee] = {};
+      }
+      const valeur_axe = feature.properties.valeur_axe;
+      const valeur = feature.properties.valeur;
+      formattedDonutData[annee][valeur_axe] =
+        (formattedDonutData[annee][valeur_axe] || 0) + valeur;
     });
     return formattedDonutData;
   };
@@ -570,7 +575,7 @@ export default () => {
                     <TabPanels index={1} value={indexTab}>
                       <PieChart
                         filteredData={formatDonutGraphData()}
-                        selectedYear={hoveredDonutValue}
+                        selectedYear={yearRange[1]}
                       />
                     </TabPanels>
                   </>

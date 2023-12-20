@@ -1,16 +1,25 @@
 import ReactEcharts from 'echarts-for-react';
 import Typography from '@mui/material/Typography';
-import {useContext} from 'react';
+import {useContext, useState, useEffect} from 'react';
 import {DarkModeContext,} from "../../context/DarkModeProvider";
+import { Empty } from 'antd';
 
 type Props = {
-  filteredData: { [key: string]: number };
+  filteredData: { [key: string]: { [key: string]: number } };
   selectedYear: number;
 };
 
 export default ({ filteredData, selectedYear }: Props) => {
+
+  const [noData, setNoData] = useState<boolean>(false);
+
+  useEffect(() => {
+    setNoData(filteredData[selectedYear] === undefined);
+  }, [selectedYear]);
+
+
   const pieData = Object.keys(filteredData).map((axis: string) => {
-    if (filteredData[axis] > 0) {
+    if (filteredData[selectedYear] && filteredData[selectedYear][axis] > 0) {
       return { name: axis, value: filteredData[axis] };
     }
   });
@@ -46,7 +55,12 @@ export default ({ filteredData, selectedYear }: Props) => {
       >
         Année {selectedYear}
       </Typography>
+      { noData ? (
+          <Empty />
+      ) :(
       <ReactEcharts option={option} style={{ height: "450px", marginTop:"-50px"}} />
+      )
+      }
     </>
   );
 };
