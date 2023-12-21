@@ -11,6 +11,11 @@ body {
   font-family: 'Roboto', Helvetica, Arial, sans-serif;
   height : 100%;
   background-color: rgb(44, 44, 44);
+  min-height: 100vh !important;
+}
+
+.dashboard-map{
+  min-height: 100vh !important;
 }
 
  .dark {
