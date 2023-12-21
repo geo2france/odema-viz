@@ -1,0 +1,56 @@
+/* Footer.css */
+
+footer {
+    margin-top: 50px;
+    margin-bottom: -50px;
+    border-top: 1px solid #ddd;
+}
+
+.logo {
+    margin-top : 10px;
+    display: flex;
+    flex-direction: row; /* Changez la direction en "row" pour aligner les logos sur la même ligne */
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px; /* Ajoute un espace en bas de la section des logos */
+}
+
+.imgLogo {
+    height: 70px; /* Ajuste la hauteur en proportion de la largeur */
+    margin-right: 20px; /* Ajoute un espace à droite de chaque logo (ajustez selon vos préférences) */
+}
+
+.contact {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: #dead8f;
+}
+
+.email {
+    margin-top: 5px;
+    text-decoration: none; /* Supprimer la soulignement par défaut */
+    color: #f7f6f6; /* Couleur du texte normale */
+    transition: color 0.3s ease, font-size 0.3s ease, font-weight 0.3s ease; /* Transition de couleur, taille de police et graisse du texte lors du survol */
+    cursor: pointer; /* Changer le curseur au survol */
+    font-size: 16px; /* Taille de texte normale */
+    font-weight: normal; /* Gras normal par défaut */
+
+    /* Ajoutez ici d'autres styles de texte si nécessaire */
+}
+
+.email:hover {
+    color: #f1e6e2; /* Nouvelle couleur du texte au survol */
+    text-decoration: underline; /* Souligner au survol */
+    font-size: 18px; /* Taille de texte au survol */
+    font-weight: bold; /* Texte en gras au survol */
+}
+
+/* Media Query pour les écrans plus petits */
+@media screen and (max-width: 600px) {
+    .imgLogo {
+        height: 32px; /* Ajustez la taille des logos pour les écrans plus petits */
+        margin-right: 0px;
+    }
+}

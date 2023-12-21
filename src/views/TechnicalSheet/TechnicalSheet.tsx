@@ -1,6 +1,7 @@
 import { useEffect, useState, SyntheticEvent } from "react";
 import { useParams } from "react-router-dom";
 import { Header } from "../../components/Header/Header";
+import { Footer } from "../../components/Footer/Footer";
 import SelectMultiple from "../../components/SelectMultiple/SelectMultiple";
 import geowebService from "../../services/geoweb.service";
 import {
@@ -583,6 +584,7 @@ export default () => {
               </div>
             </Col>
           </Row>
+          <Footer/>
         </div>
       )}
     </>
