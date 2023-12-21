@@ -479,114 +479,118 @@ export default () => {
 
 
 
-
+  
   return (
     <>
-      {matrice && (
-        <div>
-          <Header
-            indicatorName={matrice?.features[0].properties.nom_indicateur}
-          />
-          <Row
-            justify="space-around"
-            align="middle"
-            className="configComponents"
-          >
-            <Col xs={22} sm={10} lg={6} className="marginCol">
-              <SelectMultiple
-                label={"Territoire(s)"}
-                values={territoriesSelected}
-                options={groupedTerritories}
-                setFunction={handleTerritoriesSelected}
-                inputValue={territoriesInput}
-                setInputValue={setInputTerritories}
-                placeHolder="Territoire"
-              />
-            </Col>
-            <Col xs={22} sm={10} lg={6} className="marginCol">
-              <SelectWithBoxes
-                disabled={hasAxisNoValuesInHisSelector}
-                label={
-                  hasAxisNoValuesInHisSelector
-                    ? "Aucun axe n'est disponible"
-                    : analyseAxisLabel
-                }
-                options={axisWithAllOption}
-                propValue={axisSelected}
-                handleValue={handleAxisSelected}
-                selectedAll={axisSelectedAll}
-              />
-            </Col>
-            <Col xs={18} sm={10} lg={4}>
-              <SliderRange
-                value={yearRange}
-                minValue={minMaxYearRange[0]}
-                maxValue={minMaxYearRange[1]}
-                setter={handleYearRange}
-              />
-            </Col>
-            <Col xs={20} sm={10} lg={5}>
-              <RadioGroupUnit
-                label={"Unité"}
-                units={units}
-                selectedValue={unitSelected}
-                setter={handleUnitRadio}
-              />
-            </Col>
-
-            <ShareButton url={tradeURL} />
-          </Row>
-
-          <Row justify="space-around" align="middle">
-            <Col span={23}>
-              {areResultsDisplayed && (
-                <TableTabulator
-                  yearRange={yearRange}
-                  territoriesWithYearStatistics={formatTerritoriesWithYearStatistics()}
-                  checkIsTerritoryEPCI={checkIsTerritoryEPCI}
-                  checkIsAtLeastOneEPCISelected={checkIsAtLeastOneEPCISelected}
+      <div className="TechnicalSheetContent">
+        {matrice && (
+          <div>
+            <Header
+              indicatorName={matrice?.features[0].properties.nom_indicateur}
+            />
+            <Row
+              justify="space-around"
+              align="middle"
+              className="configComponents"
+            >
+              <Col xs={22} sm={10} lg={6} className="marginCol">
+                <SelectMultiple
+                  label={"Territoire(s)"}
+                  values={territoriesSelected}
+                  options={groupedTerritories}
+                  setFunction={handleTerritoriesSelected}
+                  inputValue={territoriesInput}
+                  setInputValue={setInputTerritories}
+                  placeHolder="Territoire"
                 />
-              )}
-            </Col>
-          </Row>
-          <Row justify="space-around" align="middle">
-            <Col span={24}>
-              <div className="technichal-sheet--graphs">
+              </Col>
+              <Col xs={22} sm={10} lg={6} className="marginCol">
+                <SelectWithBoxes
+                  disabled={hasAxisNoValuesInHisSelector}
+                  label={
+                    hasAxisNoValuesInHisSelector
+                      ? "Aucun axe n'est disponible"
+                      : analyseAxisLabel
+                  }
+                  options={axisWithAllOption}
+                  propValue={axisSelected}
+                  handleValue={handleAxisSelected}
+                  selectedAll={axisSelectedAll}
+                />
+              </Col>
+              <Col xs={18} sm={10} lg={4}>
+                <SliderRange
+                  value={yearRange}
+                  minValue={minMaxYearRange[0]}
+                  maxValue={minMaxYearRange[1]}
+                  setter={handleYearRange}
+                />
+              </Col>
+              <Col xs={20} sm={10} lg={5}>
+                <RadioGroupUnit
+                  label={"Unité"}
+                  units={units}
+                  selectedValue={unitSelected}
+                  setter={handleUnitRadio}
+                />
+              </Col>
+
+              <ShareButton url={tradeURL} />
+            </Row>
+
+            <Row justify="space-around" align="middle">
+              <Col span={23}>
                 {areResultsDisplayed && (
-                  <>
-                    <Tabs
-                      tabLabels={[
-                        { name: "Evolution", disabled: false },
-                        {
-                          name: hasAxisNoValuesInHisSelector
-                            ? ""
-                            : "Répartition par " + analyseAxisLabel,
-                          disabled: hasAxisNoValuesInHisSelector,
-                        },
-                      ]}
-                      value={indexTab}
-                      handler={handleIndexTab}
-                    />
-                    <TabPanels index={0} value={indexTab}>
-                      <StackLineChart
-                        yearRange={yearRange}
-                        filteredData={formatTerritoriesWithYearStatistics()}
-                      />
-                    </TabPanels>
-                    <TabPanels index={1} value={indexTab}>
-                      <PieChart
-                        filteredData={formatDonutGraphData()}
-                        selectedYear={yearRange[1]}
-                      />
-                    </TabPanels>
-                  </>
+                  <TableTabulator
+                    yearRange={yearRange}
+                    territoriesWithYearStatistics={formatTerritoriesWithYearStatistics()}
+                    checkIsTerritoryEPCI={checkIsTerritoryEPCI}
+                    checkIsAtLeastOneEPCISelected={
+                      checkIsAtLeastOneEPCISelected
+                    }
+                  />
                 )}
-              </div>
-            </Col>
-          </Row>
-          <Footer/>
-        </div>
-      )}
+              </Col>
+            </Row>
+            <Row justify="space-around" align="middle">
+              <Col span={24}>
+                <div className="technichal-sheet--graphs">
+                  {areResultsDisplayed && (
+                    <>
+                      <Tabs
+                        tabLabels={[
+                          { name: "Evolution", disabled: false },
+                          {
+                            name: hasAxisNoValuesInHisSelector
+                              ? ""
+                              : "Répartition par " + analyseAxisLabel,
+                            disabled: hasAxisNoValuesInHisSelector,
+                          },
+                        ]}
+                        value={indexTab}
+                        handler={handleIndexTab}
+                      />
+                      <TabPanels index={0} value={indexTab}>
+                        <StackLineChart
+                          yearRange={yearRange}
+                          filteredData={formatTerritoriesWithYearStatistics()}
+                        />
+                      </TabPanels>
+                      <TabPanels index={1} value={indexTab}>
+                        <PieChart
+                          filteredData={formatDonutGraphData()}
+                          selectedYear={yearRange[1]}
+                        />
+                      </TabPanels>
+                    </>
+                  )}
+                </div>
+              </Col>
+            </Row>
+          </div>
+        )}
+      </div>
+      <Footer />
     </>
   );
 };

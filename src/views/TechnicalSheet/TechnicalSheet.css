@@ -3,6 +3,10 @@
   margin-bottom: 10px;
 }
 
+.TechnicalSheetContent{
+  min-height: 100vh;
+}
+
 /* mobile-styles.css */
 @media (max-width: 768px) {
   .marginCol{
