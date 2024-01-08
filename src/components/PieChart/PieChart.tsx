@@ -17,12 +17,11 @@ export default ({ filteredData, selectedYear }: Props) => {
     setNoData(filteredData[selectedYear] === undefined);
   }, [selectedYear]);
 
-
   const pieData = Object.keys(filteredData).map((axis: string) => {
     if (filteredData[selectedYear] && filteredData[selectedYear][axis] > 0) {
-      return { name: axis, value: filteredData[axis] };
+      return { name: axis, value: filteredData[selectedYear][axis] };
     }
-  });
+  }).filter((data) => data !== undefined); ;
 
   const { darkMode } = useContext(DarkModeContext);
   const option = {
