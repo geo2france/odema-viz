@@ -1,5 +1,6 @@
 // Footer.js
 
+import React from "react";
 import "./Footer.css";
 import Ademe from "./images/Logo_ADEME-removebg-preview.png";
 import Prefet from "./images/Préfet_de_la_région_Hauts-de-France-removebg-preview.png";

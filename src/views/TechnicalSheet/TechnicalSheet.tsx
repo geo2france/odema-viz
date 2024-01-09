@@ -60,17 +60,6 @@ export default () => {
     `${window.location.protocol}//${window.location.host}${window.location.pathname}${window.location.hash}`
   );
 
-
-  interface TerritoryCategory {
-    name: string;
-    territories: string[];
-  }
-
-  const [territoryCategories, setTerritoryCategories] = useState<
-    TerritoryCategory[]
-  >([]);
-
-
   useEffect(() => {
     const fetchMatrixIndicator = async () => {
       const response = await geowebService.getMatrixForIndicator({
@@ -87,77 +76,6 @@ export default () => {
     };
   }, []);
 
-  const organizeTerritoriesByCategory = () => {
-    const categories: TerritoryCategory[] = [];
-
-    // Utilisez un ensemble pour stocker des territoires uniques
-    const uniqueTerritories = new Set<string>();
-
-    // Assumez que matrice.features est la liste des territoires
-    matrice?.features.forEach((feature: MatrixFeatures) => {
-      const territoryType = getTerritoryType(feature.properties.id_territoire);
-
-      // Vérifiez si le territoire n'a pas déjà été ajouté
-      if (!uniqueTerritories.has(feature.properties.nom_territoire)) {
-        // Ajoutez le territoire à l'ensemble pour éviter les doublons
-        uniqueTerritories.add(feature.properties.nom_territoire);
-
-        // Vérifiez si la catégorie existe déjà
-        const categoryIndex = categories.findIndex(
-          (cat) => cat.name === territoryType
-        );
-
-        if (categoryIndex !== -1) {
-          // Ajoutez le territoire à la catégorie existante
-          categories[categoryIndex].territories.push(
-            feature.properties.nom_territoire
-          );
-        } else {
-          // Créez une nouvelle catégorie avec le territoire
-          switch (territoryType) {
-            case "departement":
-              categories.push({
-                name: "Départements",
-                territories: [feature.properties.nom_territoire],
-              });
-              break;
-
-            case "region":
-              categories.push({
-                name: "Régions",
-                territories: [feature.properties.nom_territoire],
-              });
-              break;
-
-            case "EPCI":
-              categories.push({
-                name: "Intercommunalités",
-                territories: [feature.properties.nom_territoire],
-              });
-              break;
-
-            default:
-              categories.push({
-                name: territoryType,
-                territories: [feature.properties.nom_territoire],
-              });
-              break;
-          }
-        }
-      }
-    });
-
-    setTerritoryCategories(categories);
-  };
-
-  useEffect(() => {
-    // Appelez la fonction pour organiser les territoires par catégorie lorsque les données de matrice sont disponibles
-    if (matrice) {
-      organizeTerritoriesByCategory();
-    }
-  }, [matrice]);
-
-  
   useEffect(() => {
     const currentParams = window.location.hash.split("?")[1];
     //Get URL params and cookie for territories
@@ -220,7 +138,14 @@ export default () => {
     computedDataFromFilters();
   }, [territoriesSelected, axisSelected, yearRange, unitSelected]);
 
-
+  const groupedTerritories = [
+    //We want unique territory value from the API
+    ...new Set(
+      matrice?.features.map(
+        (feature: MatrixFeatures) => feature.properties.nom_territoire
+      )
+    ),
+  ];
   const axisTypes: string[] | undefined = [
     ...new Set(
       matrice?.features.map(
@@ -553,11 +478,13 @@ export default () => {
 
 
 
+
+  
   return (
     <>
-      {matrice && (
-        <div>
-          <div className="TechnicalSheetContent">
+      <div className="TechnicalSheetContent">
+        {matrice && (
+          <div>
             <Header
               indicatorName={matrice?.features[0].properties.nom_indicateur}
             />
@@ -570,7 +497,7 @@ export default () => {
                 <SelectMultiple
                   label={"Territoire(s)"}
                   values={territoriesSelected}
-                  options={territoryCategories}
+                  options={groupedTerritories}
                   setFunction={handleTerritoriesSelected}
                   inputValue={territoriesInput}
                   setInputValue={setInputTerritories}
@@ -661,9 +588,9 @@ export default () => {
               </Col>
             </Row>
           </div>
-          <Footer />
-        </div>
-      )}
+        )}
+      </div>
+      <Footer />
     </>
   );
 };
