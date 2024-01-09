@@ -54,7 +54,7 @@ export default () => {
 
   const columns = [
     {
-      title: "Nom de l'indicateur",
+      title: "Thématique",
       dataIndex: ["properties", "nom_indicateur"],
       render: (text: string, record: Feature) => (
         <Link to={`/technicalsheet/${record.properties.guid}`}>
