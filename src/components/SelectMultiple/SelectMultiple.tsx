@@ -39,7 +39,6 @@ export default function SelectMultiple({
       onInputChange={(_event: any, newInputValue: any) =>
         setInputValue(newInputValue)
       }
-      placeholder={placeHolder}
     />
   );
 }

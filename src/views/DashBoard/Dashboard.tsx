@@ -11,6 +11,9 @@ import { DarkModeContext } from "../../context/DarkModeProvider";
 import "./Dashboard.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 
+import { Footer } from "../../components/Footer/Footer";
+
+
 export default () => {
   const { indicators, fetchIndicators } = useContext<any>(IndicatorsContext);
   const [searchText, setSearchText] = useState("");
@@ -51,7 +54,7 @@ export default () => {
 
   const columns = [
     {
-      title: "Nom de l'indicateur",
+      title: "Thématique",
       dataIndex: ["properties", "nom_indicateur"],
       render: (text: string, record: Feature) => (
         <Link to={`/technicalsheet/${record.properties.guid}`}>
@@ -122,6 +125,7 @@ export default () => {
   const theme = darkMode ? darkThemeAnt : lightThemeAnt;
 
   return (
+
     <>
       <Header />
       <Container className="dashboard-map d-flex justify-content-around">
@@ -148,6 +152,7 @@ export default () => {
           </ConfigProvider>
         </Col>
       </Container>
+      <Footer/>
     </>
   );
 };

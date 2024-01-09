@@ -1,7 +1,9 @@
-import { useContext, useEffect } from "react";
+import { useContext, useEffect, useRef } from "react";
 import { ReactTabulator } from "react-tabulator";
+import Button from '@mui/material/Button';
 
 import { DarkModeContext } from "../../context/DarkModeProvider";
+import FileDownloadIcon from '@mui/icons-material/FileDownload';
 import { convertZerosToNullFromObject } from "../../helpers/formatters.helper";
 
 //import "react-tabulator/css/tabulator_midnight.min.css";
@@ -24,6 +26,8 @@ export default ({
   checkIsTerritoryEPCI,
   checkIsAtLeastOneEPCISelected,
 }: Props) => {
+
+  let tableRef: any = useRef(null);
 
   // Gestion du darkMode
   const { darkMode } = useContext(DarkModeContext);
@@ -172,15 +176,30 @@ export default ({
     return mappedValues;
   };
 
+
+  const handleExportCSV = () => {
+    if (tableRef.current) {
+      tableRef.current.download('csv', 'data.csv');
+    }
+  };
+
   return (
     <div>
       <ReactTabulator
+        onRef={(r) => (tableRef = r)}
         id="tab"
         className={`${darkMode ? "dark" : ""}`}
         data={computeDataWithUnitForTable()}
         columns={formattedColumns()}
         layout={"fitData"}
+        options  = {{
+          downloadDataFormatter: (data:any) => data,
+          downloadReady: (_fileContents:any, blob:any) => blob,
+      }}
       />
+      <Button  size="small" variant="contained" startIcon={<FileDownloadIcon />} onClick={handleExportCSV}>
+        Exporter
+      </Button>
     </div>
   );
 };
