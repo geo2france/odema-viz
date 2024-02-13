@@ -7,6 +7,10 @@
   min-height: 100vh;
 }
 
+body{
+   overflow-x: hidden; 
+}
+
 /* mobile-styles.css */
 @media (max-width: 768px) {
   .marginCol{
